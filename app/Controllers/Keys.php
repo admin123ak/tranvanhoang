@@ -132,14 +132,7 @@ public function deleteUnused(){
                     $validation = Services::validation();
 
                     // Get active packages for dropdown
-                    $activePackages = $this->packageModel->getActivePackages();
-                    $package_list = [];
-                    if (is_array($activePackages)) {
-                        foreach ($activePackages as $p) {
-                            $name = is_object($p) ? $p->package_name : ($p['package_name'] ?? '');
-                            if ($name) $package_list[] = $name;
-                        }
-                    }
+                    $package_list = $this->packageModel->getAllPackagesList();
 
                     $data = [
                         'title' => 'Key',
@@ -296,17 +289,7 @@ public function deleteUnused(){
         }
 
         // Get active packages
-        $packages = $this->packageModel->getActivePackages();
-        $package_list = [];
-        if (is_array($packages)) {
-            foreach ($packages as $pkg) {
-                $id = is_object($pkg) ? $pkg->id_package : ($pkg['id_package'] ?? null);
-                $name = is_object($pkg) ? $pkg->package_name : ($pkg['package_name'] ?? '');
-                if ($id && $name) {
-                    $package_list[$id] = $name;
-                }
-            }
-        }
+        $package_list = $this->packageModel->getAllPackagesList();
 
         $data = [
             'title' => 'Generate',
