@@ -66,8 +66,11 @@ class UserModel extends Model
         $time = new \CodeIgniter\I18n\Time;
         $session = session();
         $time_ex = $session->time_login;
-        if ($time::now()->isBefore($time_ex)) {
+        if ($time_ex && $time::now()->isBefore($time_ex)) {
             $userCek = $this->getUser($session->userid);
+            if (!$userCek) {
+                return $this->AuthSessionLogout('User not found!');
+            }
             if ($userCek->level > 2) {
                 $msg = 'Level account invalid!';
             } elseif ($userCek->status != 1) {

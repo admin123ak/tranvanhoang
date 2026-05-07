@@ -17,9 +17,7 @@ class Auth extends BaseController
 
     public function index()
     {
-        /* ---------------------------- Debugmode --------------------------- */
-        $a = $this->userModel->getUser(session('userid'));
-        dd($a, session());
+        return redirect()->to('dashboard');
     }
 
     public function login()
@@ -76,27 +74,27 @@ class Auth extends BaseController
 
         if (!$this->validate($form_rules)) {
             return redirect()->route('login')->withInput()->with('msgDanger', '<strong>Failed</strong> Please check the form.');
-        } else {
-            $validation = Services::validation();
-            $cekUser = $this->userModel->getUser($username, 'username');
-            if ($cekUser) {
-                $hashPassword = create_password($password, false);
-                if (password_verify($hashPassword, $cekUser->password)) {
-                    $time = new \CodeIgniter\I18n\Time;
-                    $data = [
-                        'userid' => $cekUser->id_users,
-                        'unames' => $cekUser->username,
-                        'time_login' => $stay_log ? $time::now()->addHours(24) : $time::now()->addMinutes(30),
-                        'time_since' => $time::now(),
-                    ];
-                    session()->set($data);
-                    return redirect()->to('dashboard');
-                } else {
-                    $validation->setError('password', 'Wrong password, please try again.');
-                    return redirect()->route('login')->withInput()->with('msgDanger', '<strong>Failed</strong> Please check the form.');
-                }
-            }
         }
+
+        $cekUser = $this->userModel->getUser($username, 'username');
+        if (!$cekUser) {
+            return redirect()->route('login')->withInput()->with('msgDanger', '<strong>Failed</strong> Username không tồn tại.');
+        }
+
+        $hashPassword = create_password($password, false);
+        if (!password_verify($hashPassword, $cekUser->password)) {
+            return redirect()->route('login')->withInput()->with('msgDanger', '<strong>Failed</strong> Sai mật khẩu.');
+        }
+
+        $time = new \CodeIgniter\I18n\Time;
+        $sessionData = [
+            'userid'   => $cekUser->id_users,
+            'unames'   => $cekUser->username,
+            'time_login' => $time::now()->addHours($stay_log ? 24 : 12),
+            'time_since' => $time::now(),
+        ];
+        session()->set($sessionData);
+        return redirect()->to('dashboard');
     }
 
     public function register_action()

@@ -139,6 +139,44 @@ INSERT INTO `_ftext` (`id`, `_status`, `_ftext`) VALUES
 INSERT INTO `users` (`fullname`, `username`, `level`, `saldo`, `status`, `uplink`, `password`, `created_at`, `updated_at`) VALUES
 ('Admin', 'admin123', 1, 99999, 1, NULL, CONCAT('$', '2b$', '08$', 'i7C3yDDouWoURQVhoZ3OauU87C3Gg3sjkqgsUqiVyjGkJuBJ8RbrS'), NOW(), NOW());
 
+-- ============================================
+-- Table: transactions (Recharge System)
+-- ============================================
+CREATE TABLE IF NOT EXISTS `transactions` (
+  `id_transaction` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `amount` bigint(20) NOT NULL,
+  `type` enum('IN','OUT') NOT NULL DEFAULT 'IN',
+  `description` text,
+  `transaction_date` datetime NOT NULL,
+  `status` enum('pending','completed','failed') NOT NULL DEFAULT 'pending',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_transaction`),
+  KEY `user_id` (`user_id`),
+  KEY `status` (`status`),
+  KEY `transaction_date` (`transaction_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================
+-- Table: invoices (Recharge System)
+-- ============================================
+CREATE TABLE IF NOT EXISTS `invoices` (
+  `id_invoice` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `invoice_code` varchar(50) NOT NULL,
+  `amount` bigint(20) NOT NULL,
+  `status` enum('pending','completed','expired','cancelled') NOT NULL DEFAULT 'pending',
+  `payment_method` varchar(50) DEFAULT 'MBBank',
+  `expired_at` datetime NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_invoice`),
+  UNIQUE KEY `invoice_code` (`invoice_code`),
+  KEY `user_id` (`user_id`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
