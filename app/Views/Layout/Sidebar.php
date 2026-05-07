@@ -98,6 +98,15 @@
             </li>
             <?php endif; ?>
 
+            <li class="sidebar-title">Developer</li>
+
+            <li class="sidebar-item">
+                <a href="<?= base_url('api-docs.html') ?>" class='sidebar-link' target="_blank">
+                    <i class="bi bi-file-earmark-code-fill"></i>
+                    <span>API Documentation</span>
+                </a>
+            </li>
+
             <li class="sidebar-title">Account</li>
 
             <li class="sidebar-item <?= (uri_string() == 'settings') ? 'active' : '' ?>">
