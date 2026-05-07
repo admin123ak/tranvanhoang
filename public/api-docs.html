@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - QSG License System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            background: white;
+            margin: 30px 0;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #667eea;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        h3 {
+            color: #764ba2;
+            margin: 20px 0 10px 0;
+        }
+        .endpoint {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .method {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+        }
+        table tr:hover {
+            background: #f5f5f5;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .badge-required {
+            background: #dc3545;
+            color: white;
+        }
+        .badge-optional {
+            background: #6c757d;
+            color: white;
+        }
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #0c5460;
+            color: #0c5460;
+        }
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #856404;
+            color: #856404;
+        }
+        .alert-success {
+            background: #d4edda;
+            border-color: #155724;
+            color: #155724;
+        }
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+            margin-top: -10px;
+        }
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🔐 QSG License System API</h1>
+            <p>Complete Integration Guide for Android Mod Menu Developers</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="content">
+            <h2>📋 Overview</h2>
+            <p>This API allows Android mod menu applications to verify license keys and authenticate user devices. The system supports multi-game packages, device tracking, and expiration management.</p>
+
+            <div class="alert alert-info">
+                <strong>Base URL:</strong> <code>https://hclou.com</code>
+            </div>
+
+            <h2>🔌 Authentication Endpoint</h2>
+
+            <div class="endpoint">
+                <span class="method">POST</span>
+                <code>/connect</code>
+            </div>
+
+            <p>Verify a license key and authenticate the device.</p>
+
+            <h3>Request Headers</h3>
+            <pre><code>Content-Type: application/x-www-form-urlencoded</code></pre>
+
+            <h3>Request Parameters</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>game</code></td>
+                        <td>string</td>
+                        <td><span class="badge badge-required">Required</span></td>
+                        <td>Package ID of the game (e.g., <code>com.tencent.ig</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><code>user_key</code></td>
+                        <td>string</td>
+                        <td><span class="badge badge-required">Required</span></td>
+                        <td>License key provided by user</td>
+                    </tr>
+                    <tr>
+                        <td><code>serial</code></td>
+                        <td>string</td>
+                        <td><span class="badge badge-required">Required</span></td>
+                        <td>Unique device identifier (UUID)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Example Request</h3>
+            <pre><code>POST https://hclou.com/connect
+Content-Type: application/x-www-form-urlencoded
+
+game=com.tencent.ig&user_key=ABC123XYZ456&serial=550e8400-e29b-41d4-a716-446655440000</code></pre>
+
+            <h3>Success Response</h3>
+            <pre><code>{
+  "status": true,
+  "data": {
+    "modname": "NOCASHRANDI",
+    "mod_status": "on",
+    "credit": "NOCASHRANDI",
+    "token": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+    "device": 1,
+    "EXP": "2026-05-10 15:30:00",
+    "rng": 1746582960
+  }
+}</code></pre>
+
+            <h3>Response Fields</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>status</code></td>
+                        <td>boolean</td>
+                        <td>Authentication result (true/false)</td>
+                    </tr>
+                    <tr>
+                        <td><code>data.modname</code></td>
+                        <td>string</td>
+                        <td>Mod menu name to display</td>
+                    </tr>
+                    <tr>
+                        <td><code>data.mod_status</code></td>
+                        <td>string</td>
+                        <td>Mod status ("on" or "off")</td>
+                    </tr>
+                    <tr>
+                        <td><code>data.credit</code></td>
+                        <td>string</td>
+                        <td>Credit text to display</td>
+                    </tr>
+                    <tr>
+                        <td><code>data.token</code></td>
+                        <td>string</td>
+                        <td>MD5 hash for verification</td>
+                    </tr>
+                    <tr>
+                        <td><code>data.device</code></td>
+                        <td>integer</td>
+                        <td>Maximum devices allowed</td>
+                    </tr>
+                    <tr>
+                        <td><code>data.EXP</code></td>
+                        <td>datetime</td>
+                        <td>License expiration date</td>
+                    </tr>
+                    <tr>
+                        <td><code>data.rng</code></td>
+                        <td>integer</td>
+                        <td>Unix timestamp for token validation</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Error Responses</h3>
+
+            <h4>Invalid Key</h4>
+            <pre><code>{
+  "status": false,
+  "reason": "USER OR GAME NOT REGISTERED"
+}</code></pre>
+
+            <h4>Expired Key</h4>
+            <pre><code>{
+  "status": false,
+  "reason": "EXPIRED KEY"
+}</code></pre>
+
+            <h4>Blocked User</h4>
+            <pre><code>{
+  "status": false,
+  "reason": "USER BLOCKED"
+}</code></pre>
+
+            <h4>Max Devices Reached</h4>
+            <pre><code>{
+  "status": false,
+  "reason": "MAX DEVICE REACHED"
+}</code></pre>
+
+            <h2>🔐 Token Verification</h2>
+
+            <p>To verify the token is authentic:</p>
+            <ol>
+                <li>Concatenate: <code>game + "-" + user_key + "-" + serial + "-" + staticWords</code></li>
+                <li>Calculate MD5 hash of the concatenated string</li>
+                <li>Compare with the <code>token</code> from response</li>
+                <li>Verify <code>rng + 30 > current_time</code> (token valid for 30 seconds)</li>
+            </ol>
+
+            <div class="alert alert-warning">
+                <strong>Static Words:</strong> <code>Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E</code>
+            </div>
+
+            <h3>Example Verification (C++)</h3>
+            <pre><code>std::string auth = packageName;        // "com.tencent.ig"
+auth += "-";
+auth += userKey;                   // "ABC123XYZ456"
+auth += "-";
+auth += serial;                    // "550e8400-e29b-41d4-a716-446655440000"
+auth += "-";
+auth += "Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E";
+
+std::string calculatedToken = CalcMD5(auth);
+bool isValid = (calculatedToken == responseToken) && (rng + 30 > time(0));</code></pre>
+
+            <h2>📱 Complete Integration Code</h2>
+
+            <div class="alert alert-success">
+                <strong>✅ Ready to Use:</strong> Copy the code below and paste into your Main.cpp
+            </div>
+
+            <pre><code>extern "C" {
+JNIEXPORT jstring JNICALL
+Java_com_android_support_TechnicalAkash1_Check(JNIEnv *env, jclass clazz, jobject mContext, jstring mUserKey) {
+    auto userKey = env->GetStringUTFChars(mUserKey, 0);
+
+    std::string hwid = userKey;
+    hwid += GetAndroidID(env, mContext);
+    hwid += GetDeviceModel(env);
+    hwid += GetDeviceBrand(env);
+
+    std::string UUID = GetDeviceUniqueIdentifier(env, hwid.c_str());
+
+    std::string errMsg;
+
+    struct MemoryStruct chunk{};
+    chunk.memory = (char *) malloc(1);
+    chunk.size = 0;
+
+    CURL *curl;
+    CURLcode res;
+    curl = curl_easy_init();
+    if (curl) {
+        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_easy_setopt(curl, CURLOPT_URL, "https://hclou.com/connect");
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "https");
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        // Get package name dynamically for multi-game support
+        const char* packageName = GetPackageName(env, mContext);
+
+        char data[4096];
+        sprintf(data, "game=%s&user_key=%s&serial=%s", packageName, userKey, UUID.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
+
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+
+        res = curl_easy_perform(curl);
+        if (res == CURLE_OK) {
+            try {
+                json result = json::parse(chunk.memory);
+                if (result["status"] == true) {
+                    std::string token = result["data"]["token"].get<std::string>();
+                    time_t rng = result["data"]["rng"].get<time_t>();
+
+                    if (rng + 30 > time(0)) {
+                        std::string auth = packageName;
+                        auth += "-";
+                        auth += userKey;
+                        auth += "-";
+                        auth += UUID;
+                        auth += "-";
+                        auth += "Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E";
+                        std::string outputAuth = CalcMD5(auth);
+
+                        g_Token = token;
+                        g_Auth = outputAuth;
+
+                        bValid = g_Token == g_Auth;
+
+                        if (bValid) {
+                           // License verified successfully
+                        }
+                    }
+                } else {
+                    errMsg = result["reason"].get<std::string>();
+                }
+            } catch (json::exception &e) {
+                errMsg = "{";
+                errMsg += e.what();
+                errMsg += "}\n{";
+                errMsg += chunk.memory;
+                errMsg += "}";
+            }
+        } else {
+            errMsg = curl_easy_strerror(res);
+        }
+    }
+    curl_easy_cleanup(curl);
+    return bValid ? env->NewStringUTF("OK") : env->NewStringUTF(errMsg.c_str());
+}
+}</code></pre>
+
+            <h2>🎮 Supported Games</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Game</th>
+                        <th>Package ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>PUBG Mobile Global</td>
+                        <td><code>com.tencent.ig</code></td>
+                    </tr>
+                    <tr>
+                        <td>PUBG Mobile KR</td>
+                        <td><code>com.pubg.krmobile</code></td>
+                    </tr>
+                    <tr>
+                        <td>PUBG Mobile VN</td>
+                        <td><code>com.vng.pubgmobile</code></td>
+                    </tr>
+                    <tr>
+                        <td>Free Fire</td>
+                        <td><code>com.dts.freefireth</code></td>
+                    </tr>
+                    <tr>
+                        <td>Mobile Legends</td>
+                        <td><code>com.mobile.legends</code></td>
+                    </tr>
+                    <tr>
+                        <td>Call of Duty Mobile</td>
+                        <td><code>com.activision.callofduty.shooter</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-info">
+                <strong>💡 Tip:</strong> Use <code>GetPackageName(env, mContext)</code> to automatically detect the game package ID.
+            </div>
+
+            <h2>⚡ Rate Limiting</h2>
+            <ul>
+                <li>No rate limit currently enforced</li>
+                <li><strong>Recommended:</strong> Cache validation result for 5-10 minutes</li>
+                <li>Re-validate on app restart or after expiration</li>
+            </ul>
+
+            <h2>📞 Support</h2>
+            <p>For issues or questions:</p>
+            <ul>
+                <li><strong>Telegram:</strong> <a href="https://t.me/QMODZzZ" target="_blank">@QMODZzZ</a></li>
+                <li><strong>Website:</strong> <a href="https://hclou.com">hclou.com</a></li>
+            </ul>
+
+            <h2>📝 Changelog</h2>
+            <h3>v1.0 (May 7, 2026)</h3>
+            <ul>
+                <li>Initial API release</li>
+                <li>Package-based authentication system</li>
+                <li>Multi-device support</li>
+                <li>Token verification with MD5</li>
+                <li>Auto-detect game package ID</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 QSG License System. All rights reserved.</p>
+        <p>Last Updated: May 7, 2026</p>
+    </footer>
+</body>
+</html>
