@@ -106,7 +106,7 @@ class Recharge extends BaseController
         // Check if expired
         $now = new \CodeIgniter\I18n\Time();
 
-        if ($invoice->expired_at) {
+        if (isset($invoice->expired_at) && $invoice->expired_at) {
             try {
                 $expiredAt = \CodeIgniter\I18n\Time::parse($invoice->expired_at);
 
