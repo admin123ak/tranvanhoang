@@ -37,6 +37,24 @@
     <script src="<?= base_url('assets/static/js/components/dark.js') ?>"></script>
     <script src="<?= base_url('assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js') ?>"></script>
     <script src="<?= base_url('assets/compiled/js/app.js') ?>"></script>
+    <script>
+    // Fix: sidebar closes on mobile scroll (resize from address bar show/hide)
+    // Override the compiled app.js Sidebar onResize behavior
+    if (window.Sidebar) {
+        const origOnResize = window.Sidebar.prototype.onResize;
+        window.Sidebar.prototype.onResize = function() {
+            const isDesktop = window.innerWidth > 1200;
+            if (isDesktop) {
+                this.sidebarEL.classList.add("active");
+                this.sidebarEL.classList.remove("inactive");
+                this.deleteBackdrop();
+                this.toggleOverflowBody(true);
+            }
+            // On mobile: do nothing — CSS media query handles sidebar visibility.
+            // Prevents sidebar from closing when browser address bar hides/shows on scroll.
+        };
+    }
+    </script>
 
     <?= $this->renderSection('js') ?>
 </body>

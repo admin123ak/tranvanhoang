@@ -121,13 +121,10 @@ class Sidebar {
     if (isDesktop(window)) {
       this.sidebarEL.classList.add("active")
       this.sidebarEL.classList.remove("inactive")
-    } else {
-      this.sidebarEL.classList.remove("active")
     }
-
-    // reset
-    this.deleteBackdrop()
-    this.toggleOverflowBody(true)
+    // Don't call show/hide on resize - let CSS media queries handle responsive state.
+    // Calling hide() here causes the sidebar to close on mobile scroll
+    // (browser address bar show/hide triggers resize events).
   }
 
   /**
