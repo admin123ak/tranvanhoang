@@ -31,6 +31,10 @@
         $sql2 = "select * from _ftext where id=1";
         $result2 = mysqli_query($conn, $sql2);
         $userDetails2 = mysqli_fetch_assoc($result2);
+
+        $sql3 = "select * from modname where id=1";
+        $result3 = mysqli_query($conn, $sql3);
+        $userDetails3 = mysqli_fetch_assoc($result3);
         ?>
 
         <?php if (session()->getFlashdata('msgSuccess')) : ?>
@@ -91,9 +95,9 @@
                         <input type="hidden" name="modname_form" value="1">
 
                         <div class="mb-3">
-                            <label for="modname" class="form-label">Current Mod Name: <small class="text-muted"><?php echo $row['modname']; ?></small></label>
+                            <label for="modname" class="form-label">Current Mod Name: <small class="text-muted"><?= $userDetails3['modname'] ?? 'N/A' ?></small></label>
                             <input type="text" name="modname" id="modname" class="form-control" placeholder="Enter New Mod Name" required>
-                            <?php if ($validation->hasError('modname')) : ?>
+                            <?php if (isset($validation) && $validation->hasError('modname')) : ?>
                                 <div class="text-danger small mt-1"><?= $validation->getError('modname') ?></div>
                             <?php endif; ?>
                         </div>
@@ -134,9 +138,9 @@
 
                         <div class="mb-3">
                             <label for="_ftext" class="form-label">Current Floating Text: <small class="text-muted"><?= $userDetails2['_ftext'] ?></small></label>
-                            <input type="text" name="_ftext" id="_ftext" class="form-control" placeholder="Enter New Floating Text" required>
-                            <?php if ($validation->hasError('_ftext')) : ?>
-                                <div class="text-danger small mt-1"><?= $validation->getError('_ftext') ?></div>
+                            <input type="text" name="_ftextInput" id="_ftext" class="form-control" placeholder="Enter New Floating Text" required>
+                            <?php if (isset($validation) && $validation->hasError('_ftextInput')) : ?>
+                                <div class="text-danger small mt-1"><?= $validation->getError('_ftextInput') ?></div>
                             <?php endif; ?>
                         </div>
 
