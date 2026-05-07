@@ -121,51 +121,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
-                            <!-- Modals (outside table to prevent DataTables hiding them) -->
-                            <?php foreach ($devices as $device) : ?>
-                                <?php
-                                $modalDeviceList = ($device->devices ?? '') ? explode(',', trim($device->devices, ',')) : [];
-                                $modalDeviceList = array_filter(array_map('trim', $modalDeviceList));
-                                $modalDeviceCount = count($modalDeviceList);
-                                ?>
-                                <?php if ($modalDeviceCount > 0) : ?>
-                                    <div class="modal fade" id="deviceModal<?= $device->id_keys ?>" tabindex="-1">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Registered Devices - <?= esc($device->user_key) ?></h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-bordered">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>#</th>
-                                                                    <th>Device UUID</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php $deviceIdx = 1; ?>
-                                                                <?php foreach ($modalDeviceList as $deviceId) : ?>
-                                                                    <tr>
-                                                                        <td><?= $deviceIdx++ ?></td>
-                                                                        <td><code><?= esc($deviceId) ?></code></td>
-                                                                    </tr>
-                                                                <?php endforeach; ?>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
                         <?php else : ?>
                             <div class="alert alert-light-info">
                                 <i class="bi bi-info-circle"></i> No devices registered yet.
@@ -177,6 +132,53 @@
         </div>
     </section>
 </div>
+
+<!-- Device Modals (outside all containers to prevent layout issues) -->
+<?php if (isset($devices) && count($devices) > 0) : ?>
+    <?php foreach ($devices as $device) : ?>
+        <?php
+        $modalDeviceList = ($device->devices ?? '') ? explode(',', trim($device->devices, ',')) : [];
+        $modalDeviceList = array_filter(array_map('trim', $modalDeviceList));
+        $modalDeviceCount = count($modalDeviceList);
+        ?>
+        <?php if ($modalDeviceCount > 0) : ?>
+            <div class="modal fade" id="deviceModal<?= $device->id_keys ?>" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Registered Devices - <?= esc($device->user_key) ?></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Device UUID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $deviceIdx = 1; ?>
+                                        <?php foreach ($modalDeviceList as $deviceId) : ?>
+                                            <tr>
+                                                <td><?= $deviceIdx++ ?></td>
+                                                <td><code><?= esc($deviceId) ?></code></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    <?php endforeach; ?>
+<?php endif; ?>
 
 <?= $this->endSection() ?>
 
