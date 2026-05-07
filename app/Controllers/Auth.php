@@ -126,39 +126,63 @@ class Auth extends BaseController
             ],
             'referral' => [
                 'label' => 'referral',
-                'rules' => 'required|min_length[6]|alpha_numeric',
+                'rules' => 'permit_empty|min_length[6]|alpha_numeric',
             ]
         ];
 
         if (!$this->validate($form_rules)) {
-            // Form Invalid
-        } else {
+            return redirect()->route('register')->withInput()->with('msgDanger', '<strong>Failed</strong> Please check the form.');
+        }
+
+        $hashPassword = create_password($password);
+        $validation = Services::validation();
+
+        // Check if referral code provided
+        if (!empty($referral)) {
             $mCode = new CodeModel();
             $rCheck = $mCode->checkCode($referral);
-            $validation = Services::validation();
+
             if (!$rCheck) {
-                $validation->setError('referral', 'Wrong referral, please try again.');
-            } else {
-                if ($rCheck->used_by) {
-                    $validation->setError('referral', "Wrong referral, code has been used &middot; $rCheck->used_by.");
-                } else {
-                    $hashPassword = create_password($password);
-                    $data_register = [
-                        'username' => $username,
-                        'password' => $hashPassword,
-                        'saldo' => $rCheck->set_saldo ?: 0,
-                        'uplink' => $rCheck->created_by
-                    ];
-                    $ids = $this->userModel->insert($data_register, true);
-                    if ($ids) {
-                        $mCode->useReferral($referral);
-                        $msg = "Register Successfuly!";
-                        return redirect()->to('login')->with('msgSuccess', $msg);
-                    }
-                }
+                $validation->setError('referral', 'Invalid referral code.');
+                return redirect()->route('register')->withInput()->with('msgDanger', '<strong>Failed</strong> Invalid referral code.');
+            }
+
+            if ($rCheck->used_by) {
+                $validation->setError('referral', "Referral code has been used by $rCheck->used_by.");
+                return redirect()->route('register')->withInput()->with('msgDanger', '<strong>Failed</strong> Referral code already used.');
+            }
+
+            // Register with referral bonus
+            $data_register = [
+                'username' => $username,
+                'password' => $hashPassword,
+                'saldo' => $rCheck->set_saldo ?: 0,
+                'uplink' => $rCheck->created_by
+            ];
+
+            $ids = $this->userModel->insert($data_register, true);
+            if ($ids) {
+                $mCode->useReferral($referral);
+                $msg = "Register Successfully! You received ₹{$rCheck->set_saldo} bonus.";
+                return redirect()->to('login')->with('msgSuccess', $msg);
+            }
+        } else {
+            // Register without referral (default user)
+            $data_register = [
+                'username' => $username,
+                'password' => $hashPassword,
+                'saldo' => 0,
+                'uplink' => null
+            ];
+
+            $ids = $this->userModel->insert($data_register, true);
+            if ($ids) {
+                $msg = "Register Successfully!";
+                return redirect()->to('login')->with('msgSuccess', $msg);
             }
         }
-        return redirect()->route('register')->withInput()->with('msgDanger', '<strong>Failed</strong> Please check the form.');
+
+        return redirect()->route('register')->withInput()->with('msgDanger', '<strong>Failed</strong> Something went wrong.');
     }
 
     public function logout()

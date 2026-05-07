@@ -46,13 +46,14 @@
                     <?php endif; ?>
                 </div>
                 <div class="form-group position-relative has-icon-left mb-4">
-                    <input type="text" class="form-control form-control-xl" name="referral" placeholder="Referral Code" required maxlength="25" value="<?= old('referral') ?>">
+                    <input type="text" class="form-control form-control-xl" name="referral" placeholder="Referral Code (Optional)" maxlength="25" value="<?= old('referral') ?>">
                     <div class="form-control-icon">
                         <i class="bi bi-gift"></i>
                     </div>
                     <?php if ($validation->hasError('referral')) : ?>
                         <div class="text-danger small mt-1"><?= $validation->getError('referral') ?></div>
                     <?php endif; ?>
+                    <small class="text-muted">Enter referral code to get bonus saldo</small>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Sign Up</button>
             <?= form_close() ?>
