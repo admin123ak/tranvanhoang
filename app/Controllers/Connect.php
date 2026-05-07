@@ -252,16 +252,22 @@ class Connect extends BaseController
 if ($expiry == null) {
 $expiry = $time::now()->addHours($duration);
 }                     
+// Sanitize strings to prevent malformed UTF-8 in JSON response
+$modname = isset($userDetails2['modname']) ? mb_convert_encoding($userDetails2['modname'], 'UTF-8', 'UTF-8') : '';
+$mod_status = isset($userDetails3['_status']) ? mb_convert_encoding($userDetails3['_status'], 'UTF-8', 'UTF-8') : 'off';
+$credit = isset($userDetails3['_ftext']) ? mb_convert_encoding($userDetails3['_ftext'], 'UTF-8', 'UTF-8') : '';
+$expiryStr = $expiry instanceof \CodeIgniter\I18n\Time ? $expiry->format('Y-m-d H:i:s') : (string)$expiry;
+
 $data = [
 'status' => true,
 'data' => [
 // 'real' => $real,
-'modname' => $userDetails2['modname'],
-'mod_status' => $userDetails3['_status'],
-'credit' => $userDetails3['_ftext'],
+'modname' => $modname,
+'mod_status' => $mod_status,
+'credit' => $credit,
 'token' => md5($real),
-'device'=> $max_dev,
-'EXP' => $expiry,
+'device' => (int)$max_dev,
+'EXP' => $expiryStr,
 'rng' => $time->getTimestamp()
 ],
 ];

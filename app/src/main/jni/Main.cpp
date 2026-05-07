@@ -584,14 +584,18 @@ Java_com_android_support_TechnicalAkash1_Check(JNIEnv *env, jclass clazz, jobjec
                         g_Token = token;
                         g_Auth = outputAuth;
 
-                        // Extra info from server response
-                        g_ModName = result["data"]["modname"].get<std::string>();
-                        g_ModStatus = result["data"]["mod_status"].get<std::string>();
-                        g_Credit = result["data"]["credit"].get<std::string>();
-                        // "device" comes as string from server, convert to int
-                        auto devField = result["data"]["device"];
-                        g_MaxDevice = devField.is_string() ? std::stoi(devField.get<std::string>()) : devField.get<int>();
-                        g_ExpiryDate = result["data"]["EXP"].get<std::string>();
+                        // Extra info from server response (handle null values safely)
+                        auto dataObj = result["data"];
+                        g_ModName = dataObj.value("modname", "Unknown").get<std::string>();
+                        g_ModStatus = dataObj.value("mod_status", "off").get<std::string>();
+                        g_Credit = dataObj.value("credit", "").get<std::string>();
+                        // "device" can be string or int from server
+                        if (dataObj["device"].is_string()) {
+                            g_MaxDevice = std::stoi(dataObj["device"].get<std::string>());
+                        } else {
+                            g_MaxDevice = dataObj.value("device", 1).get<int>();
+                        }
+                        g_ExpiryDate = dataObj.value("EXP", "").get<std::string>();
 
                         bValid = g_Token == g_Auth;
                     }
