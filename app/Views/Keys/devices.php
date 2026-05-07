@@ -62,7 +62,7 @@
                                     <tbody>
                                         <?php foreach ($devices as $index => $device) : ?>
                                             <?php
-                                            $deviceList = $device->devices ? explode(',', trim($device->devices, ',')) : [];
+                                            $deviceList = ($device->devices ?? '') ? explode(',', trim($device->devices, ',')) : [];
                                             $deviceCount = count(array_filter($deviceList));
                                             ?>
                                             <tr>
