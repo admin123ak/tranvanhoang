@@ -60,23 +60,30 @@
                         <tbody>
                             <?php if ($packages) : ?>
                                 <?php foreach ($packages as $pkg) : ?>
+                                    <?php
+                                    $id_package = is_object($pkg) ? $pkg->id_package : $pkg['id_package'];
+                                    $package_name = is_object($pkg) ? $pkg->package_name : $pkg['package_name'];
+                                    $package_id = is_object($pkg) ? $pkg->package_id : $pkg['package_id'];
+                                    $description = is_object($pkg) ? $pkg->description : ($pkg['description'] ?? '');
+                                    $status = is_object($pkg) ? $pkg->status : $pkg['status'];
+                                    ?>
                                     <tr>
-                                        <td><?= $pkg->id_package ?></td>
-                                        <td><strong><?= esc($pkg->package_name) ?></strong></td>
-                                        <td><code><?= esc($pkg->package_id) ?></code></td>
-                                        <td><?= esc($pkg->description ?: '-') ?></td>
+                                        <td><?= $id_package ?></td>
+                                        <td><strong><?= esc($package_name) ?></strong></td>
+                                        <td><code><?= esc($package_id) ?></code></td>
+                                        <td><?= esc($description ?: '-') ?></td>
                                         <td>
-                                            <?php if ($pkg->status == 1) : ?>
+                                            <?php if ($status == 1) : ?>
                                                 <span class="badge bg-success">Active</span>
                                             <?php else : ?>
                                                 <span class="badge bg-danger">Inactive</span>
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <a href="<?= site_url('admin/packages/edit/' . $pkg->id_package) ?>" class="btn btn-sm btn-primary">
+                                            <a href="<?= site_url('admin/packages/edit/' . $id_package) ?>" class="btn btn-sm btn-primary">
                                                 <i class="bi bi-pencil"></i> Edit
                                             </a>
-                                            <a href="<?= site_url('admin/packages/delete/' . $pkg->id_package) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this package?')">
+                                            <a href="<?= site_url('admin/packages/delete/' . $id_package) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this package?')">
                                                 <i class="bi bi-trash"></i> Delete
                                             </a>
                                         </td>
