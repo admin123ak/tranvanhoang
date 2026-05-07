@@ -193,7 +193,8 @@ class Connect extends BaseController
                     if ($findKey->package_id !== null) {
                         $pkgModel = new \App\Models\PackageModel();
                         $pkg = $pkgModel->find($findKey->package_id);
-                        if ($pkg && $pkg->package_id == $game) {
+                        $pkgPackageId = is_object($pkg) ? $pkg->package_id : ($pkg['package_id'] ?? '');
+                        if ($pkg && $pkgPackageId == $game) {
                             $matchGame = true;
                         }
                     }
