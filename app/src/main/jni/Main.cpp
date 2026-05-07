@@ -458,17 +458,8 @@ void lib_main() {
 using json = nlohmann::ordered_json;
 using namespace std;
 
-// ============================================================
-// LICENSE SERVER: https://hclou.com/connect  (POST)
-// Params: game, user_key, serial
-// Response: { "status": bool, "data": { "token", "rng", "modname",
-//              "mod_status", "credit", "device", "EXP" } }
-// Token = md5(game-user_key-serial-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E)
-// ============================================================
 bool bValid = false;
 std::string g_Auth, g_Token;
-std::string g_ModName, g_ModStatus, g_Credit, g_ExpiryDate;
-int g_MaxDevice = 0;
 std::string RandomString(const int len);
 std::string CalcMD5(std::string s);
 std::string CalcSHA256(std::string s);
@@ -584,20 +575,11 @@ Java_com_android_support_TechnicalAkash1_Check(JNIEnv *env, jclass clazz, jobjec
                         g_Token = token;
                         g_Auth = outputAuth;
 
-                        // Extra info from server response (handle null values safely)
-                        auto dataObj = result["data"];
-                        g_ModName = dataObj.value("modname", "Unknown").get<std::string>();
-                        g_ModStatus = dataObj.value("mod_status", "off").get<std::string>();
-                        g_Credit = dataObj.value("credit", "").get<std::string>();
-                        // "device" can be string or int from server
-                        if (dataObj["device"].is_string()) {
-                            g_MaxDevice = std::stoi(dataObj["device"].get<std::string>());
-                        } else {
-                            g_MaxDevice = dataObj.value("device", 1).get<int>();
-                        }
-                        g_ExpiryDate = dataObj.value("EXP", "").get<std::string>();
-
                         bValid = g_Token == g_Auth;
+
+                        if (bValid) {
+                           // isESP = !isESP;
+                        }
                     }
                 } else {
                     errMsg = result[/*reason*/ StrEnc("LW(3(c", "\x3E\x32\x49\x40\x47\x0D", 6).c_str()].get<std::string>();
