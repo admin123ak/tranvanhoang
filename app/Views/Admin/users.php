@@ -31,21 +31,23 @@
                 <h5 class="card-title">Manage <?= $title ?></h5>
             </div>
             <div class="card-body">
-                <table class="table table-striped" id="datatable">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Username</th>
-                            <th>Fullname</th>
-                            <th>Level</th>
-                            <th>Saldo</th>
-                            <th>Status</th>
-                            <th>Uplink</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-striped" id="datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Username</th>
+                                <th>Fullname</th>
+                                <th>Level</th>
+                                <th>Saldo</th>
+                                <th>Status</th>
+                                <th>Uplink</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </section>

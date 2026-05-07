@@ -35,9 +35,9 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Keys Registered</h5>
-                    <div>
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                    <h5 class="card-title mb-0">Keys Registered</h5>
+                    <div class="d-flex flex-wrap gap-2">
                         <button class="btn btn-sm btn-secondary" id="blur-out" data-bs-toggle="tooltip" title="Eye Protect">
                             <i class="bi bi-eye-slash"></i>
                         </button>
@@ -52,20 +52,22 @@
             </div>
             <div class="card-body">
                 <?php if ($keylist) : ?>
-                    <table class="table table-striped" id="datatable">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Game</th>
-                                <th>User Keys</th>
-                                <th>Devices</th>
-                                <th>Duration</th>
-                                <th>Expired</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Game</th>
+                                    <th>User Keys</th>
+                                    <th>Devices</th>
+                                    <th>Duration</th>
+                                    <th>Expired</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 <?php else : ?>
                     <p class="text-center text-muted">No keys to show</p>
                 <?php endif; ?>
