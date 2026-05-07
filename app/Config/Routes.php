@@ -44,6 +44,9 @@ $routes->match(['get', 'post'], 'register', 'Auth::register');//Server
 $routes->match(['get', 'post'], 'settings', 'User::settings');
 $routes->match(['get', 'post'], 'Server', 'User::Server');
 
+// API Documentation
+$routes->get('api-docs', 'Docs::api');
+
 //
 //testing
 $routes->match(['get', 'post'], 'New', 'Home::index');

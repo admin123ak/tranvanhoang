@@ -101,7 +101,7 @@
             <li class="sidebar-title">Developer</li>
 
             <li class="sidebar-item">
-                <a href="<?= base_url('api-docs.html') ?>" class='sidebar-link' target="_blank">
+                <a href="<?= site_url('api-docs') ?>" class='sidebar-link'>
                     <i class="bi bi-file-earmark-code-fill"></i>
                     <span>API Documentation</span>
                 </a>
