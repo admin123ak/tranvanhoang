@@ -133,7 +133,13 @@ public function deleteUnused(){
 
                     // Get active packages for dropdown
                     $activePackages = $this->packageModel->getActivePackages();
-                    $package_list = array_map(function($p) { return $p->package_name; }, $activePackages);
+                    $package_list = [];
+                    if (is_array($activePackages)) {
+                        foreach ($activePackages as $p) {
+                            $name = is_object($p) ? $p->package_name : ($p['package_name'] ?? '');
+                            if ($name) $package_list[] = $name;
+                        }
+                    }
 
                     $data = [
                         'title' => 'Key',
@@ -162,7 +168,13 @@ public function deleteUnused(){
 
         // Get active packages for game validation
         $activePackages = $this->packageModel->getActivePackages();
-        $packageNames = array_map(function($p) { return $p->package_name; }, $activePackages);
+        $packageNames = [];
+        if (is_array($activePackages)) {
+            foreach ($activePackages as $p) {
+                $name = is_object($p) ? $p->package_name : ($p['package_name'] ?? '');
+                if ($name) $packageNames[] = $name;
+            }
+        }
         $gameList = implode(",", $packageNames);
 
         if (!$dKey) {
@@ -286,8 +298,14 @@ public function deleteUnused(){
         // Get active packages
         $packages = $this->packageModel->getActivePackages();
         $package_list = [];
-        foreach ($packages as $pkg) {
-            $package_list[$pkg->id_package] = $pkg->package_name;
+        if (is_array($packages)) {
+            foreach ($packages as $pkg) {
+                $id = is_object($pkg) ? $pkg->id_package : ($pkg['id_package'] ?? null);
+                $name = is_object($pkg) ? $pkg->package_name : ($pkg['package_name'] ?? '');
+                if ($id && $name) {
+                    $package_list[$id] = $name;
+                }
+            }
         }
 
         $data = [

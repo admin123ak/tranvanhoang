@@ -24,8 +24,12 @@ class PackageModel extends Model
 
     public function getActivePackages()
     {
-        return $this->where('status', 1)
-            ->findAll();
+        try {
+            return $this->where('status', 1)
+                ->findAll();
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
     public function getPackageByPackageId($package_id)
