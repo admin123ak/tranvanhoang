@@ -87,6 +87,28 @@ public function deleteUnused(){
     
 }
 
+    public function devices()
+    {
+        $model = $this->model;
+        $user = $this->user;
+
+        if ($user->level != 1) {
+            $devices = $model->where('registrator', $user->username)
+                ->where('devices IS NOT', null)
+                ->findAll();
+        } else {
+            $devices = $model->where('devices IS NOT', null)
+                ->findAll();
+        }
+
+        $data = [
+            'title' => 'Device Management',
+            'user' => $user,
+            'devices' => $devices,
+        ];
+        return view('Keys/devices', $data);
+    }
+
     public function api_key_reset()
     {
         sleep(1);

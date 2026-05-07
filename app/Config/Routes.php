@@ -61,6 +61,7 @@ $routes->group('keys', function ($routes) {
 	$routes->get('reset', 'Keys::api_key_reset');
 	$routes->post('edit', 'Keys::edit_key');
 	$routes->match(['get', 'post'], 'api', 'Keys::api_get_keys');
+	$routes->get('devices', 'Keys::devices');
 	$routes->match(['get'],'deleteExp','Keys::deleteExpired');
       //  $routes->match(['get'],'deleteUnused','Keys::deleteUnused');
 });

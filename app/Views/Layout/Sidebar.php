@@ -62,6 +62,9 @@
                     <li class="submenu-item <?= (uri_string() == 'keys/generate') ? 'active' : '' ?>">
                         <a href="<?= site_url('keys/generate') ?>" class="submenu-link">Generate</a>
                     </li>
+                    <li class="submenu-item <?= (strpos(uri_string(), 'keys/devices') !== false || uri_string() == 'keys/devices') ? 'active' : '' ?>">
+                        <a href="<?= site_url('keys/devices') ?>" class="submenu-link">Devices</a>
+                    </li>
                 </ul>
             </li>
 
