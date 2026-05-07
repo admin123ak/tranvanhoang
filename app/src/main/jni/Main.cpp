@@ -460,6 +460,9 @@ using namespace std;
 
 bool bValid = false;
 std::string g_Auth, g_Token;
+std::string g_ModName = "MOD MENU";
+std::string g_ModStatus = "UNKNOWN";
+std::string g_Credit = "";
 std::string RandomString(const int len);
 std::string CalcMD5(std::string s);
 std::string CalcSHA256(std::string s);
@@ -578,7 +581,21 @@ Java_com_android_support_TechnicalAkash1_Check(JNIEnv *env, jclass clazz, jobjec
                         bValid = g_Token == g_Auth;
 
                         if (bValid) {
-                           // isESP = !isESP;
+                            // Parse mod info from server
+                            try {
+                                auto dataObj = result[/*data*/ StrEnc("fAVA", "\x02\x20\x22\x20", 4).c_str()];
+                                if (dataObj.contains("modname")) {
+                                    g_ModName = dataObj["modname"].get<std::string>();
+                                }
+                                if (dataObj.contains("mod_status")) {
+                                    g_ModStatus = dataObj["mod_status"].get<std::string>();
+                                }
+                                if (dataObj.contains("credit")) {
+                                    g_Credit = dataObj["credit"].get<std::string>();
+                                }
+                            } catch (...) {
+                                // Ignore parse errors for optional fields
+                            }
                         }
                     }
                 } else {
@@ -597,7 +614,18 @@ Java_com_android_support_TechnicalAkash1_Check(JNIEnv *env, jclass clazz, jobjec
     }
     curl_easy_cleanup(curl);
     return bValid ? env->NewStringUTF(/*OK*/ StrEnc("8q", "\x77\x3A", 2).c_str()) : env->NewStringUTF(errMsg.c_str());
-}}
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_android_support_TechnicalAkash1_GetModName(JNIEnv *env, jclass clazz) {
+    return env->NewStringUTF(g_ModName.c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_android_support_TechnicalAkash1_GetModStatus(JNIEnv *env, jclass clazz) {
+    return env->NewStringUTF(g_ModStatus.c_str());
+}
+}
 
 int RegisterMenu(JNIEnv *env) {
     JNINativeMethod methods[] = {
