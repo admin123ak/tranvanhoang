@@ -1,72 +1,69 @@
-<?= $this->extend('Layout/Starter') ?>
+<?= $this->extend('Layout/Auth') ?>
 
 <?= $this->section('content') ?>
-
-<div class="row justify-content-center pt-5">
-    <div class="col-lg-4">
-        <?= $this->include('Layout/msgStatus') ?>
-        <div class="card shadow-sm mb-5">
-            <div class="card-header h5 p-3">
-                Register
+<div class="row h-100">
+    <div class="col-lg-5 col-12">
+        <div id="auth-left">
+            <div class="auth-logo">
+                <a href="<?= site_url() ?>"><img src="<?= base_url('assets/static/images/logo/logo.svg') ?>" alt="Logo"></a>
             </div>
-            <div class="card-body">
-                <?= form_open() ?>
+            <h1 class="auth-title">Sign Up</h1>
+            <p class="auth-subtitle mb-5">Input your data to register to our website.</p>
 
-                <div class="form-group mb-3">
-                    <label for="username">Username</label>
-                    <input type="text" class="text-info form-control mt-2" name="username" id="username" aria-describedby="help-username" placeholder="Your username" minlength="4" maxlength="24" value="<?= old('username') ?>" required>
+            <?php if (session()->getFlashdata('msgDanger')) : ?>
+                <div class="alert alert-danger alert-dismissible show fade">
+                    <?= session()->getFlashdata('msgDanger') ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+
+            <?= form_open() ?>
+                <div class="form-group position-relative has-icon-left mb-4">
+                    <input type="text" class="form-control form-control-xl" name="username" placeholder="Username" required minlength="4" maxlength="24" value="<?= old('username') ?>">
+                    <div class="form-control-icon">
+                        <i class="bi bi-person"></i>
+                    </div>
                     <?php if ($validation->hasError('username')) : ?>
-                        <small id="help-username" class="form-text text-danger"><?= $validation->getError('username') ?></small>
+                        <div class="text-danger small mt-1"><?= $validation->getError('username') ?></div>
                     <?php endif; ?>
                 </div>
-                <div class="form-group mb-3">
-                    <label for="password">Password</label>
-                    <input type="password" class="text-warning form-control mt-2" name="password" id="password" aria-describedby="help-password" placeholder="Your password" minlength="6" maxlength="24" required>
+                <div class="form-group position-relative has-icon-left mb-4">
+                    <input type="password" class="form-control form-control-xl" name="password" placeholder="Password" required minlength="6" maxlength="24">
+                    <div class="form-control-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
                     <?php if ($validation->hasError('password')) : ?>
-                        <small id="help-password" class="form-text text-danger"><?= $validation->getError('password') ?></small>
+                        <div class="text-danger small mt-1"><?= $validation->getError('password') ?></div>
                     <?php endif; ?>
                 </div>
-                <div class="form-group mb-3">
-                    <label for="password2">Confirm Password</label>
-                    <input type="password" name="password2" id="password2" class="text-warning form-control mt-2" placeholder="Confirm password" aria-describedby="help-password2" minlength="6" maxlength="24" required>
+                <div class="form-group position-relative has-icon-left mb-4">
+                    <input type="password" class="form-control form-control-xl" name="password2" placeholder="Confirm Password" required minlength="6" maxlength="24">
+                    <div class="form-control-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
                     <?php if ($validation->hasError('password2')) : ?>
-                        <small id="help-password2" class="form-text text-danger"><?= $validation->getError('password2') ?></small>
+                        <div class="text-danger small mt-1"><?= $validation->getError('password2') ?></div>
                     <?php endif; ?>
                 </div>
-                <div class="form-group mb-3">
-                    <label for="referral">Referral Code</label>
-                    <input type="text" name="referral" id="referral" class="text-info form-control mt-2" placeholder="Referral code" aria-describedby="help-referral" value="<?= old('referral') ?>" maxlength="25" required>
+                <div class="form-group position-relative has-icon-left mb-4">
+                    <input type="text" class="form-control form-control-xl" name="referral" placeholder="Referral Code" required maxlength="25" value="<?= old('referral') ?>">
+                    <div class="form-control-icon">
+                        <i class="bi bi-gift"></i>
+                    </div>
                     <?php if ($validation->hasError('referral')) : ?>
-                        <small id="help-referral" class="form-text text-danger"><?= $validation->getError('referral') ?></small>
+                        <div class="text-danger small mt-1"><?= $validation->getError('referral') ?></div>
                     <?php endif; ?>
                 </div>
-              <!---->
-                
-                    <input type="hidden" name="ip" value="<?php echo $_SERVER['HTTP_USER_AGENT']; ?>" required>
-               
-                <!---->
-                
-                
-                <div class="form-group mb-2">
-                    <button type="submit" class="btn btn-outline-warning"><i class="bi bi-box-arrow-in-right"></i> Register</button>
-                </div>
-                <?= form_close() ?>
+                <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Sign Up</button>
+            <?= form_close() ?>
 
+            <div class="text-center mt-5 text-lg fs-4">
+                <p class="text-gray-600">Already have an account? <a href="<?= site_url('login') ?>" class="font-bold">Log in</a>.</p>
             </div>
         </div>
-        <p class="text-center text-danger after-card">
-            <small class="px-auto p-2 rounded">
-                  TO BUY PANEL DM HERE :-
-            <a href="https://t.me/DANGER_BOY_OP" class="text-danger">DANGERxVIP</a>
-            </small>
-            </p>
-        <p class="text-center text-danger after-card">
-            <small class="px-auto p-2 rounded">
-                Already have an account?
-                <a href="<?= site_url('login') ?>" class="text-danger">Login here</a>
-            </small>
-        </p>
+    </div>
+    <div class="col-lg-7 d-none d-lg-block">
+        <div id="auth-right"></div>
     </div>
 </div>
-
 <?= $this->endSection() ?>

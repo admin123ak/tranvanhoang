@@ -1,79 +1,141 @@
-<?= $this->extend('Layout/Starter') ?>
+<?= $this->extend('Layout/Master') ?>
 
 <?= $this->section('content') ?>
 
-<div class="row">
-    <div class="col-lg-12">
-        <?= $this->include('Layout/msgStatus') ?>
-    </div> 
-                        
-    
-       
-    
+<div class="page-heading">
+    <h3><?= getName($user) ?>'s Dashboard</h3>
+</div>
 
-    <div class="col-lg-8">
-        <div class="card mb-3">
-            <div class="card-header text-white bg-primary">
-                Registration History
+<div class="page-content">
+    <section class="row">
+        <div class="col-12 col-lg-9">
+            <div class="row">
+                <div class="col-6 col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body px-4 py-4-5">
+                            <div class="row">
+                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                    <div class="stats-icon purple mb-2">
+                                        <i class="iconly-boldShow"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                    <h6 class="text-muted font-semibold">Role</h6>
+                                    <h6 class="font-extrabold mb-0"><?= getLevel($user->level) ?></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body px-4 py-4-5">
+                            <div class="row">
+                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                    <div class="stats-icon blue mb-2">
+                                        <i class="iconly-boldProfile"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                    <h6 class="text-muted font-semibold">Saldo</h6>
+                                    <h6 class="font-extrabold mb-0">₹ <?= $user->saldo ?></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body px-4 py-4-5">
+                            <div class="row">
+                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                    <div class="stats-icon green mb-2">
+                                        <i class="iconly-boldAdd-User"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                    <h6 class="text-muted font-semibold">Login Time</h6>
+                                    <h6 class="font-extrabold mb-0"><?= $time::parse(session()->time_since)->humanize() ?></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body px-4 py-4-5">
+                            <div class="row">
+                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                    <div class="stats-icon red mb-2">
+                                        <i class="iconly-boldBookmark"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                    <h6 class="text-muted font-semibold">Auto Logout</h6>
+                                    <h6 class="font-extrabold mb-0"><?= $time::now()->difference($time::parse(session()->time_login))->humanize() ?></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered table-hover text-center">
-                        <tbody>
-                            <?php foreach ($history as $h) : ?>
-                                <?php $in = explode("|", $h->info) ?>
-                                <tr>
-                                    <td><span class="align-middle badge text-success">#3812<?= $h->id_history ?></span></td>
-                                    <td><?= $in[0] ?></td>
-                                    <td><span class="align-middle badge text-info"><?= $in[1] ?>**</span></td>
-                                    <td><span class="align-middle badge text-warning"><?= $in[2] ?> Hours</span></td>
-                                    <td><span class="align-middle badge text-primary"><?= $in[3] ?> Devices</span></td>
-                                    <td><i class="align-middle badge text-danger"><?= $time::parse($h->created_at)->humanize() ?></i></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Registration History</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-lg">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Game</th>
+                                            <th>Key</th>
+                                            <th>Duration</th>
+                                            <th>Devices</th>
+                                            <th>Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($history as $h) : ?>
+                                            <?php $in = explode("|", $h->info) ?>
+                                            <tr>
+                                                <td class="text-bold-500">#3812<?= $h->id_history ?></td>
+                                                <td><?= $in[0] ?></td>
+                                                <td><span class="badge bg-info"><?= $in[1] ?>**</span></td>
+                                                <td><span class="badge bg-warning"><?= $in[2] ?> Hours</span></td>
+                                                <td><span class="badge bg-primary"><?= $in[3] ?> Devices</span></td>
+                                                <td class="text-muted"><?= $time::parse($h->created_at)->humanize() ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="card mb-3">
-            <div class="card-header text-center text-white bg-primary">
-                Information
-            </div>
-            <div class="card-body">
-                <ul class="list-group list-hover mb-3">
-                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        Roles
-                        <span class="text-danger btn btn-outline-warning">
-                            <?= getLevel($user->level) ?>
-                        </span>
-                    </li>
-                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        Saldo
-                        <span class="text-danger btn btn-outline-warning">
-                            ₹ <?= $user->saldo ?>
-                        </span>
-                    </li>
-                </ul>
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        Login Time
-                        <span class="text-danger btn btn-outline-warning">
-                            <?= $time::parse(session()->time_since)->humanize() ?>
-                        </span>
-                    </li>
-                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        Auto Logout
-                        <span class="text-danger btn btn-outline-warning">
-                            <?= $time::now()->difference($time::parse(session()->time_login))->humanize() ?>
-                        </span>
-                    </li>
-                </ul>
+
+        <div class="col-12 col-lg-3">
+            <div class="card">
+                <div class="card-body py-4 px-4">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar avatar-xl">
+                            <img src="<?= base_url('assets/compiled/jpg/1.jpg') ?>" alt="Face 1">
+                        </div>
+                        <div class="ms-3 name">
+                            <h5 class="font-bold"><?= getName($user) ?></h5>
+                            <h6 class="text-muted mb-0">@<?= $user->username ?></h6>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-  
+    </section>
 </div>
+
 <?= $this->endSection() ?>
