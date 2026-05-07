@@ -28,6 +28,10 @@ class Recharge extends BaseController
         $transactions = $this->transactionModel->getUserTransactions($this->user->id_users, 20);
         $invoices = $this->invoiceModel->getUserInvoices($this->user->id_users, 10);
 
+        // Ensure arrays (findAll may return false on DB error)
+        if (!is_array($transactions)) $transactions = [];
+        if (!is_array($invoices)) $invoices = [];
+
         $data = [
             'title' => 'Recharge',
             'user' => $this->user,

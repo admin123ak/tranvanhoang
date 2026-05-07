@@ -21,7 +21,7 @@
                     <div class="card-body">
                         <div class="alert alert-success">
                             <h5>Số dư hiện tại</h5>
-                            <h2 class="mb-0"><?= number_format($user->saldo, 0, ',', '.') ?>₫</h2>
+                            <h2 class="mb-0"><?= isset($user->saldo) ? number_format($user->saldo, 0, ',', '.') : '0' ?>₫</h2>
                         </div>
 
                         <form action="<?= site_url('recharge/create') ?>" method="POST">
@@ -63,22 +63,22 @@
                                     <tbody>
                                         <?php foreach ($invoices as $inv): ?>
                                             <tr>
-                                                <td><code><?= esc($inv->invoice_code) ?></code></td>
-                                                <td><strong><?= number_format($inv->amount, 0, ',', '.') ?>₫</strong></td>
+                                                <td><code><?= isset($inv->invoice_code) ? esc($inv->invoice_code) : 'N/A' ?></code></td>
+                                                <td><strong><?= isset($inv->amount) ? number_format($inv->amount, 0, ',', '.') : '0' ?>₫</strong></td>
                                                 <td>
-                                                    <?php if ($inv->status == 'completed'): ?>
-                                                        <span class="badge bg-success">Hoàn thành</span>
-                                                    <?php elseif ($inv->status == 'pending'): ?>
+                                                    <?php if (!isset($inv->status) || $inv->status == 'pending'): ?>
                                                         <span class="badge bg-warning">Chờ thanh toán</span>
+                                                    <?php elseif ($inv->status == 'completed'): ?>
+                                                        <span class="badge bg-success">Hoàn thành</span>
                                                     <?php elseif ($inv->status == 'expired'): ?>
                                                         <span class="badge bg-danger">Hết hạn</span>
                                                     <?php else: ?>
                                                         <span class="badge bg-secondary">Đã hủy</span>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td><?= esc($inv->created_at) ?></td>
+                                                <td><?= isset($inv->created_at) ? esc($inv->created_at) : 'N/A' ?></td>
                                                 <td>
-                                                    <?php if ($inv->status == 'pending'): ?>
+                                                    <?php if (isset($inv->status) && $inv->status == 'pending' && isset($inv->invoice_code)): ?>
                                                         <a href="<?= site_url('recharge/payment/' . $inv->invoice_code) ?>"
                                                            class="btn btn-sm btn-primary">
                                                             <i class="bi bi-credit-card"></i> Thanh toán
@@ -124,18 +124,19 @@
                             <p class="text-muted">Chưa có giao dịch nào</p>
                         <?php else: ?>
                             <div class="list-group">
-                                <?php foreach (array_slice($transactions, 0, 5) as $txn): ?>
+                                <?php $txn_slice = array_slice($transactions, 0, 5); ?>
+                                <?php foreach ($txn_slice as $txn): ?>
                                     <div class="list-group-item">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
                                                 <h6 class="mb-1">
-                                                    <?php if ($txn->type == 'IN'): ?>
-                                                        <span class="badge bg-success">+<?= number_format($txn->amount, 0, ',', '.') ?>₫</span>
+                                                    <?php if (isset($txn->type) && $txn->type == 'IN'): ?>
+                                                        <span class="badge bg-success">+<?= isset($txn->amount) ? number_format($txn->amount, 0, ',', '.') : '0' ?>₫</span>
                                                     <?php else: ?>
-                                                        <span class="badge bg-danger">-<?= number_format($txn->amount, 0, ',', '.') ?>₫</span>
+                                                        <span class="badge bg-danger">-<?= isset($txn->amount) ? number_format($txn->amount, 0, ',', '.') : '0' ?>₫</span>
                                                     <?php endif; ?>
                                                 </h6>
-                                                <small class="text-muted"><?= esc($txn->transaction_date) ?></small>
+                                                <small class="text-muted"><?= isset($txn->transaction_date) ? esc($txn->transaction_date) : 'N/A' ?></small>
                                             </div>
                                         </div>
                                     </div>
