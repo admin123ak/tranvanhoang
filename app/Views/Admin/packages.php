@@ -1,0 +1,98 @@
+<?= $this->extend('Layout/Master') ?>
+
+<?= $this->section('content') ?>
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Package Management</h3>
+                <p class="text-subtitle text-muted">Manage game packages and their IDs</p>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="<?= site_url('dashboard') ?>">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Packages</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <section class="section">
+        <?php if (session()->getFlashdata('msgSuccess')) : ?>
+            <div class="alert alert-success alert-dismissible show fade">
+                <?= session()->getFlashdata('msgSuccess') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if (session()->getFlashdata('msgDanger')) : ?>
+            <div class="alert alert-danger alert-dismissible show fade">
+                <?= session()->getFlashdata('msgDanger') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Game Packages</h5>
+                    <a href="<?= site_url('admin/packages/create') ?>" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Add Package
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Package Name</th>
+                                <th>Package ID</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if ($packages) : ?>
+                                <?php foreach ($packages as $pkg) : ?>
+                                    <tr>
+                                        <td><?= $pkg->id_package ?></td>
+                                        <td><strong><?= esc($pkg->package_name) ?></strong></td>
+                                        <td><code><?= esc($pkg->package_id) ?></code></td>
+                                        <td><?= esc($pkg->description ?: '-') ?></td>
+                                        <td>
+                                            <?php if ($pkg->status == 1) : ?>
+                                                <span class="badge bg-success">Active</span>
+                                            <?php else : ?>
+                                                <span class="badge bg-danger">Inactive</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <a href="<?= site_url('admin/packages/edit/' . $pkg->id_package) ?>" class="btn btn-sm btn-primary">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </a>
+                                            <a href="<?= site_url('admin/packages/delete/' . $pkg->id_package) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this package?')">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No packages found</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<?= $this->endSection() ?>

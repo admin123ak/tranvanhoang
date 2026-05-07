@@ -5,23 +5,20 @@ namespace App\Controllers;
 use App\Models\HistoryModel;
 use App\Models\KeysModel;
 use App\Models\UserModel;
+use App\Models\PackageModel;
 use Config\Services;
 
 class Keys extends BaseController
 {
-    protected $userModel, $model, $user;
+    protected $userModel, $model, $user, $packageModel;
 
     public function __construct()
     {
         $this->userModel = new UserModel();
         $this->user = $this->userModel->getUser();
         $this->model = new KeysModel();
+        $this->packageModel = new PackageModel();
         $this->time = new \CodeIgniter\I18n\Time;
-
-        /* ------- Game ------- */
-        $this->game_list = [
-            'PUBG' => 'PUBG Mobile'
-        ];
 
         $this->duration = [
             2 => '2 Hours &mdash; ₹10/Device',
@@ -32,7 +29,7 @@ class Keys extends BaseController
             336 => '14 Days &mdash; ₹600/Device',
             720 => '30 Days &mdash; ₹1000/Device',
             1440 => '60 Days &mdash; ₹1800/Device',
-            
+
         ];
 
         $this->price = [
@@ -133,11 +130,16 @@ public function deleteUnused(){
             if ($dKey) {
                 if ($user->level == 1 or $dKey->registrator == $user->username) {
                     $validation = Services::validation();
+
+                    // Get active packages for dropdown
+                    $activePackages = $this->packageModel->getActivePackages();
+                    $package_list = array_map(function($p) { return $p->package_name; }, $activePackages);
+
                     $data = [
                         'title' => 'Key',
                         'user' => $user,
                         'key' => $dKey,
-                        'game_list' => $this->game_list,
+                        'packages' => $package_list,
                         'time' => $this->time,
                         'key_info' => getDevice($dKey->devices),
                         'messages' => setMessage('Please carefuly edit information'),
@@ -157,7 +159,11 @@ public function deleteUnused(){
         $keys = $this->request->getPost('id_keys');
         $user = $this->user;
         $dKey = $this->model->getKeys($keys, 'id_keys');
-        $game = implode(",", array_keys($this->game_list));
+
+        // Get active packages for game validation
+        $activePackages = $this->packageModel->getActivePackages();
+        $packageNames = array_map(function($p) { return $p->package_name; }, $activePackages);
+        $gameList = implode(",", $packageNames);
 
         if (!$dKey) {
             $msgDanger = "The user key no longer exists~";
@@ -183,7 +189,7 @@ public function deleteUnused(){
                     ],
                     'game' => [
                         'label' => 'Games',
-                        'rules' => "required|alpha_numeric_space|in_list[$game]",
+                        'rules' => "required|alpha_numeric_space|in_list[$gameList]",
                         'errors' => [
                             'alpha_numeric_space' => 'Invalid characters.'
                         ],
@@ -277,11 +283,18 @@ public function deleteUnused(){
             $message = setMessage("Please top up to your beloved admin.", 'warning');
         }
 
+        // Get active packages
+        $packages = $this->packageModel->getActivePackages();
+        $package_list = [];
+        foreach ($packages as $pkg) {
+            $package_list[$pkg->id_package] = $pkg->package_name;
+        }
+
         $data = [
             'title' => 'Generate',
             'user' => $user,
             'time' => $this->time,
-            'game' => $this->game_list,
+            'packages' => $package_list,
             'duration' => $this->duration,
             'price' => json_encode($this->price),
             'messages' => $message,
@@ -293,44 +306,43 @@ public function deleteUnused(){
 
     private function generate_action()
     {
-    
+
         $user = $this->user;
-        $game = $this->request->getPost('game');
+        $package_id = $this->request->getPost('package_id');
         $maxd = $this->request->getPost('max_devices');
         $drtn = $this->request->getPost('duration');
         $getPrice = getPrice($this->price, $drtn, $maxd);
-        
+
         $loopcount =  $this->request->getPost('loopcount');
-        
+
         if ($loopcount == "1"){
         $loopcount = 6;
-        
+
         }
-        
+
         else if ($loopcount == "2"){
         $loopcount = 11;
-  
+
         }
-        
+
         else if ($loopcount == "3"){
         $loopcount = 51;
-  
+
         }
         else if ($loopcount == "4"){
         $loopcount = 101;
-        
-        }
-        
-       
-      
 
-          $game_list = implode(",", array_keys($this->game_list));
+        }
+
+
+
+
           $form_rules = [
-              'game' => [
-                  'label' => 'Games',
-                  'rules' => "required|alpha_numeric_space|in_list[$game_list]",
+              'package_id' => [
+                  'label' => 'Package',
+                  'rules' => "required|numeric|is_not_unique[packages.id_package]",
                   'errors' => [
-                      'alpha_numeric_space' => 'Invalid characters.'
+                      'is_not_unique' => 'Invalid package selected.'
                   ],
               ],
               'duration' => [
@@ -373,22 +385,25 @@ public function deleteUnused(){
             
             
                     $license = random_string('alnum',20);
-        
+
                    // echo "$license  <br><br>";
-        
-                  
-               
-                  
+
+
+
+
                   //================================================//
-                  
-   
+
+
                       $msg = "Successfuly Generated.";
 
-                  
 
+
+                  // Get package info
+                  $package = $this->packageModel->find($package_id);
 
                   $data_response = [
-                      'game' => $game,
+                      'game' => $package->package_name,
+                      'package_id' => $package_id,
                       'user_key' => $license,
                       'duration' => $drtn,
                       'max_devices' => $maxd,
@@ -404,7 +419,7 @@ public function deleteUnused(){
                   $history->insert([
                       'keys_id' => $idKeys,
                       'user_do' => $user->username,
-                      'info' => "$game|" . substr($license, 0, 5) . "|$drtn|$maxd"
+                      'info' => $package->package_name . "|" . substr($license, 0, 5) . "|$drtn|$maxd"
                   ]);
 
                   $other_response = [
@@ -412,8 +427,8 @@ public function deleteUnused(){
                   ];
 
                   session()->setFlashdata(array_merge($data_response, $other_response));
-                 
-                 
+
+
                   return redirect()->back()->with('msgSuccess', $msg);
                 
               }

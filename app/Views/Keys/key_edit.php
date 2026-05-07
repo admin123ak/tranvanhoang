@@ -51,7 +51,15 @@
                             <div class="row">
                                 <div class="col-lg-6 mb-3">
                                     <label for="game" class="form-label">Games</label>
-                                    <input type="text" name="game" id="game" class="form-control" placeholder="Game Name" value="<?= old('game') ?: $key->game ?>">
+                                    <select name="game" id="game" class="form-select">
+                                        <?php if (isset($packages) && !empty($packages)) : ?>
+                                            <?php foreach ($packages as $name) : ?>
+                                                <option value="<?= $name ?>" <?= old('game') == $name ? 'selected' : '' ?>><?= $name ?></option>
+                                            <?php endforeach; ?>
+                                        <?php else : ?>
+                                            <option value="">No packages available</option>
+                                        <?php endif; ?>
+                                    </select>
                                     <?php if ($validation->hasError('game')) : ?>
                                         <div class="text-danger small mt-1"><?= $validation->getError('game') ?></div>
                                     <?php endif; ?>

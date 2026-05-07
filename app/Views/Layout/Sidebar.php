@@ -75,12 +75,19 @@
                 </a>
             </li>
 
-            <li class="sidebar-item <?= (strpos(uri_string(), 'admin') !== false) ? 'active' : '' ?> has-sub">
+            <li class="sidebar-item <?= (strpos(uri_string(), 'admin/packages') !== false) ? 'active' : '' ?>">
+                <a href="<?= site_url('admin/packages') ?>" class='sidebar-link'>
+                    <i class="bi bi-box-seam-fill"></i>
+                    <span>Packages</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false) ? 'active' : '' ?> has-sub">
                 <a href="#" class='sidebar-link'>
                     <i class="bi bi-shield-lock-fill"></i>
                     <span>Admin</span>
                 </a>
-                <ul class="submenu <?= (strpos(uri_string(), 'admin') !== false) ? 'active' : '' ?>">
+                <ul class="submenu <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false) ? 'active' : '' ?>">
                     <li class="submenu-item <?= (uri_string() == 'admin/manage-users') ? 'active' : '' ?>">
                         <a href="<?= site_url('admin/manage-users') ?>" class="submenu-link">Manage Users</a>
                     </li>

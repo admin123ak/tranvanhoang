@@ -28,11 +28,27 @@ CREATE TABLE IF NOT EXISTS `history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- ============================================
+-- Table: packages
+-- ============================================
+CREATE TABLE IF NOT EXISTS `packages` (
+  `id_package` int NOT NULL AUTO_INCREMENT,
+  `package_name` varchar(100) NOT NULL,
+  `package_id` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `status` tinyint(1) DEFAULT '1',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_package`),
+  UNIQUE KEY `package_id` (`package_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- ============================================
 -- Table: keys_code
 -- ============================================
 CREATE TABLE IF NOT EXISTS `keys_code` (
   `id_keys` int NOT NULL AUTO_INCREMENT,
   `game` varchar(32) NOT NULL,
+  `package_id` int DEFAULT NULL,
   `user_key` varchar(32) DEFAULT NULL,
   `duration` int DEFAULT NULL,
   `expired_date` datetime DEFAULT NULL,

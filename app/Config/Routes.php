@@ -66,6 +66,13 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 	$routes->match(['get', 'post'], 'create-referral', 'User::ref_index');
 	$routes->match(['get', 'post'], 'manage-users', 'User::manage_users');
 	$routes->match(['get', 'post'], 'user/(:num)', 'User::user_edit/$1');
+
+	// Package Management
+	$routes->get('packages', 'Package::index');
+	$routes->match(['get', 'post'], 'packages/create', 'Package::create');
+	$routes->match(['get', 'post'], 'packages/edit/(:num)', 'Package::edit/$1');
+	$routes->get('packages/delete/(:num)', 'Package::delete/$1');
+
 	/* --------------------------- Admin API Grouping -------------------------- */
 	$routes->group('api', function ($routes) {
 		$routes->match(['get', 'post'], 'users', 'User::api_get_users');

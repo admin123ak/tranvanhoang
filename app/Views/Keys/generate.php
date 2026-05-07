@@ -34,7 +34,7 @@
                 <?php if (session()->getFlashdata('user_key')) : ?>
                     <div class="alert alert-success alert-dismissible show fade">
                         <h5 class="alert-heading">License Generated Successfully!</h5>
-                        <p><strong>Game:</strong> <?= session()->getFlashdata('game') ?> / <?= session()->getFlashdata('duration') ?> Hours</p>
+                        <p><strong>Package:</strong> <?= session()->getFlashdata('game') ?> / <?= session()->getFlashdata('duration') ?> Hours</p>
                         <p><strong>License:</strong> <code class="key-sensi"><?= session()->getFlashdata('user_key') ?></code></p>
                         <p><strong>Devices:</strong> <?= session()->getFlashdata('max_devices') ?></p>
                         <hr>
@@ -54,15 +54,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="game" class="form-label">Games</label>
-                                    <select class="form-select" name="game" id="game">
-                                        <option value="">-- Select Game --</option>
-                                        <?php foreach ($game as $key => $val) : ?>
-                                            <option value="<?= $key ?>" <?= old('game') == $key ? 'selected' : '' ?>><?= $val ?></option>
+                                    <label for="package_id" class="form-label">Package</label>
+                                    <select class="form-select" name="package_id" id="package_id">
+                                        <option value="">-- Select Package --</option>
+                                        <?php foreach ($packages as $id => $name) : ?>
+                                            <option value="<?= $id ?>" <?= old('package_id') == $id ? 'selected' : '' ?>><?= $name ?></option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <?php if ($validation->hasError('game')) : ?>
-                                        <div class="text-danger small mt-1"><?= $validation->getError('game') ?></div>
+                                    <?php if ($validation->hasError('package_id')) : ?>
+                                        <div class="text-danger small mt-1"><?= $validation->getError('package_id') ?></div>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -117,7 +117,7 @@ $(document).ready(function() {
     var price = JSON.parse('<?= $price ?>');
     getPrice(price);
 
-    $("#max_devices, #duration, #game").change(function() {
+    $("#max_devices, #duration, #package_id").change(function() {
         getPrice(price);
     });
 

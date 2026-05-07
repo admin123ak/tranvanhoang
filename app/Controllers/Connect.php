@@ -182,9 +182,29 @@ class Connect extends BaseController
                 $time = new \CodeIgniter\I18n\Time;
                 $model = $this->model;
                 $findKey = $model
-                    ->getKeysGame(['user_key' => $uKey, 'game' => $game]);
+                    ->getKeysGame(['user_key' => $uKey]);
 
                 if ($findKey) {
+                    // Support both game name and package_id lookup
+                    $matchGame = false;
+                    if ($findKey->game == $game) {
+                        $matchGame = true;
+                    }
+                    if ($findKey->package_id !== null) {
+                        $pkgModel = new \App\Models\PackageModel();
+                        $pkg = $pkgModel->find($findKey->package_id);
+                        if ($pkg && $pkg->package_id == $game) {
+                            $matchGame = true;
+                        }
+                    }
+                    if (!$matchGame) {
+                        $data = [
+                            'status' => false,
+                            'reason' => 'USER OR GAME NOT REGISTERED'
+                        ];
+                        return $this->response->setJSON($data);
+                    }
+
                     if ($findKey->status != 1) {
                         $data = [
                             'status' => false,
