@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `modname` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `modname` (`id`, `modname`) VALUES
-(1, 'NOCASHRANDI');
+(1, 'NOCASHRANDI') ON DUPLICATE KEY UPDATE `modname` = 'NOCASHRANDI';
 
 -- ============================================
 -- Table: onoff
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `onoff` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `onoff` (`id`, `status`, `myinput`) VALUES
-(11, 'on', 'NOCASHRANDI');
+(11, 'on', 'NOCASHRANDI') ON DUPLICATE KEY UPDATE `status` = 'on', `myinput` = 'NOCASHRANDI';
 
 -- ============================================
 -- Table: referral_code
@@ -113,11 +113,14 @@ CREATE TABLE IF NOT EXISTS `_ftext` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `_ftext` (`id`, `_status`, `_ftext`) VALUES
-(1, 'on', 'NOCASHRANDI');
+(1, 'on', 'NOCASHRANDI') ON DUPLICATE KEY UPDATE `_status` = 'on', `_ftext` = 'NOCASHRANDI';
 
 -- ============================================
--- ADMIN ACCOUNT (username: admin123, password: admin123)
+-- ADMIN ACCOUNT
+-- Username: admin123
+-- Password: admin123
 -- ============================================
+-- If admin123 already exists, this will update the password instead of erroring
 INSERT INTO `users` (`username`, `password`, `fullname`, `level`, `status`, `saldo`, `uplink`, `user_ip`, `created_at`, `updated_at`)
 VALUES (
   'admin123',
@@ -126,11 +129,17 @@ VALUES (
   1,
   1,
   99999,
-  '',
-  '',
-  NOW(),
-  NOW()
-);
+  NULL,
+  NULL,
+  CURRENT_TIMESTAMP,
+  CURRENT_TIMESTAMP
+) ON DUPLICATE KEY UPDATE
+  `password` = '$2b$08$i7C3yDDouWoURQVhoZ3OauU87C3Gg3sjkqgsUqiVyjGkJuBJ8RbrS',
+  `level` = 1,
+  `status` = 1,
+  `fullname` = 'Admin',
+  `saldo` = 99999,
+  `updated_at` = CURRENT_TIMESTAMP;
 
 COMMIT;
 
