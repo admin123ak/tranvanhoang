@@ -46,7 +46,7 @@
                         <h4>Hóa đơn gần đây</h4>
                     </div>
                     <div class="card-body">
-                        <?php if (empty($invoices)): ?>
+                        <?php if (empty($invoices) || !is_array($invoices)): ?>
                             <p class="text-muted">Chưa có hóa đơn nào</p>
                         <?php else: ?>
                             <div class="table-responsive">
@@ -120,7 +120,7 @@
                         <h4>Lịch sử giao dịch</h4>
                     </div>
                     <div class="card-body">
-                        <?php if (empty($transactions)): ?>
+                        <?php if (empty($transactions) || !is_array($transactions)): ?>
                             <p class="text-muted">Chưa có giao dịch nào</p>
                         <?php else: ?>
                             <div class="list-group">
