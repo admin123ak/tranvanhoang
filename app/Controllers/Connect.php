@@ -145,29 +145,15 @@ class Connect extends BaseController
         $uKey = $this->request->getPost('user_key');
         $sDev = $this->request->getPost('serial');
 
-       /* $form_rules = [
-            'game' => 'required|alpha_dash',
-            'user_key' => 'required|alpha_numeric|min_length[1]|max_length[36]',
-            'serial' => 'required|alpha_dash'
-        ];
-
-        if (!$this->validate($form_rules)) {
-            $data = [
-                'status' => false,
-                'reason' => "Bad Parameter",
-            ];
-            return $this->response->setJSON($data);
-        } */
-
         if ($isMT) {
-            
+
             include('conn.php');
-        
+
             $sql1 ="select * from onoff where id=11";
             $result1 = mysqli_query($conn, $sql1);
             $userDetails1 = mysqli_fetch_assoc($result1);
-        
-            
+
+
             $data = [
                 'status' => false,
                 'reason' => $userDetails1['myinput']
@@ -185,23 +171,11 @@ class Connect extends BaseController
                     ->getKeysGame(['user_key' => $uKey]);
 
                 if ($findKey) {
-                    // Support both game name and package_id lookup
-                    $matchGame = false;
-                    if ($findKey->game == $game) {
-                        $matchGame = true;
-                    }
-                    if ($findKey->package_id !== null) {
-                        $pkgModel = new \App\Models\PackageModel();
-                        $pkg = $pkgModel->find($findKey->package_id);
-                        $pkgPackageId = is_object($pkg) ? $pkg->package_id : ($pkg['package_id'] ?? '');
-                        if ($pkg && $pkgPackageId == $game) {
-                            $matchGame = true;
-                        }
-                    }
-                    if (!$matchGame) {
+                    // ? Key phải đúng package (game field trong DB = game gửi lên)
+                    if ($findKey->game != $game) {
                         $data = [
                             'status' => false,
-                            'reason' => 'USER OR GAME NOT REGISTERED'
+                            'reason' => 'KEY NOT VALID FOR THIS PACKAGE'
                         ];
                         return $this->response->setJSON($data);
                     }
@@ -217,13 +191,13 @@ class Connect extends BaseController
                         $expired = $findKey->expired_date;
                         $max_dev = $findKey->max_devices;
                         $devices = $findKey->devices;
-    
+
                         function checkDevicesAdd($serial, $devices, $max_dev)
                         {
                             $lsDevice = explode(",", $devices);
                             $cDevices = isset($devices) ? count($lsDevice) : 0;
                             $serialOn = in_array($serial, $lsDevice);
-    
+
                             if ($serialOn) {
                                 return true;
                             } else {
@@ -237,7 +211,7 @@ class Connect extends BaseController
                                 }
                             }
                         }
-    
+
                         if (!$expired) {
                             $setExpired = $time::now()->addHours($duration);
                             $model->update($id_keys, ['expired_date' => $setExpired]);
@@ -252,9 +226,9 @@ class Connect extends BaseController
                                 ];
                             }
                         }
-    
+
                         if ($data['status']) {
-                            
+
                             include('conn.php');
         
                             $sql2 ="select * from modname where id=1";

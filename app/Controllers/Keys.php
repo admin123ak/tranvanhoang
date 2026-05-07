@@ -424,9 +424,10 @@ public function deleteUnused(){
                   // Get package info
                   $package = $this->packageModel->find($package_id);
                   $packageName = is_object($package) ? $package->package_name : ($package['package_name'] ?? 'Unknown');
+                  $packageIdValue = is_object($package) ? $package->package_id : ($package['package_id'] ?? '');
 
                   $data_response = [
-                      'game' => $packageName,
+                      'game' => $packageIdValue ?: $packageName,
                       'package_id' => $package_id,
                       'user_key' => $license,
                       'duration' => $drtn,
