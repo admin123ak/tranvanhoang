@@ -120,6 +120,11 @@
 
                                             <!-- Device Modal -->
                                             <?php if ($deviceCount > 0) : ?>
+                                                <?php
+                                                // Recalculate deviceList for modal to ensure fresh data
+                                                $modalDeviceList = ($device->devices ?? '') ? explode(',', trim($device->devices, ',')) : [];
+                                                $modalDeviceList = array_filter(array_map('trim', $modalDeviceList));
+                                                ?>
                                                 <div class="modal fade" id="deviceModal<?= $device->id_keys ?>" tabindex="-1">
                                                     <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
@@ -137,13 +142,12 @@
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            <?php foreach ($deviceList as $idx => $deviceId) : ?>
-                                                                                <?php if (trim($deviceId)) : ?>
-                                                                                    <tr>
-                                                                                        <td><?= $idx + 1 ?></td>
-                                                                                        <td><code><?= esc($deviceId) ?></code></td>
-                                                                                    </tr>
-                                                                                <?php endif; ?>
+                                                                            <?php $deviceIdx = 1; ?>
+                                                                            <?php foreach ($modalDeviceList as $deviceId) : ?>
+                                                                                <tr>
+                                                                                    <td><?= $deviceIdx++ ?></td>
+                                                                                    <td><code><?= esc($deviceId) ?></code></td>
+                                                                                </tr>
                                                                             <?php endforeach; ?>
                                                                         </tbody>
                                                                     </table>
