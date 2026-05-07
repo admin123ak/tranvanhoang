@@ -21,26 +21,26 @@ class Keys extends BaseController
         $this->time = new \CodeIgniter\I18n\Time;
 
         $this->duration = [
-            2 => '2 Hours &mdash; ₹10/Device',
-            5 => '5 Hours &mdash; ₹25/Device',
-            24 => '1 Days &mdash; ₹75/Device',
-            72 => '3 Days &mdash; ₹150/Device',
-            168 => '7 Days &mdash; ₹300/Device',
-            336 => '14 Days &mdash; ₹600/Device',
-            720 => '30 Days &mdash; ₹1000/Device',
-            1440 => '60 Days &mdash; ₹1800/Device',
+            2 => '2 Hours &mdash; 10.000₫/Device',
+            5 => '5 Hours &mdash; 25.000₫/Device',
+            24 => '1 Days &mdash; 75.000₫/Device',
+            72 => '3 Days &mdash; 150.000₫/Device',
+            168 => '7 Days &mdash; 300.000₫/Device',
+            336 => '14 Days &mdash; 600.000₫/Device',
+            720 => '30 Days &mdash; 1.000.000₫/Device',
+            1440 => '60 Days &mdash; 1.800.000₫/Device',
 
         ];
 
         $this->price = [
-            2 => 10,
-            5 => 25,
-            24 => 75,
-            72 => 150,
-            168 => 300,
-            336 => 600,
-            720 => 1000,
-            1440 => 1800,
+            2 => 10000,
+            5 => 25000,
+            24 => 75000,
+            72 => 150000,
+            168 => 300000,
+            336 => 600000,
+            720 => 1000000,
+            1440 => 1800000,
         ];
     }
 
@@ -305,7 +305,7 @@ public function deleteUnused(){
         $user = $this->user;
         $validation = Services::validation();
 
-        $message = setMessage("<i class='bi bi-wallet'></i> Total Saldo - ₹ $user->saldo");
+        $message = setMessage("<i class='bi bi-wallet'></i> Total Saldo - " . number_format($user->saldo, 0, ',', '.') . "₫");
         if ($user->saldo <= 0) {
             $message = setMessage("Please top up to your beloved admin.", 'warning');
         }

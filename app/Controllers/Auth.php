@@ -163,7 +163,7 @@ class Auth extends BaseController
             $ids = $this->userModel->insert($data_register, true);
             if ($ids) {
                 $mCode->useReferral($referral);
-                $msg = "Register Successfully! You received ₹{$rCheck->set_saldo} bonus.";
+                $msg = "Register Successfully! You received " . number_format($rCheck->set_saldo, 0, ',', '.') . "₫ bonus.";
                 return redirect()->to('login')->with('msgSuccess', $msg);
             }
         } else {

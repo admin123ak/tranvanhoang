@@ -112,6 +112,13 @@
 
             <li class="sidebar-title">Account</li>
 
+            <li class="sidebar-item <?= (uri_string() == 'recharge') ? 'active' : '' ?>">
+                <a href="<?= site_url('recharge') ?>" class='sidebar-link'>
+                    <i class="bi bi-wallet2"></i>
+                    <span>Recharge</span>
+                </a>
+            </li>
+
             <li class="sidebar-item <?= (uri_string() == 'settings') ? 'active' : '' ?>">
                 <a href="<?= site_url('settings') ?>" class='sidebar-link'>
                     <i class="bi bi-gear-fill"></i>

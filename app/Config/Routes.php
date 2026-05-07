@@ -53,6 +53,13 @@ $routes->match(['get', 'post'], 'New', 'Home::index');
 //$routes->get('server', 'User::server');
 //
 
+// Recharge routes
+$routes->get('recharge', 'Recharge::index');
+$routes->post('recharge/create', 'Recharge::createInvoice');
+$routes->get('recharge/payment/(:any)', 'Recharge::payment/$1');
+$routes->get('recharge/check/(:any)', 'Recharge::checkPayment/$1');
+$routes->get('recharge/auto-check', 'Recharge::autoCheck');
+
 $routes->group('keys', function ($routes) {
 	$routes->match(['get', 'post'], '/', 'Keys::index');
 	$routes->match(['get', 'post'], 'generate', 'Keys::generate');
