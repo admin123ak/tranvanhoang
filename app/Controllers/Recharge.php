@@ -105,11 +105,18 @@ class Recharge extends BaseController
 
         // Check if expired
         $now = new \CodeIgniter\I18n\Time();
-        $expiredAt = new \CodeIgniter\I18n\Time($invoice->expired_at);
 
-        if ($now->isAfter($expiredAt) && $invoice->status == 'pending') {
-            $this->invoiceModel->update($invoice->id_invoice, ['status' => 'expired']);
-            $invoice->status = 'expired';
+        if ($invoice->expired_at) {
+            try {
+                $expiredAt = \CodeIgniter\I18n\Time::parse($invoice->expired_at);
+
+                if ($now->isAfter($expiredAt) && $invoice->status == 'pending') {
+                    $this->invoiceModel->update($invoice->id_invoice, ['status' => 'expired']);
+                    $invoice->status = 'expired';
+                }
+            } catch (\Exception $e) {
+                log_message('error', 'Failed to parse expired_at: ' . $e->getMessage());
+            }
         }
 
         $data = [
@@ -150,15 +157,22 @@ class Recharge extends BaseController
 
         // Check if expired
         $now = new \CodeIgniter\I18n\Time();
-        $expiredAt = new \CodeIgniter\I18n\Time($invoice->expired_at);
 
-        if ($now->isAfter($expiredAt)) {
-            $this->invoiceModel->update($invoice->id_invoice, ['status' => 'expired']);
-            return $this->response->setJSON([
-                'success' => false,
-                'status' => 'expired',
-                'message' => 'Invoice expired'
-            ]);
+        if ($invoice->expired_at) {
+            try {
+                $expiredAt = \CodeIgniter\I18n\Time::parse($invoice->expired_at);
+
+                if ($now->isAfter($expiredAt)) {
+                    $this->invoiceModel->update($invoice->id_invoice, ['status' => 'expired']);
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'status' => 'expired',
+                        'message' => 'Invoice expired'
+                    ]);
+                }
+            } catch (\Exception $e) {
+                log_message('error', 'Failed to parse expired_at in checkPayment: ' . $e->getMessage());
+            }
         }
 
         // Call MBBank API to check
