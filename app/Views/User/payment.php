@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>Thanh toán hóa đơn</h3>
-                <p class="text-subtitle text-muted">Mã hóa đơn: <strong><?= esc($invoice->invoice_code) ?></strong></p>
+                <p class="text-subtitle text-muted">Mã hóa đơn: <strong><?= isset($invoice) ? esc($invoice->invoice_code) : 'N/A' ?></strong></p>
             </div>
         </div>
     </div>
@@ -14,7 +14,13 @@
     <section class="section">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-8">
-                <?php if ($invoice->status == 'expired'): ?>
+                <?php if (!isset($invoice)): ?>
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading"><i class="bi bi-x-circle"></i> Lỗi</h5>
+                        <p>Không tìm thấy hóa đơn.</p>
+                        <a href="<?= site_url('recharge') ?>" class="btn btn-primary">Quay lại</a>
+                    </div>
+                <?php elseif ($invoice->status == 'expired'): ?>
                     <div class="alert alert-danger">
                         <h5 class="alert-heading"><i class="bi bi-x-circle"></i> Hóa đơn đã hết hạn</h5>
                         <p>Hóa đơn này đã hết hạn. Vui lòng tạo hóa đơn mới.</p>
