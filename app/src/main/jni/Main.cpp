@@ -588,7 +588,9 @@ Java_com_android_support_TechnicalAkash1_Check(JNIEnv *env, jclass clazz, jobjec
                         g_ModName = result["data"]["modname"].get<std::string>();
                         g_ModStatus = result["data"]["mod_status"].get<std::string>();
                         g_Credit = result["data"]["credit"].get<std::string>();
-                        g_MaxDevice = result["data"]["device"].get<int>();
+                        // "device" comes as string from server, convert to int
+                        auto devField = result["data"]["device"];
+                        g_MaxDevice = devField.is_string() ? std::stoi(devField.get<std::string>()) : devField.get<int>();
                         g_ExpiryDate = result["data"]["EXP"].get<std::string>();
 
                         bValid = g_Token == g_Auth;
