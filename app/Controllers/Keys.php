@@ -401,9 +401,10 @@ public function deleteUnused(){
 
                   // Get package info
                   $package = $this->packageModel->find($package_id);
+                  $packageName = is_object($package) ? $package->package_name : ($package['package_name'] ?? 'Unknown');
 
                   $data_response = [
-                      'game' => $package->package_name,
+                      'game' => $packageName,
                       'package_id' => $package_id,
                       'user_key' => $license,
                       'duration' => $drtn,
@@ -420,7 +421,7 @@ public function deleteUnused(){
                   $history->insert([
                       'keys_id' => $idKeys,
                       'user_do' => $user->username,
-                      'info' => $package->package_name . "|" . substr($license, 0, 5) . "|$drtn|$maxd"
+                      'info' => $packageName . "|" . substr($license, 0, 5) . "|$drtn|$maxd"
                   ]);
 
                   $other_response = [
