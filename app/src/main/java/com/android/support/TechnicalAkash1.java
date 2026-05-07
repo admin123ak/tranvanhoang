@@ -16,7 +16,6 @@ import android.text.InputType;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import com.android.support.Menu;
 
 @SuppressWarnings("all")
@@ -47,13 +46,8 @@ public class TechnicalAkash1 {
 
             mainLayout.addView(input);
 
-            String modName = GetModName();
-            if (modName == null || modName.isEmpty()) {
-                modName = "KEY FREE ĐỔI SAU 24H";
-            }
-
             AlertDialog.Builder builder = new AlertDialog.Builder(m_Context, 5);
-            builder.setTitle(modName);
+            builder.setTitle("KEY FREE ĐỔI SAU 24H");
             builder.setCancelable(false);
             builder.setView(mainLayout);
 
@@ -98,13 +92,6 @@ public class TechnicalAkash1 {
             public void handleMessage(Message msg) {
                 if (msg.what == 0) {
                     m_Prefs.edit().putString("USER_KEY", userKey).apply();
-
-                    // Show mod status toast
-                    String modStatus = GetModStatus();
-                    if (modStatus != null && !modStatus.isEmpty()) {
-                        String toastMsg = modStatus.equalsIgnoreCase("on") ? "MOD STATUS: SAFE ✓" : "MOD STATUS: UNSAFE ⚠";
-                        Toast.makeText(m_Context, toastMsg, Toast.LENGTH_LONG).show();
-                    }
 
                     Intent i = new Intent(m_Context.getApplicationContext(), Launcher.class);
                     m_Context.startService(i);
@@ -162,6 +149,4 @@ public class TechnicalAkash1 {
             }).start();
     }
     private static native String Check(Context mContext, String userKey);
-    private static native String GetModName();
-    private static native String GetModStatus();
 }

@@ -180,19 +180,6 @@ class Connect extends BaseController
                         return $this->response->setJSON($data);
                     }
 
-                    // ? Check package còn tồn tại và active trong bảng packages
-                    if ($findKey->package_id !== null) {
-                        $pkgModel = new \App\Models\PackageModel();
-                        $pkg = $pkgModel->find($findKey->package_id);
-                        if (!$pkg || (isset($pkg->status) && $pkg->status != 1)) {
-                            $data = [
-                                'status' => false,
-                                'reason' => 'PACKAGE DISABLED OR DELETED'
-                            ];
-                            return $this->response->setJSON($data);
-                        }
-                    }
-
                     if ($findKey->status != 1) {
                         $data = [
                             'status' => false,
