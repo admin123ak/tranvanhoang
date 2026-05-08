@@ -172,26 +172,34 @@ function checkPayment() {
 }
 
 // Countdown timer
-const expiredAt = new Date('<?= $invoice->expired_at ?>').getTime();
+const expiredAtStr = '<?= $invoice->expired_at ?>';
+const expiredAt = expiredAtStr ? new Date(expiredAtStr).getTime() : 0;
+let hasReloaded = false;
 
-function updateCountdown() {
-    const now = new Date().getTime();
-    const distance = expiredAt - now;
+if (expiredAt > 0 && !isNaN(expiredAt)) {
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = expiredAt - now;
 
-    if (distance < 0) {
-        document.getElementById('countdown').innerHTML = 'Đã hết hạn';
-        location.reload();
-        return;
+        if (distance < 0 && !hasReloaded) {
+            hasReloaded = true;
+            document.getElementById('countdown').innerHTML = 'Đã hết hạn';
+            setTimeout(() => location.reload(), 2000);
+            return;
+        }
+
+        if (distance > 0) {
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            document.getElementById('countdown').innerHTML = minutes + ' phút ' + seconds + ' giây';
+        }
     }
 
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    document.getElementById('countdown').innerHTML = minutes + ' phút ' + seconds + ' giây';
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+} else if (document.getElementById('countdown')) {
+    document.getElementById('countdown').innerHTML = '—';
 }
-
-updateCountdown();
-setInterval(updateCountdown, 1000);
 </script>
 
 <?= $this->endSection() ?>
