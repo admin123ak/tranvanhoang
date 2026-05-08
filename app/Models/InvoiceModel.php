@@ -9,6 +9,7 @@ class InvoiceModel extends Model
     protected $table      = 'invoices';
     protected $primaryKey = 'id_invoice';
     protected $allowedFields = ['user_id', 'invoice_code', 'amount', 'status', 'payment_method', 'expired_at'];
+    protected $returnType = 'object';
     protected $useTimestamps = true;
 
     public function generateInvoiceCode()

@@ -126,7 +126,7 @@ class Recharge extends BaseController
         $data = [
             'title' => 'Payment',
             'user' => $this->user,
-            'invoice' => $invoice,
+            'invoice' => (object) $invoice,
         ];
 
         return view('User/payment', $data);
