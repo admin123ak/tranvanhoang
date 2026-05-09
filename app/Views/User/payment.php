@@ -81,10 +81,15 @@
                                 <div class="col-md-6 text-center">
                                     <h6>Quét mã QR để thanh toán</h6>
                                     <div class="mb-3">
-                                        <img src="https://img.vietqr.io/image/MB-0868641019-compact2.png?amount=<?= $invoice->amount ?>&addInfo=<?= urlencode($invoice->invoice_code) ?>&accountName=TRAN%20VAN%20HOANG"
+                                        <img src="https://api.vietqr.io/image/MB-0868641019-compact.jpg?amount=<?= $invoice->amount ?>&addInfo=<?= urlencode($invoice->invoice_code) ?>&accountName=TRAN%20VAN%20HOANG"
                                              alt="QR Code"
                                              class="img-fluid border rounded"
-                                             style="max-width: 300px;">
+                                             style="max-width: 300px;"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                        <div style="display:none; padding: 40px; background: #f8f9fa; border-radius: 8px; margin: 0 auto; max-width: 300px;">
+                                            <i class="ti ti-qrcode fs-1 text-muted"></i>
+                                            <p class="text-muted mt-2">Mã QR MBBank</p>
+                                        </div>
                                     </div>
                                     <p class="text-muted">
                                         <small>Sử dụng ứng dụng ngân hàng để quét mã QR và thực hiện thanh toán</small>
@@ -105,11 +110,12 @@
                             </div>
 
                             <div class="text-center">
-                                <p class="text-muted mb-3">Hoàn thành thanh toán trước, sau đó nhấn nút bên dưới để kiểm tra trạng thái</p>
-                                <button type="button" class="btn btn-success btn-lg" id="checkPaymentBtn" onclick="checkPayment()">
-                                    <i class="ti ti-refresh"></i> Kiểm tra thanh toán
-                                </button>
-                                <div id="paymentStatus" class="mt-3"></div>
+                                <div id="paymentStatus" class="mt-3">
+                                    <div class="alert alert-info">
+                                        <div class="spinner-border spinner-border-sm me-2"></div>
+                                        <span>Đang chờ thanh toán...</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -126,12 +132,10 @@ function copyContent(text) {
     });
 }
 
-function checkPayment() {
-    const btn = document.getElementById('checkPaymentBtn');
-    const statusDiv = document.getElementById('paymentStatus');
+let checkInterval = null;
 
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang kiểm tra...';
+function checkPayment() {
+    const statusDiv = document.getElementById('paymentStatus');
 
     fetch('<?= site_url("recharge/check/" . $invoice->invoice_code) ?>')
         .then(response => response.json())
@@ -143,29 +147,42 @@ function checkPayment() {
                         <p>Số dư mới: <strong>${data.new_balance}</strong></p>
                     </div>
                 `;
+                if (checkInterval) {
+                    clearInterval(checkInterval);
+                }
                 setTimeout(() => {
                     window.location.href = '<?= site_url("recharge") ?>';
                 }, 2000);
+            } else if (data.status === 'expired') {
+                statusDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="ti ti-circle-x"></i> ${data.message}
+                    </div>
+                `;
+                if (checkInterval) {
+                    clearInterval(checkInterval);
+                }
             } else {
                 statusDiv.innerHTML = `
                     <div class="alert alert-info">
-                        <i class="ti ti-info-circle"></i> ${data.message}
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        <span>${data.message}</span>
                     </div>
                 `;
-                btn.disabled = false;
-                btn.innerHTML = '<i class="ti ti-refresh"></i> Kiểm tra lại';
             }
         })
         .catch(error => {
             statusDiv.innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="ti ti-circle-x"></i> Lỗi kết nối. Vui lòng thử lại.
+                <div class="alert alert-warning">
+                    <i class="ti ti-alert-triangle"></i> Đang kiểm tra lại...
                 </div>
             `;
-            btn.disabled = false;
-            btn.innerHTML = '<i class="ti ti-refresh"></i> Kiểm tra lại';
         });
 }
+
+// Auto check every 10 seconds
+checkPayment();
+checkInterval = setInterval(checkPayment, 10000);
 
 // Countdown timer
 <?php
@@ -183,8 +200,15 @@ if (expiredAt > 0) {
 
         if (distance < 0) {
             document.getElementById('countdown').innerHTML = 'Đã hết hạn';
-            document.getElementById('checkPaymentBtn').disabled = true;
-            document.getElementById('checkPaymentBtn').innerHTML = '<i class="ti ti-clock-x"></i> Đã hết hạn';
+            if (checkInterval) {
+                clearInterval(checkInterval);
+            }
+            const statusDiv = document.getElementById('paymentStatus');
+            statusDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="ti ti-circle-x"></i> Hóa đơn đã hết hạn
+                </div>
+            `;
             return;
         }
 
