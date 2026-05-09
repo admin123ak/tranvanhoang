@@ -44,6 +44,18 @@ class Getkey extends BaseController
             return redirect()->back()->with('msgDanger', 'GetKey service is currently unavailable');
         }
 
+        // Check IP limit: 1 key per 24 hours
+        $userIp = $this->request->getIPAddress();
+        $generatedKeyModel = new GeneratedKeyModel();
+        $recentKey = $generatedKeyModel
+            ->where('ip_address', $userIp)
+            ->where('created_at >=', date('Y-m-d H:i:s', strtotime('-24 hours')))
+            ->first();
+
+        if ($recentKey) {
+            return redirect()->back()->with('msgDanger', 'Bạn đã nhận key rồi. Vui lòng quay lại sau 24 giờ.');
+        }
+
         // If YeuMoney token exists, create shortened link
         if ($config->youmoney_token) {
             $callbackUrl = base_url('getkey/create-key');
@@ -85,6 +97,18 @@ class Getkey extends BaseController
 
         if (!$config || $config->status != 1) {
             return redirect()->to('getkey')->with('msgDanger', 'GetKey service is currently unavailable');
+        }
+
+        // Check IP limit: 1 key per 24 hours
+        $generatedKeyModel = new GeneratedKeyModel();
+        $userIp = $this->request->getIPAddress();
+        $recentKey = $generatedKeyModel
+            ->where('ip_address', $userIp)
+            ->where('created_at >=', date('Y-m-d H:i:s', strtotime('-24 hours')))
+            ->first();
+
+        if ($recentKey) {
+            return redirect()->to('getkey')->with('msgDanger', 'Bạn đã nhận key rồi. Vui lòng quay lại sau 24 giờ.');
         }
 
         // Get admin account
