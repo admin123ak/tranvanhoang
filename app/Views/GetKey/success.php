@@ -5,9 +5,9 @@
 <div class="page-heading">
     <div class="page-title">
         <div class="row">
-            <div class="col-12">
-                <h3>Key Created Successfully</h3>
-                <p class="text-subtitle text-muted">Your key has been generated and is ready to use</p>
+            <div class="col-12 text-center">
+                <h3>Key Created Successfully!</h3>
+                <p class="text-subtitle text-muted">Key của bạn đã sẵn sàng sử dụng</p>
             </div>
         </div>
     </div>
@@ -27,7 +27,7 @@
                         <div class="key-display mb-4">
                             <div class="input-group">
                                 <input type="text" class="form-control form-control-lg text-center fw-bold"
-                                       value="<?= esc($key->user_key) ?>" id="generatedKey" readonly
+                                       value="<?= esc($key['user_key']) ?>" id="generatedKey" readonly
                                        style="font-size: 1.5rem; letter-spacing: 3px;">
                                 <button class="btn btn-primary px-4" type="button" onclick="copyKey()">
                                     <i class="ti ti-copy me-1"></i> Copy
@@ -38,37 +38,39 @@
                         <div class="row g-3 mb-4 text-start">
                             <div class="col-6">
                                 <div class="info-box">
-                                    <small class="text-muted d-block">Duration</small>
-                                    <strong><?= $key->duration ?> Hours</strong>
+                                    <small class="text-muted d-block">Thời hạn</small>
+                                    <strong><?= $key['duration'] ?> Giờ</strong>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="info-box">
-                                    <small class="text-muted d-block">Max Devices</small>
-                                    <strong><?= $key->max_devices ?></strong>
+                                    <small class="text-muted d-block">Thiết bị</small>
+                                    <strong><?= $key['max_devices'] ?></strong>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="info-box">
                                     <small class="text-muted d-block">Game</small>
-                                    <strong><?= esc($key->game) ?></strong>
+                                    <strong><?= esc($key['game']) ?></strong>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="info-box">
-                                    <small class="text-muted d-block">Created</small>
+                                    <small class="text-muted d-block">Ngày tạo</small>
                                     <strong><?= date('d/m/Y H:i') ?></strong>
                                 </div>
                             </div>
                         </div>
 
                         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                            <a href="<?= site_url('getkey') ?>" class="btn btn-outline-primary px-4">
-                                <i class="ti ti-arrow-left me-1"></i> Get Another Key
+                            <a href="<?= site_url('get/' . $link->slug) ?>" class="btn btn-outline-primary px-4">
+                                <i class="ti ti-arrow-left me-1"></i> Tạo Key Khác
                             </a>
-                            <a href="<?= site_url('keys') ?>" class="btn btn-primary px-4">
-                                <i class="ti ti-list-check me-1"></i> View All Keys
-                            </a>
+                            <?php if (session()->get('userid')) : ?>
+                                <a href="<?= site_url('keys') ?>" class="btn btn-primary px-4">
+                                    <i class="ti ti-list-check me-1"></i> Xem Tất Cả Key
+                                </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

@@ -2,59 +2,67 @@
 
 namespace App\Controllers;
 
-use App\Models\ApiConfigModel;
+use App\Models\GetkeyLinkModel;
 use App\Models\UserModel;
 use App\Models\KeysModel;
 use App\Models\HistoryModel;
+use App\Models\PackageModel;
 
 class GetKey extends BaseController
 {
-    public function index()
+    /**
+     * Public page: /get/{slug}
+     * User just clicks "Get Key" - no input needed
+     */
+    public function index($slug)
     {
-        $configModel = new ApiConfigModel();
-        $configs = $configModel->getActiveConfigs();
+        $linkModel = new GetkeyLinkModel();
+        $link = $linkModel->getLinkBySlug($slug);
+
+        if (!$link) {
+            return redirect()->to('login')->with('msgDanger', 'Link not found or inactive');
+        }
 
         $data = [
             'title' => 'Get Key',
-            'configs' => $configs,
+            'link' => $link,
         ];
 
         return view('GetKey/index', $data);
     }
 
     /**
-     * Auto create key - no input needed
-     * Just click and get key
+     * POST: /getkey/create/{slug}
+     * Auto create key - no user input needed
      */
-    public function createKey($configId)
+    public function createKey($slug)
     {
-        // Get config
-        $configModel = new ApiConfigModel();
-        $config = $configModel->find($configId);
+        $linkModel = new GetkeyLinkModel();
+        $link = $linkModel->getLinkBySlug($slug);
 
-        if (!$config || $config->status != 1) {
-            return redirect()->back()->with('msgDanger', 'Config not found or inactive');
+        if (!$link || $link->status != 1) {
+            return redirect()->back()->with('msgDanger', 'Link not found or inactive');
         }
 
         // Get admin account
         $userModel = new UserModel();
-        $adminUser = $userModel->where('username', $config->admin_account)->first();
+        $adminUser = $userModel->where('username', $link->admin_account)->first();
 
         if (!$adminUser) {
             return redirect()->back()->with('msgDanger', 'Admin account not found');
         }
 
-        // Calculate price
-        $totalPrice = $config->max_hours * $config->price_per_hour;
+        // Calculate price (free if price_per_hour = 0)
+        $totalPrice = $link->max_hours * $link->price_per_hour;
 
-        // Check balance
-        if ($adminUser->saldo < $totalPrice) {
-            return redirect()->back()->with('msgDanger', 'Insufficient admin balance. Required: ' . number_format($totalPrice) . ' VND');
+        // Check balance (skip if free)
+        if ($totalPrice > 0 && $adminUser->saldo < $totalPrice) {
+            return redirect()->back()->with('msgDanger', 'Insufficient admin balance');
         }
 
         // Get package info
-        $packageModel = new \App\Models\PackageModel();
-        $package = $packageModel->find($config->package_id);
+        $packageModel = new PackageModel();
+        $package = $packageModel->find($link->package_id);
 
         if (!$package) {
             return redirect()->back()->with('msgDanger', 'Package not found');
@@ -70,13 +78,13 @@ class GetKey extends BaseController
         // Create key
         $keyData = [
             'game' => $pkgCode,
-            'package_id' => $config->package_id,
+            'package_id' => $link->package_id,
             'user_key' => $userKey,
-            'duration' => $config->max_hours,
-            'max_devices' => $config->max_devices,
+            'duration' => $link->max_hours,
+            'max_devices' => $link->max_devices,
             'devices' => null,
             'status' => 1,
-            'registrator' => $config->admin_account
+            'registrator' => $link->admin_account
         ];
 
         $keyId = $keysModel->insert($keyData, true);
@@ -85,50 +93,37 @@ class GetKey extends BaseController
             return redirect()->back()->with('msgDanger', 'Failed to create key');
         }
 
-        // Deduct balance
-        $newBalance = $adminUser->saldo - $totalPrice;
-        $userModel->update($adminUser->id, ['saldo' => $newBalance]);
+        // Deduct balance (if not free)
+        if ($totalPrice > 0) {
+            $newBalance = $adminUser->saldo - $totalPrice;
+            $userModel->update($adminUser->id, ['saldo' => $newBalance]);
+        }
+
+        // Update total keys created
+        $linkModel->update($link->id, ['total_keys_created' => $link->total_keys_created + 1]);
 
         // Save history
         $historyModel = new HistoryModel();
         $historyInfo = implode('|', [
             $pkgName,
             $userKey,
-            $config->max_hours,
-            $config->max_devices,
-            '' // expired_date set when key is first used
+            $link->max_hours,
+            $link->max_devices,
+            ''
         ]);
 
         $historyModel->insert([
             'keys_id' => $keyId,
-            'user_do' => $config->admin_account,
+            'user_do' => $link->admin_account,
             'info' => $historyInfo
         ]);
 
-        // Show success with key
-        return redirect()->to('getkey/key-success/' . $userKey);
-    }
-
-    /**
-     * Display created key
-     */
-    public function keySuccess($key)
-    {
-        $keysModel = new KeysModel();
-        $keyData = $keysModel->getKeys($key, 'user_key');
-
-        if (!$keyData) {
-            return redirect()->to('getkey')->with('msgDanger', 'Key not found');
-        }
-
-        $packageModel = new \App\Models\PackageModel();
-        $package = $packageModel->find($keyData->package_id);
-        $pkgName = $package ? (is_object($package) ? ($package->package_name ?? 'Unknown') : ($package['package_name'] ?? 'Unknown')) : 'Unknown';
-
+        // Show success page
         $data = [
             'title' => 'Key Created',
             'key' => $keyData,
             'packageName' => $pkgName,
+            'link' => $link,
         ];
 
         return view('GetKey/success', $data);

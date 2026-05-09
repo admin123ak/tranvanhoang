@@ -57,26 +57,19 @@
         </li>
 
         <li>
-            <a class="nav-link <?= (strpos(uri_string(), 'admin/api-tokens') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/api-tokens') ?>">
-                <i class="ti ti-key"></i>
-                <span class="nav-text">API Tokens</span>
-            </a>
-        </li>
-
-        <li>
-            <a class="nav-link <?= (strpos(uri_string(), 'admin/api-config') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/api-config') ?>">
-                <i class="ti ti-settings"></i>
-                <span class="nav-text">API Config</span>
+            <a class="nav-link <?= (strpos(uri_string(), 'admin/getkey-links') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/getkey-links') ?>">
+                <i class="ti ti-link"></i>
+                <span class="nav-text">GetKey Links</span>
             </a>
         </li>
 
         <li class="has-sub">
-            <a class="nav-link <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'api-tokens') === false && strpos(uri_string(), 'api-config') === false) ? 'active' : '' ?>" href="javascript:void(0)">
+            <a class="nav-link <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'getkey-links') === false) ? 'active' : '' ?>" href="javascript:void(0)">
                 <i class="ti ti-shield-lock"></i>
                 <span class="nav-text">Admin</span>
                 <i class="ti ti-chevron-down ms-auto submenu-arrow"></i>
             </a>
-            <ul class="submenu <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'api-tokens') === false && strpos(uri_string(), 'api-config') === false) ? 'active show' : '' ?>">
+            <ul class="submenu <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'getkey-links') === false) ? 'active show' : '' ?>">
                 <li>
                     <a class="nav-link <?= (uri_string() == 'admin/manage-users') ? 'active' : '' ?>" href="<?= site_url('admin/manage-users') ?>">
                         <span class="nav-text">Manage Users</span>
@@ -90,13 +83,6 @@
             </ul>
         </li>
         <?php endif; ?>
-
-        <li>
-            <a class="nav-link <?= (uri_string() == 'getkey') ? 'active' : '' ?>" href="<?= site_url('getkey') ?>">
-                <i class="ti ti-bolt"></i>
-                <span class="nav-text">Get Key</span>
-            </a>
-        </li>
 
         <li class="px-4 pt-4 pb-2"><small class="nav-text">Developer</small></li>
 
