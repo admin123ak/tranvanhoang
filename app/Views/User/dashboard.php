@@ -4,7 +4,7 @@
 <style>
 .stat-card {
     border: none;
-    border-radius: 12px;
+    border-radius: 20px;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 .stat-card:hover {
@@ -12,13 +12,13 @@
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 .stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 28px;
     color: #fff;
 }
 .quick-action-btn {
@@ -105,9 +105,9 @@
 </div>
 
 <!-- Stats Row -->
-<div class="row g-3 mb-3">
+<div class="row g-3 mb-4">
     <!-- Saldo -->
-    <div class="col-xl-3 col-md-6">
+    <div class="col-md-6">
         <div class="card stat-card">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center">
@@ -124,7 +124,7 @@
     </div>
 
     <!-- Active Keys -->
-    <div class="col-xl-3 col-md-6">
+    <div class="col-md-6">
         <div class="card stat-card">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center">
@@ -141,7 +141,7 @@
     </div>
 
     <!-- Devices -->
-    <div class="col-xl-3 col-md-6">
+    <div class="col-md-6">
         <div class="card stat-card">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center">
@@ -158,7 +158,7 @@
     </div>
 
     <!-- Expired Keys -->
-    <div class="col-xl-3 col-md-6">
+    <div class="col-md-6">
         <div class="card stat-card">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center">
