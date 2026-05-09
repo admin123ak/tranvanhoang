@@ -1,8 +1,7 @@
 <?= $this->extend('Layout/Master') ?>
 
 <?= $this->section('styles') ?>
-<link rel="stylesheet" href="<?= base_url('assets/extensions/simple-datatables/style.css') ?>">
-<link rel="stylesheet" href="<?= base_url('assets/compiled/css/table-datatable.css') ?>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>

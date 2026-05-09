@@ -17,7 +17,7 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
  * --------------------------------------------------------------------
  */
 $routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('Home');
+$routes->setDefaultController('Auth');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
@@ -46,12 +46,6 @@ $routes->match(['get', 'post'], 'Server', 'User::Server');
 
 // API Documentation
 $routes->get('api-docs', 'Docs::api');
-
-//
-//testing
-$routes->match(['get', 'post'], 'New', 'Home::index');
-//$routes->get('server', 'User::server');
-//
 
 // Recharge routes
 $routes->get('recharge', 'Recharge::index');
