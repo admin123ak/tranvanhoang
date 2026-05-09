@@ -83,6 +83,7 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 	$routes->post('getkey-links/create', 'GetkeyLinks::create');
 	$routes->get('getkey-links/delete/(:num)', 'GetkeyLinks::delete/$1');
 	$routes->get('getkey-links/toggle/(:num)', 'GetkeyLinks::toggle/$1');
+	$routes->get('getkey-links/reshorten/(:num)', 'GetkeyLinks::reshorten/$1');
 
 	/* --------------------------- Admin API Grouping -------------------------- */
 	$routes->group('api', function ($routes) {

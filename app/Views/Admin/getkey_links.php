@@ -137,6 +137,7 @@
                                     <thead>
                                         <tr>
                                             <th>Tên</th>
+                                            <th>Short Link (YeuMoney)</th>
                                             <th>Admin</th>
                                             <th>Package</th>
                                             <th>Giá/H</th>
@@ -152,9 +153,22 @@
                                             <tr>
                                                 <td>
                                                     <strong><?= esc($link->name) ?></strong><br>
-                                                    <a href="<?= site_url('get/' . $link->slug) ?>" target="_blank" class="text-primary small">
-                                                        <i class="ti ti-external-link"></i> <?= base_url('get/' . $link->slug) ?>
-                                                    </a>
+                                                    <small class="text-muted"><i class="ti ti-link"></i> /get/<?= esc($link->slug) ?></small>
+                                                </td>
+                                                <td>
+                                                    <?php if ($link->short_url) : ?>
+                                                        <a href="<?= esc($link->short_url) ?>" target="_blank" class="text-success fw-semibold small">
+                                                            <i class="ti ti-external-link"></i> <?= esc($link->short_url) ?>
+                                                        </a><br>
+                                                        <div class="input-group input-group-sm mt-1" style="max-width:250px;">
+                                                            <input type="text" class="form-control form-control-sm" value="<?= esc($link->short_url) ?>" id="shortUrl-<?= $link->id ?>" readonly>
+                                                            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="copyText('shortUrl-<?= $link->id ?>')">
+                                                                <i class="ti ti-copy"></i>
+                                                            </button>
+                                                        </div>
+                                                    <?php else : ?>
+                                                        <span class="text-muted small">No short URL</span>
+                                                    <?php endif; ?>
                                                 </td>
                                                 <td><code><?= esc($link->admin_account) ?></code></td>
                                                 <td><span class="badge bg-secondary"><?= esc($link->package_name ?? $link->package_id) ?></span></td>
@@ -170,6 +184,12 @@
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
+                                                    <?php if ($link->youmoney_token) : ?>
+                                                        <a href="<?= site_url('admin/getkey-links/reshorten/' . $link->id) ?>"
+                                                           class="btn btn-sm btn-info mb-1" title="Re-shorten URL">
+                                                            <i class="ti ti-refresh"></i>
+                                                        </a>
+                                                    <?php endif; ?>
                                                     <a href="<?= site_url('admin/getkey-links/toggle/' . $link->id) ?>"
                                                        class="btn btn-sm btn-warning mb-1" title="Toggle">
                                                         <i class="ti ti-toggle-<?= $link->status == 1 ? 'right' : 'left' ?>"></i>
@@ -198,4 +218,17 @@
     </section>
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('js') ?>
+<script>
+function copyText(elementId) {
+    const input = document.getElementById(elementId);
+    input.select();
+    input.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(input.value).then(function() {
+        alert('Copied!');
+    });
+}
+</script>
 <?= $this->endSection() ?>

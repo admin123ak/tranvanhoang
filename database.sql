@@ -157,6 +157,7 @@ CREATE TABLE IF NOT EXISTS `getkey_links` (
   `max_hours` int DEFAULT 720 COMMENT 'Số giờ tối đa mỗi key',
   `max_devices` int DEFAULT 1 COMMENT 'Số thiết bị tối đa mỗi key',
   `youmoney_token` varchar(255) DEFAULT NULL COMMENT 'API Token YouMoney (tùy chọn)',
+  `short_url` varchar(500) DEFAULT NULL COMMENT 'YeuMoney shortened URL',
   `status` tinyint(1) DEFAULT 1 COMMENT '1=active, 0=inactive',
   `total_keys_created` int DEFAULT 0 COMMENT 'Tổng số key đã tạo từ link này',
   `created_at` datetime DEFAULT NULL,

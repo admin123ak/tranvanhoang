@@ -2,6 +2,12 @@
 
 <?= $this->section('content') ?>
 
+<?php
+    $step = service('request')->getGet('step');
+    $isVerified = ($step === 'done');
+    $yeuMoneyUrl = $link->short_url ?: null;
+?>
+
 <div class="page-heading">
     <div class="page-title">
         <div class="row">
@@ -66,42 +72,67 @@
 
                 <!-- Step Card -->
                 <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-3 text-center">
-                            <i class="ti ti-steps me-2"></i> Nhận Key
+                    <div class="card-header py-3">
+                        <h5 class="mb-0">
+                            <i class="ti ti-steps me-2"></i> Các bước nhận Key
                         </h5>
-
-                        <div id="step-container">
-                            <!-- Step 1: Wait/Ad -->
-                            <div id="step-wait" class="text-center py-3">
-                                <p class="text-muted mb-3">Nhấn nút bên dưới để bắt đầu</p>
-                                <button class="btn btn-getkey btn-lg w-100" onclick="startProcess()">
-                                    <i class="ti ti-bolt me-1"></i> Bắt đầu nhận Key
-                                </button>
-                            </div>
-
-                            <!-- Step 2: Loading/Processing -->
-                            <div id="step-loading" class="text-center py-4 d-none">
-                                <div class="spinner-border text-primary mb-3" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Step 1: Go through YeuMoney link -->
+                        <div class="step-item mb-3 <?= $yeuMoneyUrl ? '' : 'd-none' ?>">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="step-number">1</div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Xem quảng cáo / Hoàn thành bước</h6>
+                                    <p class="text-muted small mb-2">Nhấn nút bên dưới để đi qua link YeuMoney</p>
+                                    <a href="<?= esc($yeuMoneyUrl) ?>?callback=<?= urlencode(site_url('get/' . $link->slug . '?step=done')) ?>"
+                                       class="btn btn-getkey" target="_blank" id="btnStep1">
+                                        <i class="ti ti-external-link me-1"></i> Đi đến Link
+                                    </a>
                                 </div>
-                                <p class="text-muted mb-1">Đang xử lý...</p>
-                                <p class="small text-muted">Vui lòng chờ trong giây lát</p>
                             </div>
+                        </div>
 
-                            <!-- Step 3: Complete, show key -->
-                            <div id="step-complete" class="text-center py-3 d-none">
-                                <div class="alert alert-success mb-3">
-                                    <i class="ti ti-check-circle me-1"></i> Hoàn tất! Key của bạn đã sẵn sàng
+                        <!-- Step 2: Loading after returning -->
+                        <div id="step-loading" class="step-item mb-3 d-none">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Đang tạo key...</h6>
+                                    <p class="text-muted small mb-0">Vui lòng chờ</p>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Get key -->
+                        <div id="step-getkey" class="step-item mb-3 <?= $isVerified ? '' : 'd-none' ?>">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="step-number step-success">2</div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Nhận Key</h6>
+                                    <p class="text-muted small mb-2">Nhấn nút bên dưới để nhận key của bạn</p>
+                                    <form action="<?= site_url('getkey/create/' . $link->slug) ?>" method="POST" id="getKeyForm">
+                                        <?= csrf_field() ?>
+                                    </form>
+                                    <button class="btn btn-success" onclick="submitKeyForm()">
+                                        <i class="ti ti-key me-1"></i> Lấy Key Ngay
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- If no YeuMoney, direct get key -->
+                        <?php if (!$yeuMoneyUrl) : ?>
+                            <div class="text-center">
+                                <p class="text-muted mb-3">Nhấn nút bên dưới để nhận key ngay</p>
                                 <form action="<?= site_url('getkey/create/' . $link->slug) ?>" method="POST" id="getKeyForm">
                                     <?= csrf_field() ?>
                                 </form>
-                                <button class="btn btn-success btn-lg w-100" onclick="submitKeyForm()">
-                                    <i class="ti ti-key me-1"></i> Lấy Key Ngay
+                                <button class="btn btn-getkey btn-lg" onclick="submitKeyForm()">
+                                    <i class="ti ti-bolt me-1"></i> Lấy Key
                                 </button>
                             </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -136,8 +167,8 @@
     background: linear-gradient(135deg, #e66239 0%, #ff8a65 100%);
     border: none;
     border-radius: 12px;
-    padding: 14px 28px;
-    font-size: 16px;
+    padding: 12px 24px;
+    font-size: 14px;
     font-weight: 600;
     color: #fff;
     transition: all 0.3s;
@@ -148,23 +179,31 @@
     color: #fff;
     box-shadow: 0 4px 15px rgba(230,98,57,0.4);
 }
+.step-item {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+}
+.step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e66239 0%, #ff8a65 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+.step-number.step-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
 </style>
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>
 <script>
-function startProcess() {
-    // Hide step 1, show loading
-    document.getElementById('step-wait').classList.add('d-none');
-    document.getElementById('step-loading').classList.remove('d-none');
-
-    // Simulate processing time (e.g., ad viewing, verification)
-    setTimeout(function() {
-        document.getElementById('step-loading').classList.add('d-none');
-        document.getElementById('step-complete').classList.remove('d-none');
-    }, 5000); // 5 seconds wait
-}
-
 function submitKeyForm() {
     document.getElementById('getKeyForm').submit();
 }

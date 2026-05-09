@@ -9,7 +9,7 @@ class GetkeyLinkModel extends Model
     protected $table      = 'getkey_links';
     protected $primaryKey = 'id';
     protected $returnType = 'object';
-    protected $allowedFields = ['admin_account', 'package_id', 'slug', 'name', 'price_per_hour', 'max_hours', 'max_devices', 'youmoney_token', 'status', 'total_keys_created'];
+    protected $allowedFields = ['admin_account', 'package_id', 'slug', 'name', 'price_per_hour', 'max_hours', 'max_devices', 'youmoney_token', 'short_url', 'status', 'total_keys_created'];
     protected $useTimestamps = true;
 
     public function getActiveLinks()
