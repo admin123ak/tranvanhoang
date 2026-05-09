@@ -29,7 +29,7 @@ class UserPackage extends BaseController
         $planStats = $userPlanModel->getPlanStats($user->id_users);
 
         $packageModel = new PackageModel();
-        $packages = $packageModel->getAllPackagesList();
+        $packages = $packageModel->findAll();
 
         $data = [
             'title' => 'Package cua toi',
@@ -56,13 +56,9 @@ class UserPackage extends BaseController
             }
         }
 
-        $packageModel = new PackageModel();
-        $packages = $packageModel->getAllPackagesList();
-
         $data = [
             'title' => 'Tao Package',
             'user' => $user,
-            'packages' => $packages,
             'validation' => Services::validation(),
         ];
 

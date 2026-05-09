@@ -21,13 +21,6 @@
             </a>
         </li>
 
-        <li>
-            <a class="nav-link <?= (uri_string() == 'plans') ? 'active' : '' ?>" href="<?= site_url('plans') ?>">
-                <i class="ti ti-crown"></i>
-                <span class="nav-text">Goi thanh vien</span>
-            </a>
-        </li>
-
         <li class="has-sub">
             <a class="nav-link <?= (strpos(uri_string(), 'keys') !== false) ? 'active' : '' ?>" href="javascript:void(0)">
                 <i class="ti ti-key"></i>
@@ -53,12 +46,24 @@
             </ul>
         </li>
 
-        <li>
-            <a class="nav-link <?= (uri_string() == 'user/packages' || strpos(uri_string(), 'user/packages') !== false) ? 'active' : '' ?>" href="<?= site_url('user/packages') ?>">
-                <i class="ti ti-box-seam"></i>
-                <span class="nav-text">Package cua toi</span>
+        <li class="has-sub">
+            <a class="nav-link <?= (strpos(uri_string(), 'user/packages') !== false || uri_string() == 'plans' || strpos(uri_string(), 'plans') !== false) ? 'active' : '' ?>" href="javascript:void(0)">
+                <i class="ti ti-crown"></i>
+                <span class="nav-text">Gói & Package</span>
+                <i class="ti ti-chevron-down ms-auto submenu-arrow"></i>
             </a>
-        </li>
+            <ul class="submenu <?= (strpos(uri_string(), 'user/packages') !== false || uri_string() == 'plans' || strpos(uri_string(), 'plans') !== false) ? 'active show' : '' ?>">
+                <li>
+                    <a class="nav-link <?= (uri_string() == 'plans') ? 'active' : '' ?>" href="<?= site_url('plans') ?>">
+                        <span class="nav-text">Gói thành viên</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link <?= (strpos(uri_string(), 'user/packages') !== false) ? 'active' : '' ?>" href="<?= site_url('user/packages') ?>">
+                        <span class="nav-text">Package của tôi</span>
+                    </a>
+                </li>
+            </ul>
         </li>
 
         <?php if (isset($user) && $user->level == 1) : ?>
@@ -71,48 +76,38 @@
             </a>
         </li>
 
-        <li>
-            <a class="nav-link <?= (strpos(uri_string(), 'admin/packages') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/packages') ?>">
-                <i class="ti ti-box-seam"></i>
-                <span class="nav-text">Packages</span>
-            </a>
-        </li>
-
-        <li>
-            <a class="nav-link <?= (strpos(uri_string(), 'admin/getkey-config') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/getkey-config') ?>">
-                <i class="ti ti-link"></i>
-                <span class="nav-text">GetKey Config</span>
-            </a>
-        </li>
-
-        <li>
-            <a class="nav-link <?= (strpos(uri_string(), 'admin/bank-accounts') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/bank-accounts') ?>">
-                <i class="ti ti-building-bank"></i>
-                <span class="nav-text">Bank Accounts</span>
-            </a>
-        </li>
-
-        <li>
-            <a class="nav-link <?= (strpos(uri_string(), 'admin/key-pricing') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/key-pricing') ?>">
-                <i class="ti ti-currency-dollar"></i>
-                <span class="nav-text">Key Pricing</span>
-            </a>
-        </li>
-
-        <li>
-            <a class="nav-link <?= (uri_string() == 'admin/plans' || strpos(uri_string(), 'admin/plans') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/plans') ?>">
-                <i class="ti ti-crown"></i>
-                <span class="nav-text">Quan ly Plans</span>
-            </a>
-        </li>
-
         <li class="has-sub">
-            <a class="nav-link <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'getkey-config') === false) ? 'active' : '' ?>" href="javascript:void(0)">
+            <a class="nav-link <?= (strpos(uri_string(), 'admin') !== false) ? 'active' : '' ?>" href="javascript:void(0)">
                 <i class="ti ti-shield-lock"></i>
                 <span class="nav-text">Admin</span>
                 <i class="ti ti-chevron-down ms-auto submenu-arrow"></i>
             </a>
-            <ul class="submenu <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'getkey-config') === false) ? 'active show' : '' ?>">
+            <ul class="submenu <?= (strpos(uri_string(), 'admin') !== false) ? 'active show' : '' ?>">
+                <li>
+                    <a class="nav-link <?= (strpos(uri_string(), 'admin/packages') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/packages') ?>">
+                        <span class="nav-text">Packages</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link <?= (strpos(uri_string(), 'admin/getkey-config') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/getkey-config') ?>">
+                        <span class="nav-text">GetKey Config</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link <?= (strpos(uri_string(), 'admin/bank-accounts') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/bank-accounts') ?>">
+                        <span class="nav-text">Bank Accounts</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link <?= (strpos(uri_string(), 'admin/key-pricing') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/key-pricing') ?>">
+                        <span class="nav-text">Key Pricing</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link <?= (uri_string() == 'admin/plans' || strpos(uri_string(), 'admin/plans') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/plans') ?>">
+                        <span class="nav-text">Quản lý Plans</span>
+                    </a>
+                </li>
                 <li>
                     <a class="nav-link <?= (uri_string() == 'admin/manage-users') ? 'active' : '' ?>" href="<?= site_url('admin/manage-users') ?>">
                         <span class="nav-text">Manage Users</span>
@@ -162,76 +157,34 @@
 </aside>
 
 <style>
-/* Sidebar submenu styles - override InApp defaults */
-.sidebar .has-sub {
-    position: relative;
-}
-
-.sidebar .submenu {
-    display: none !important;
-    padding-left: 1.5rem !important;
-    list-style: none !important;
-    margin: 0 !important;
-}
-
-.sidebar .submenu.open {
-    display: block !important;
-}
-
-.sidebar .submenu .nav-link {
-    padding: 6px 10px !important;
-    font-size: 0.8rem !important;
-    color: #737373 !important;
-    margin: 1px 12px !important;
-}
-
+.sidebar .has-sub { position: relative; }
+.sidebar .submenu { display: none !important; padding-left: 1.5rem !important; list-style: none !important; margin: 0 !important; }
+.sidebar .submenu.open { display: block !important; }
+.sidebar .submenu .nav-link { padding: 6px 10px !important; font-size: 0.8rem !important; color: #737373 !important; margin: 1px 12px !important; }
 .sidebar .submenu .nav-link:hover,
-.sidebar .submenu .nav-link.active {
-    color: #e66239 !important;
-    background-color: transparent !important;
-}
-
-.sidebar .submenu-arrow {
-    transition: transform 0.3s;
-    font-size: 14px !important;
-    margin-left: auto !important;
-}
-
-.sidebar .has-sub.active .submenu-arrow {
-    transform: rotate(180deg);
-}
+.sidebar .submenu .nav-link.active { color: #e66239 !important; background-color: transparent !important; }
+.sidebar .submenu-arrow { transition: transform 0.3s; font-size: 14px !important; margin-left: auto !important; }
+.sidebar .has-sub.active .submenu-arrow { transform: rotate(180deg); }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const hasSubItems = document.querySelectorAll('.has-sub > .nav-link');
-
-    hasSubItems.forEach(function(item) {
+    document.querySelectorAll('.has-sub > .nav-link').forEach(function(item) {
         item.addEventListener('click', function(e) {
             e.preventDefault();
             const parent = this.closest('.has-sub');
             const submenu = parent.querySelector('.submenu');
-
-            // Close other open submenus
             document.querySelectorAll('.has-sub').forEach(function(sub) {
                 if (sub !== parent) {
                     const otherSubmenu = sub.querySelector('.submenu');
-                    if (otherSubmenu) {
-                        otherSubmenu.classList.remove('open');
-                    }
+                    if (otherSubmenu) otherSubmenu.classList.remove('open');
                     sub.classList.remove('active');
                 }
             });
-
-            // Toggle current submenu
-            if (submenu) {
-                submenu.classList.toggle('open');
-            }
+            if (submenu) submenu.classList.toggle('open');
             parent.classList.toggle('active');
         });
     });
-
-    // Auto-open active submenu on page load
     const activeSubmenu = document.querySelector('.submenu.active');
     if (activeSubmenu) {
         activeSubmenu.classList.add('open');
@@ -239,9 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (parent) {
             parent.classList.add('active');
             const arrow = parent.querySelector('.submenu-arrow');
-            if (arrow) {
-                arrow.style.transform = 'rotate(180deg)';
-            }
+            if (arrow) arrow.style.transform = 'rotate(180deg)';
         }
     }
 });
