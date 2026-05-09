@@ -14,6 +14,13 @@
             </a>
         </li>
 
+        <li>
+            <a class="nav-link <?= (uri_string() == 'getkey') ? 'active' : '' ?>" href="<?= site_url('getkey') ?>">
+                <i class="ti ti-gift"></i>
+                <span class="nav-text">GetKey Free</span>
+            </a>
+        </li>
+
         <li class="has-sub">
             <a class="nav-link <?= (strpos(uri_string(), 'keys') !== false) ? 'active' : '' ?>" href="javascript:void(0)">
                 <i class="ti ti-key"></i>
