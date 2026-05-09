@@ -10,7 +10,7 @@ class UserPlanModel extends Model
     protected $primaryKey = 'id';
     protected $returnType = 'object';
     protected $allowedFields = ['user_id', 'plan_id', 'packages_used', 'keys_used', 'purchased_at', 'expires_at', 'status'];
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
 
     public function getUserPlan($userId)
     {
