@@ -156,12 +156,12 @@
                                                     <small class="text-muted"><i class="ti ti-link"></i> /get/<?= esc($link->slug) ?></small>
                                                 </td>
                                                 <td>
-                                                    <?php if ($link->short_url) : ?>
-                                                        <a href="<?= esc($link->short_url) ?>" target="_blank" class="text-success fw-semibold small">
-                                                            <i class="ti ti-external-link"></i> <?= esc($link->short_url) ?>
+                                                    <?php $shortUrl = $link->short_url ?? null; if ($shortUrl) : ?>
+                                                        <a href="<?= esc($shortUrl) ?>" target="_blank" class="text-success fw-semibold small">
+                                                            <i class="ti ti-external-link"></i> <?= esc($shortUrl) ?>
                                                         </a><br>
                                                         <div class="input-group input-group-sm mt-1" style="max-width:250px;">
-                                                            <input type="text" class="form-control form-control-sm" value="<?= esc($link->short_url) ?>" id="shortUrl-<?= $link->id ?>" readonly>
+                                                            <input type="text" class="form-control form-control-sm" value="<?= esc($shortUrl) ?>" id="shortUrl-<?= $link->id ?>" readonly>
                                                             <button class="btn btn-outline-secondary btn-sm" type="button" onclick="copyText('shortUrl-<?= $link->id ?>')">
                                                                 <i class="ti ti-copy"></i>
                                                             </button>
