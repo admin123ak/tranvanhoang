@@ -222,6 +222,38 @@ CREATE TABLE IF NOT EXISTS `invoices` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- ============================================
+-- Table: bank_accounts (Bank Account Management)
+-- ============================================
+CREATE TABLE IF NOT EXISTS `bank_accounts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `bank_name` varchar(100) NOT NULL,
+  `account_number` varchar(50) NOT NULL,
+  `account_name` varchar(100) NOT NULL,
+  `api_token` varchar(255) DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================
+-- Table: key_pricing (Key Pricing Management)
+-- ============================================
+CREATE TABLE IF NOT EXISTS `key_pricing` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `duration_hours` int(11) NOT NULL,
+  `price` bigint(20) NOT NULL DEFAULT '0',
+  `description` varchar(255) DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `duration_hours` (`duration_hours`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

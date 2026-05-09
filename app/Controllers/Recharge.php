@@ -281,6 +281,46 @@ class Recharge extends BaseController
     }
 
     /**
+     * Check if any pending invoices have been updated
+     */
+    public function checkInvoices()
+    {
+        if (!$this->user) {
+            return $this->response->setJSON(['updated' => false]);
+        }
+
+        // Get user's pending invoices
+        $pendingInvoices = $this->invoiceModel
+            ->where('user_id', $this->user->id_users)
+            ->where('status', 'pending')
+            ->findAll();
+
+        if (empty($pendingInvoices)) {
+            return $this->response->setJSON(['updated' => false]);
+        }
+
+        $now = new \CodeIgniter\I18n\Time();
+        $hasUpdate = false;
+
+        foreach ($pendingInvoices as $invoice) {
+            // Check if expired
+            if (isset($invoice->expired_at) && $invoice->expired_at) {
+                try {
+                    $expiredAt = \CodeIgniter\I18n\Time::parse($invoice->expired_at);
+                    if ($now->isAfter($expiredAt)) {
+                        $this->invoiceModel->update($invoice->id_invoice, ['status' => 'expired']);
+                        $hasUpdate = true;
+                    }
+                } catch (\Exception $e) {
+                    log_message('error', 'Failed to parse expired_at: ' . $e->getMessage());
+                }
+            }
+        }
+
+        return $this->response->setJSON(['updated' => $hasUpdate]);
+    }
+
+    /**
      * Auto check MBBank transactions via cron
      */
     public function autoCheck()

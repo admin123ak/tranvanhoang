@@ -149,24 +149,28 @@ function checkPayment() {
                 `;
                 if (checkInterval) {
                     clearInterval(checkInterval);
+                    checkInterval = null;
                 }
                 setTimeout(() => {
                     window.location.href = '<?= site_url("recharge") ?>';
                 }, 2000);
-            } else if (data.status === 'expired') {
+            } else if (!data.success && data.status === 'expired') {
                 statusDiv.innerHTML = `
                     <div class="alert alert-danger">
-                        <i class="ti ti-circle-x"></i> ${data.message}
+                        <h5><i class="ti ti-circle-x"></i> Hóa đơn đã hết hạn</h5>
+                        <p>Vui lòng tạo hóa đơn mới.</p>
+                        <a href="<?= site_url('recharge') ?>" class="btn btn-primary">Quay lại</a>
                     </div>
                 `;
                 if (checkInterval) {
                     clearInterval(checkInterval);
+                    checkInterval = null;
                 }
             } else {
                 statusDiv.innerHTML = `
                     <div class="alert alert-info">
                         <div class="spinner-border spinner-border-sm me-2"></div>
-                        <span>${data.message}</span>
+                        <span>${data.message || 'Đang chờ thanh toán...'}</span>
                     </div>
                 `;
             }
@@ -202,11 +206,14 @@ if (expiredAt > 0) {
             document.getElementById('countdown').innerHTML = 'Đã hết hạn';
             if (checkInterval) {
                 clearInterval(checkInterval);
+                checkInterval = null;
             }
             const statusDiv = document.getElementById('paymentStatus');
             statusDiv.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="ti ti-circle-x"></i> Hóa đơn đã hết hạn
+                    <h5><i class="ti ti-circle-x"></i> Hóa đơn đã hết hạn</h5>
+                    <p>Vui lòng tạo hóa đơn mới.</p>
+                    <a href="<?= site_url('recharge') ?>" class="btn btn-primary">Quay lại</a>
                 </div>
             `;
             return;

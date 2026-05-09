@@ -70,6 +70,20 @@
             </a>
         </li>
 
+        <li>
+            <a class="nav-link <?= (strpos(uri_string(), 'admin/bank-accounts') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/bank-accounts') ?>">
+                <i class="ti ti-building-bank"></i>
+                <span class="nav-text">Bank Accounts</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="nav-link <?= (strpos(uri_string(), 'admin/key-pricing') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/key-pricing') ?>">
+                <i class="ti ti-currency-dollar"></i>
+                <span class="nav-text">Key Pricing</span>
+            </a>
+        </li>
+
         <li class="has-sub">
             <a class="nav-link <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'getkey-config') === false) ? 'active' : '' ?>" href="javascript:void(0)">
                 <i class="ti ti-shield-lock"></i>

@@ -52,6 +52,7 @@ $routes->get('recharge', 'Recharge::index');
 $routes->post('recharge/create', 'Recharge::createInvoice');
 $routes->get('recharge/payment/(:any)', 'Recharge::payment/$1');
 $routes->get('recharge/check/(:any)', 'Recharge::checkPayment/$1');
+$routes->get('recharge/check-invoices', 'Recharge::checkInvoices');
 $routes->get('recharge/auto-check', 'Recharge::autoCheck');
 
 $routes->group('keys', function ($routes) {
@@ -81,6 +82,18 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 	// GetKey Config Management (Admin only)
 	$routes->match(['get', 'post'], 'getkey-config', 'GetkeyConfig::index');
 	$routes->post('getkey-config/save', 'GetkeyConfig::save');
+
+	// Bank Account Management (Admin only)
+	$routes->get('bank-accounts', 'BankAccount::index');
+	$routes->post('bank-accounts/create', 'BankAccount::create');
+	$routes->post('bank-accounts/edit/(:num)', 'BankAccount::edit/$1');
+	$routes->get('bank-accounts/delete/(:num)', 'BankAccount::delete/$1');
+
+	// Key Pricing Management (Admin only)
+	$routes->get('key-pricing', 'KeyPricing::index');
+	$routes->post('key-pricing/create', 'KeyPricing::create');
+	$routes->post('key-pricing/edit/(:num)', 'KeyPricing::edit/$1');
+	$routes->get('key-pricing/delete/(:num)', 'KeyPricing::delete/$1');
 
 	/* --------------------------- Admin API Grouping -------------------------- */
 	$routes->group('api', function ($routes) {

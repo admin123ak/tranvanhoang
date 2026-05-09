@@ -162,16 +162,32 @@ document.getElementById('createInvoiceForm').addEventListener('submit', function
     btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang xử lý...';
 });
 
-// Auto refresh invoice status every 15 seconds if there's a pending invoice
+// Auto update invoice status via AJAX every 15 seconds if there's a pending invoice
 <?php if (!empty($invoices) && is_array($invoices)): ?>
-    <?php foreach ($invoices as $inv): ?>
-        <?php if (isset($inv->status) && $inv->status == 'pending'): ?>
-            setInterval(function() {
-                location.reload();
-            }, 15000);
-            <?php break; ?>
-        <?php endif; ?>
-    <?php endforeach; ?>
+    <?php
+    $hasPending = false;
+    foreach ($invoices as $inv) {
+        if (isset($inv->status) && $inv->status == 'pending') {
+            $hasPending = true;
+            break;
+        }
+    }
+    ?>
+    <?php if ($hasPending): ?>
+        setInterval(function() {
+            fetch('<?= site_url("recharge/check-invoices") ?>')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.updated) {
+                        // Reload only if status changed
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.log('Check failed, will retry...');
+                });
+        }, 15000);
+    <?php endif; ?>
 <?php endif; ?>
 </script>
 

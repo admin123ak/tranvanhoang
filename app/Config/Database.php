@@ -33,9 +33,9 @@ class Database extends Config
 	public $default = [
 		'DSN'      => '',
 		'hostname' => 'localhost',
-		'username' => 'your_username',
-		'password' => 'your_password',
-		'database' => 'your_database',
+		'username' => 'hcloucom_db1',
+		'password' => 'hcloucom_db1',
+		'database' => 'hcloucom_db1',
 		'DBDriver' => 'MySQLi',
 		'DBPrefix' => '',
 		'pConnect' => false,
