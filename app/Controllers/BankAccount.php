@@ -18,28 +18,42 @@ class BankAccount extends BaseController
     private function ensureTable()
     {
         $db = \Config\Database::connect();
-        $db->query("CREATE TABLE IF NOT EXISTS `bank_accounts` (
-            `id` int(11) NOT NULL AUTO_INCREMENT,
-            `bank_name` varchar(100) NOT NULL,
-            `account_number` varchar(50) NOT NULL,
-            `account_name` varchar(100) NOT NULL,
-            `api_token` varchar(255) DEFAULT NULL,
-            `status` tinyint(1) NOT NULL DEFAULT '1',
-            `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-            `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        // Create table if not exists
+        try {
+            $db->query("CREATE TABLE IF NOT EXISTS `bank_accounts` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `bank_name` varchar(100) NOT NULL,
+                `account_number` varchar(50) NOT NULL,
+                `account_name` varchar(100) NOT NULL,
+                `api_token` varchar(255) DEFAULT NULL,
+                `status` tinyint(1) NOT NULL DEFAULT '1',
+                `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        } catch (\Exception $e) {
+            log_message('error', 'Failed to create bank_accounts table: ' . $e->getMessage());
+        }
+
+        // Check if table has data
+        $count = 0;
+        try {
+            $row = $db->query("SELECT COUNT(*) as cnt FROM bank_accounts")->getRow();
+            $count = $row->cnt ?? 0;
+        } catch (\Exception $e) {
+            log_message('error', 'Failed to count bank_accounts rows: ' . $e->getMessage());
+        }
 
         // Insert default data if empty
-        $count = $db->table('bank_accounts')->countAll();
         if ($count == 0) {
-            $db->table('bank_accounts')->insert([
-                'bank_name' => 'MBBank',
-                'account_number' => '0868641019',
-                'account_name' => 'TRẦN VĂN HOÀNG',
-                'api_token' => 'MB_FREE_021FA4D804026B08',
-                'status' => 1
-            ]);
+            try {
+                $db->query("INSERT INTO `bank_accounts` (`bank_name`, `account_number`, `account_name`, `api_token`, `status`) VALUES
+                    ('MBBank', '0868641019', 'TRẦN VĂN HOÀNG', 'MB_FREE_021FA4D804026B08', 1)");
+                log_message('info', 'Inserted default bank account');
+            } catch (\Exception $e) {
+                log_message('error', 'Failed to insert default bank account: ' . $e->getMessage());
+            }
         }
     }
 
