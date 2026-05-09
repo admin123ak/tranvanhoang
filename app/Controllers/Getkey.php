@@ -9,7 +9,7 @@ use App\Models\KeysModel;
 use App\Models\HistoryModel;
 use App\Models\PackageModel;
 
-class GetKey extends BaseController
+class Getkey extends BaseController
 {
     /**
      * Public page: /getkey
@@ -21,7 +21,7 @@ class GetKey extends BaseController
         $config = $configModel->getActiveConfig();
 
         if (!$config) {
-            return view('GetKey/unavailable', ['title' => 'GetKey Unavailable']);
+            return view('GetkeyPage/unavailable', ['title' => 'GetKey Unavailable']);
         }
 
         $data = [
@@ -29,7 +29,7 @@ class GetKey extends BaseController
             'config' => $config,
         ];
 
-        return view('GetKey/index', $data);
+        return view('GetkeyPage/index', $data);
     }
 
     /**
@@ -68,7 +68,7 @@ class GetKey extends BaseController
                 'tempCode' => $tempCode,
             ];
 
-            return view('GetKey/link', $data);
+            return view('GetkeyPage/link', $data);
         }
 
         // No YeuMoney - create key directly
@@ -216,7 +216,7 @@ class GetKey extends BaseController
             'packageName' => $pkgName,
         ];
 
-        return view('GetKey/success', $data);
+        return view('GetkeyPage/success', $data);
     }
 
     /**
@@ -229,14 +229,14 @@ class GetKey extends BaseController
         $generated = $generatedKeyModel->where('key_code', $code)->first();
 
         if (!$generated) {
-            return view('GetKey/notfound', ['title' => 'Key Not Found']);
+            return view('GetkeyPage/notfound', ['title' => 'Key Not Found']);
         }
 
         $keysModel = new KeysModel();
         $key = $keysModel->where('user_key', $generated->user_key)->first();
 
         if (!$key) {
-            return view('GetKey/notfound', ['title' => 'Key Not Found']);
+            return view('GetkeyPage/notfound', ['title' => 'Key Not Found']);
         }
 
         $packageModel = new PackageModel();
@@ -249,7 +249,7 @@ class GetKey extends BaseController
             'packageName' => $pkgName,
         ];
 
-        return view('GetKey/show', $data);
+        return view('GetkeyPage/show', $data);
     }
 
     private function generateUniqueKey($keysModel, $adminUsername)
