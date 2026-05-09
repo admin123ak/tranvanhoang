@@ -83,6 +83,11 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 	$routes->get('api-tokens/delete/(:num)', 'ApiTokens::delete/$1');
 	$routes->get('api-tokens/toggle/(:num)', 'ApiTokens::toggle/$1');
 
+	// API Config Management
+	$routes->match(['get', 'post'], 'api-config', 'ApiConfig::index');
+	$routes->get('api-config/delete/(:num)', 'ApiConfig::delete/$1');
+	$routes->get('api-config/toggle/(:num)', 'ApiConfig::toggle/$1');
+
 	/* --------------------------- Admin API Grouping -------------------------- */
 	$routes->group('api', function ($routes) {
 		$routes->match(['get', 'post'], 'users', 'User::api_get_users');
@@ -92,6 +97,11 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 // Public API endpoints for auto key generation
 $routes->post('api/generate-key', 'ApiKey::generateKey');
 $routes->get('api/check-balance', 'ApiKey::checkBalance');
+
+// GetKey page - auto key generation (no input needed)
+$routes->get('getkey', 'GetKey::index');
+$routes->post('getkey/create/(:num)', 'GetKey::createKey/$1');
+$routes->get('getkey/key-success/(:any)', 'GetKey::keySuccess/$1');
 
 $routes->match(['get', 'post'], 'connect', 'Connect::index');
 /*
