@@ -15,11 +15,39 @@ class KeyPricing extends BaseController
         $this->user = $this->userModel->getUser();
     }
 
+    private function ensureTable()
+    {
+        $db = \Config\Database::connect();
+        $db->query("CREATE TABLE IF NOT EXISTS `key_pricing` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `duration_hours` int(11) NOT NULL,
+            `price` bigint(20) NOT NULL DEFAULT '0',
+            `description` varchar(255) DEFAULT NULL,
+            `status` tinyint(1) NOT NULL DEFAULT '1',
+            `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `duration_hours` (`duration_hours`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        // Insert default data if empty
+        $count = $db->table('key_pricing')->countAll();
+        if ($count == 0) {
+            $db->table('key_pricing')->insertBatch([
+                ['duration_hours' => 24, 'price' => 10000, 'description' => '1 ngày', 'status' => 1],
+                ['duration_hours' => 168, 'price' => 50000, 'description' => '7 ngày', 'status' => 1],
+                ['duration_hours' => 720, 'price' => 150000, 'description' => '30 ngày', 'status' => 1],
+            ]);
+        }
+    }
+
     public function index()
     {
         if (!$this->user || $this->user->level != 1) {
             return redirect()->to('dashboard')->with('msgDanger', 'Access denied');
         }
+
+        $this->ensureTable();
 
         $db = \Config\Database::connect();
         $builder = $db->table('key_pricing');

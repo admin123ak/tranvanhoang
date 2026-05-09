@@ -15,11 +15,41 @@ class BankAccount extends BaseController
         $this->user = $this->userModel->getUser();
     }
 
+    private function ensureTable()
+    {
+        $db = \Config\Database::connect();
+        $db->query("CREATE TABLE IF NOT EXISTS `bank_accounts` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `bank_name` varchar(100) NOT NULL,
+            `account_number` varchar(50) NOT NULL,
+            `account_name` varchar(100) NOT NULL,
+            `api_token` varchar(255) DEFAULT NULL,
+            `status` tinyint(1) NOT NULL DEFAULT '1',
+            `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        // Insert default data if empty
+        $count = $db->table('bank_accounts')->countAll();
+        if ($count == 0) {
+            $db->table('bank_accounts')->insert([
+                'bank_name' => 'MBBank',
+                'account_number' => '0868641019',
+                'account_name' => 'TRẦN VĂN HOÀNG',
+                'api_token' => 'MB_FREE_021FA4D804026B08',
+                'status' => 1
+            ]);
+        }
+    }
+
     public function index()
     {
         if (!$this->user || $this->user->level != 1) {
             return redirect()->to('dashboard')->with('msgDanger', 'Access denied');
         }
+
+        $this->ensureTable();
 
         $db = \Config\Database::connect();
         $builder = $db->table('bank_accounts');
