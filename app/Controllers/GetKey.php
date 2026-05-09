@@ -57,7 +57,8 @@ class GetKey extends BaseController
         $totalPrice = $config->max_hours * $config->price_per_hour;
 
         // Check balance (skip if free)
-        if ($totalPrice > 0 && $adminUser->saldo < $totalPrice) {
+        $adminBalance = is_object($adminUser) ? ($adminUser->saldo ?? 0) : ($adminUser['saldo'] ?? 0);
+        if ($totalPrice > 0 && $adminBalance < $totalPrice) {
             return redirect()->back()->with('msgDanger', 'Service temporarily unavailable (insufficient balance)');
         }
 
@@ -118,8 +119,9 @@ class GetKey extends BaseController
 
         // Deduct balance (if not free)
         if ($totalPrice > 0) {
-            $newBalance = $adminUser->saldo - $totalPrice;
-            $userModel->update($adminUser->id_users, ['saldo' => $newBalance]);
+            $newBalance = $adminBalance - $totalPrice;
+            $adminId = is_object($adminUser) ? ($adminUser->id_users ?? 0) : ($adminUser['id_users'] ?? 0);
+            $userModel->update($adminId, ['saldo' => $newBalance]);
         }
 
         // Save history
