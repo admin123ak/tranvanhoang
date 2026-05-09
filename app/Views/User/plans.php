@@ -40,17 +40,22 @@
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h4><?= $currentPlan['packages_left'] ?>/<?= $currentPlan['max_packages'] ?></h4>
                             <p class="text-muted mb-0">Package còn lại</p>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h4><?= $currentPlan['keys_left'] ?>/<?= $currentPlan['max_keys'] ?></h4>
                             <p class="text-muted mb-0">Key còn lại</p>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h4><?= date('d/m/Y', strtotime($currentPlan['expires_at'])) ?></h4>
                             <p class="text-muted mb-0">Hết hạn</p>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#renewModal">
+                                <i class="ti ti-refresh"></i> Gia hạn
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -100,6 +105,41 @@
         <?php endforeach; ?>
     </div>
 </div>
+
+<!-- Renew Modal -->
+<?php if ($currentPlan) : ?>
+<div class="modal fade" id="renewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Gia hạn gói <?= esc($currentPlan['plan_name']) ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="<?= site_url('plans/renew') ?>" method="POST" id="renewForm">
+                <?= csrf_field() ?>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Chọn thời hạn</label>
+                        <select class="form-select" name="duration_days" id="renewDuration" data-base-price="<?= esc($currentPlan['plan_price']) ?>">
+                            <option value="30">30 ngày — <?= number_format($currentPlan['plan_price'], 0, ',', '.') ?>₫</option>
+                            <option value="90">90 ngày — <?= number_format($currentPlan['plan_price'] * 3, 0, ',', '.') ?>₫</option>
+                            <option value="365">365 ngày — <?= number_format($currentPlan['plan_price'] * 12, 0, ',', '.') ?>₫</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-info">
+                        <small>Thời gian sẽ được cộng thêm từ ngày hết hạn hiện tại. Quota package và key sẽ được reset về 0.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-warning" id="renewBtn">Gia hạn</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>
@@ -115,6 +155,15 @@ document.addEventListener('change', function(e) {
         var totalPrice = (days === 30) ? basePrice : (days === 90) ? basePrice * 3 : basePrice * 12;
         durationInput.value = days;
         btn.textContent = 'Mua gói — ' + totalPrice.toLocaleString('vi-VN') + '₫';
+    }
+
+    if (e.target.matches('#renewDuration')) {
+        var days = parseInt(e.target.value);
+        var basePrice = parseInt(e.target.dataset.basePrice);
+        var btn = document.getElementById('renewBtn');
+
+        var totalPrice = (days === 30) ? basePrice : (days === 90) ? basePrice * 3 : basePrice * 12;
+        btn.textContent = 'Gia hạn — ' + totalPrice.toLocaleString('vi-VN') + '₫';
     }
 });
 </script>

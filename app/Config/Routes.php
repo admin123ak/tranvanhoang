@@ -58,6 +58,7 @@ $routes->get('recharge/auto-check', 'Recharge::autoCheck');
 // Plan routes
 $routes->get('plans', 'Plan::index');
 $routes->post('plans/purchase', 'Plan::purchase');
+$routes->post('plans/renew', 'Plan::renew');
 $routes->get('plans/my-plan', 'Plan::myPlan');
 
 // User Package routes
