@@ -97,7 +97,7 @@
                                     <i class="ti ti-arrow-up"></i> Nâng cấp
                                 </button>
                             </form>
-                        <?php elseif ($plan->id == $currentPlan['plan_id']) : ?>
+                        <?php elseif ($plan->price_per_month == $currentPlan['plan_price']) : ?>
                             <button class="btn btn-secondary w-100" disabled>Đang sử dụng</button>
                         <?php else : ?>
                             <button class="btn btn-secondary w-100" disabled>Không thể hạ cấp</button>
