@@ -71,9 +71,9 @@ class GetKey extends BaseController
         $pkgCode = is_object($package) ? ($package->package_id ?? '') : ($package['package_id'] ?? '');
         $pkgName = is_object($package) ? ($package->package_name ?? '') : ($package['package_name'] ?? '');
 
-        // Generate unique key
+        // Generate unique key (format: admin_username_XXXXX)
         $keysModel = new KeysModel();
-        $userKey = $this->generateUniqueKey($keysModel);
+        $userKey = $this->generateUniqueKey($keysModel, $link->admin_account);
 
         // Create key
         $keyData = [
@@ -129,10 +129,17 @@ class GetKey extends BaseController
         return view('GetKey/success', $data);
     }
 
-    private function generateUniqueKey($keysModel)
+    private function generateUniqueKey($keysModel, $adminUsername)
     {
+        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         do {
-            $key = strtoupper(bin2hex(random_bytes(8)));
+            // Generate 5-6 random characters
+            $length = rand(5, 6);
+            $random = '';
+            for ($i = 0; $i < $length; $i++) {
+                $random .= $chars[rand(0, strlen($chars) - 1)];
+            }
+            $key = $adminUsername . '_' . $random;
             $exists = $keysModel->where('user_key', $key)->first();
         } while ($exists);
 

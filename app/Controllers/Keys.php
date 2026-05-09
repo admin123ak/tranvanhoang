@@ -407,7 +407,12 @@ public function deleteUnused(){
               //}
             
             
-                    $license = random_string('alnum',20);
+                    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                    $randomPart = '';
+                    for ($i = 0; $i < 6; $i++) {
+                        $randomPart .= $chars[rand(0, strlen($chars) - 1)];
+                    }
+                    $license = $user->username . '_' . $randomPart;
 
                    // echo "$license  <br><br>";
 
@@ -444,7 +449,7 @@ public function deleteUnused(){
                   $history->insert([
                       'keys_id' => $idKeys,
                       'user_do' => $user->username,
-                      'info' => $packageName . "|" . substr($license, 0, 5) . "|$drtn|$maxd"
+                      'info' => $packageName . "|" . $license . "|$drtn|$maxd"
                   ]);
 
                   $other_response = [
