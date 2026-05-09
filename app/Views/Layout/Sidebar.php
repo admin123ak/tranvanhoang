@@ -53,6 +53,14 @@
             </ul>
         </li>
 
+        <li>
+            <a class="nav-link <?= (uri_string() == 'user/packages' || strpos(uri_string(), 'user/packages') !== false) ? 'active' : '' ?>" href="<?= site_url('user/packages') ?>">
+                <i class="ti ti-box-seam"></i>
+                <span class="nav-text">Package cua toi</span>
+            </a>
+        </li>
+        </li>
+
         <?php if (isset($user) && $user->level == 1) : ?>
         <li class="px-4 pt-4 pb-2"><small class="nav-text">Admin</small></li>
 

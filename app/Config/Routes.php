@@ -60,6 +60,11 @@ $routes->get('plans', 'Plan::index');
 $routes->post('plans/purchase', 'Plan::purchase');
 $routes->get('plans/my-plan', 'Plan::myPlan');
 
+// User Package routes
+$routes->get('user/packages', 'UserPackage::index');
+$routes->get('user/packages/create', 'UserPackage::create');
+$routes->post('user/packages/create', 'UserPackage::create_action');
+
 $routes->group('keys', function ($routes) {
 	$routes->match(['get', 'post'], '/', 'Keys::index');
 	$routes->match(['get', 'post'], 'generate', 'Keys::generate');
