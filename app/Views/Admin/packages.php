@@ -40,7 +40,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Game Packages</h5>
                     <a href="<?= site_url('admin/packages/create') ?>" class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i> Add Package
+                        <i class="ti ti-plus"></i> Add Package
                     </a>
                 </div>
             </div>
@@ -81,10 +81,10 @@
                                         </td>
                                         <td>
                                             <a href="<?= site_url('admin/packages/edit/' . $id_package) ?>" class="btn btn-sm btn-primary">
-                                                <i class="bi bi-pencil"></i> Edit
+                                                <i class="ti ti-edit"></i> Edit
                                             </a>
                                             <a href="<?= site_url('admin/packages/delete/' . $id_package) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this package?')">
-                                                <i class="bi bi-trash"></i> Delete
+                                                <i class="ti ti-trash"></i> Delete
                                             </a>
                                         </td>
                                     </tr>

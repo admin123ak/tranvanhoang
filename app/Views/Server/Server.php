@@ -62,14 +62,14 @@
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="radio" name="radios" id="radio1" value="1" required>
                             <label class="form-check-label" for="radio1">
-                                <i class="bi bi-check-circle text-success"></i> Online Server
+                                <i class="ti ti-check text-success"></i> Online Server
                             </label>
                         </div>
 
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="radio" name="radios" id="radio2" value="2" required>
                             <label class="form-check-label" for="radio2">
-                                <i class="bi bi-x-circle text-danger"></i> Offline Server
+                                <i class="ti ti-circle-x text-danger"></i> Offline Server
                             </label>
                         </div>
 
@@ -125,14 +125,14 @@
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="radio" name="_ftextr" id="ftext1" value="1" required>
                             <label class="form-check-label" for="ftext1">
-                                <i class="bi bi-shield-check text-success"></i> MOD STATUS - SAFE
+                                <i class="ti ti-shield-check text-success"></i> MOD STATUS - SAFE
                             </label>
                         </div>
 
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="radio" name="_ftextr" id="ftext2" value="2" required>
                             <label class="form-check-label" for="ftext2">
-                                <i class="bi bi-shield-exclamation text-warning"></i> MOD STATUS - NOT SAFE
+                                <i class="ti ti-shield-alert text-warning"></i> MOD STATUS - NOT SAFE
                             </label>
                         </div>
 

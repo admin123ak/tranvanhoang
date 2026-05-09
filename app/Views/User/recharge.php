@@ -34,7 +34,7 @@
                                 <small class="text-muted">Tối thiểu: 10.000₫</small>
                             </div>
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-receipt"></i> Tạo hóa đơn
+                                <i class="ti ti-receipt"></i> Tạo hóa đơn
                             </button>
                         </form>
                     </div>
@@ -81,7 +81,7 @@
                                                     <?php if (isset($inv->status) && $inv->status == 'pending' && isset($inv->invoice_code)): ?>
                                                         <a href="<?= site_url('recharge/payment/' . $inv->invoice_code) ?>"
                                                            class="btn btn-sm btn-primary">
-                                                            <i class="bi bi-credit-card"></i> Thanh toán
+                                                            <i class="ti ti-credit-card"></i> Thanh toán
                                                         </a>
                                                     <?php endif; ?>
                                                 </td>

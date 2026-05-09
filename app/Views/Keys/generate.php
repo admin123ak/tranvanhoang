@@ -38,8 +38,8 @@
                         <p><strong>License:</strong> <code class="key-sensi"><?= session()->getFlashdata('user_key') ?></code></p>
                         <p><strong>Devices:</strong> <?= session()->getFlashdata('max_devices') ?></p>
                         <hr>
-                        <p class="mb-0"><small><i class="bi bi-info-circle"></i> Duration will start when license login.</small></p>
-                        <p class="mb-0"><small><i class="bi bi-wallet"></i> Saldo Reduce: <span class="text-danger">-<?= session()->getFlashdata('fees') ?></span> (Total left - ₹ <?= $user->saldo ?>)</small></p>
+                        <p class="mb-0"><small><i class="ti ti-info-circle"></i> Duration will start when license login.</small></p>
+                        <p class="mb-0"><small><i class="ti ti-wallet"></i> Saldo Reduce: <span class="text-danger">-<?= session()->getFlashdata('fees') ?></span> (Total left - ₹ <?= $user->saldo ?>)</small></p>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php endif; ?>

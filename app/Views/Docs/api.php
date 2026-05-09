@@ -237,7 +237,7 @@ bool isValid = (calculatedToken == responseToken) && (rng + 30 > time(0));</code
                     </div>
                     <div class="card-body">
                         <div class="alert alert-light-success">
-                            <i class="bi bi-check-circle"></i> <strong>Ready to Use:</strong> Copy the code below and paste into your Main.cpp
+                            <i class="ti ti-check"></i> <strong>Ready to Use:</strong> Copy the code below and paste into your Main.cpp
                         </div>
 
                         <pre class="language-cpp"><code>extern "C" {
@@ -378,7 +378,7 @@ Java_com_android_support_TechnicalAkash1_Check(JNIEnv *env, jclass clazz, jobjec
                         </div>
 
                         <div class="alert alert-light-info">
-                            <i class="bi bi-lightbulb"></i> <strong>Tip:</strong> Use <code>GetPackageName(env, mContext)</code> to automatically detect the game package ID.
+                            <i class="ti ti-lightbulb"></i> <strong>Tip:</strong> Use <code>GetPackageName(env, mContext)</code> to automatically detect the game package ID.
                         </div>
                     </div>
                 </div>

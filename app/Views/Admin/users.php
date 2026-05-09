@@ -106,7 +106,7 @@ $(document).ready(function() {
             {
                 data: null,
                 render: function(data, type, row, meta) {
-                    return `<a href="<?= site_url('admin/user') ?>/${row.id}" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i> Edit</a>`;
+                    return `<a href="<?= site_url('admin/user') ?>/${row.id}" class="btn btn-sm btn-primary"><i class="ti ti-edit"></i> Edit</a>`;
                 }
             }
         ]

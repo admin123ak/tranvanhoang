@@ -16,19 +16,19 @@
             <div class="col-12 col-lg-8">
                 <?php if (!isset($invoice)): ?>
                     <div class="alert alert-danger">
-                        <h5 class="alert-heading"><i class="bi bi-x-circle"></i> Lỗi</h5>
+                        <h5 class="alert-heading"><i class="ti ti-circle-x"></i> Lỗi</h5>
                         <p>Không tìm thấy hóa đơn.</p>
                         <a href="<?= site_url('recharge') ?>" class="btn btn-primary">Quay lại</a>
                     </div>
                 <?php elseif ($invoice->status == 'expired'): ?>
                     <div class="alert alert-danger">
-                        <h5 class="alert-heading"><i class="bi bi-x-circle"></i> Hóa đơn đã hết hạn</h5>
+                        <h5 class="alert-heading"><i class="ti ti-circle-x"></i> Hóa đơn đã hết hạn</h5>
                         <p>Hóa đơn này đã hết hạn. Vui lòng tạo hóa đơn mới.</p>
                         <a href="<?= site_url('recharge') ?>" class="btn btn-primary">Tạo hóa đơn mới</a>
                     </div>
                 <?php elseif ($invoice->status == 'completed'): ?>
                     <div class="alert alert-success">
-                        <h5 class="alert-heading"><i class="bi bi-check-circle"></i> Thanh toán thành công</h5>
+                        <h5 class="alert-heading"><i class="ti ti-check"></i> Thanh toán thành công</h5>
                         <p>Hóa đơn đã được thanh toán. Số dư của bạn đã được cập nhật.</p>
                         <a href="<?= site_url('recharge') ?>" class="btn btn-primary">Quay lại</a>
                     </div>
@@ -70,7 +70,7 @@
                                             <td>
                                                 <code style="font-size: 1.2em; color: #dc3545;"><?= esc($invoice->invoice_code) ?></code>
                                                 <button class="btn btn-sm btn-outline-primary" onclick="copyContent('<?= esc($invoice->invoice_code) ?>')">
-                                                    <i class="bi bi-clipboard"></i> Copy
+                                                    <i class="ti ti-clipboard"></i> Copy
                                                 </button>
                                             </td>
                                         </tr>
@@ -99,7 +99,7 @@
                             <hr>
 
                             <div class="alert alert-warning">
-                                <i class="bi bi-exclamation-triangle"></i>
+                                <i class="ti ti-alert-triangle"></i>
                                 <strong>Lưu ý quan trọng:</strong>
                                 <ul class="mb-0">
                                     <li>Chuyển khoản <strong>ĐÚNG số tiền</strong>: <?= number_format($invoice->amount, 0, ',', '.') ?>₫</li>
@@ -111,7 +111,7 @@
                             <div class="text-center">
                                 <p class="text-muted mb-3">Hoàn thành thanh toán trước, sau đó nhấn nút bên dưới để kiểm tra trạng thái</p>
                                 <button type="button" class="btn btn-success btn-lg" id="checkPaymentBtn" onclick="checkPayment()">
-                                    <i class="bi bi-arrow-clockwise"></i> Kiểm tra thanh toán
+                                    <i class="ti ti-refresh"></i> Kiểm tra thanh toán
                                 </button>
                                 <div id="paymentStatus" class="mt-3"></div>
                             </div>
@@ -143,7 +143,7 @@ function checkPayment() {
             if (data.success && data.status === 'completed') {
                 statusDiv.innerHTML = `
                     <div class="alert alert-success">
-                        <h5><i class="bi bi-check-circle"></i> ${data.message}</h5>
+                        <h5><i class="ti ti-check"></i> ${data.message}</h5>
                         <p>Số dư mới: <strong>${data.new_balance}</strong></p>
                     </div>
                 `;
@@ -153,21 +153,21 @@ function checkPayment() {
             } else {
                 statusDiv.innerHTML = `
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i> ${data.message}
+                        <i class="ti ti-info-circle"></i> ${data.message}
                     </div>
                 `;
                 btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Kiểm tra lại';
+                btn.innerHTML = '<i class="ti ti-refresh"></i> Kiểm tra lại';
             }
         })
         .catch(error => {
             statusDiv.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi bi-x-circle"></i> Lỗi kết nối. Vui lòng thử lại.
+                    <i class="ti ti-circle-x"></i> Lỗi kết nối. Vui lòng thử lại.
                 </div>
             `;
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Kiểm tra lại';
+            btn.innerHTML = '<i class="ti ti-refresh"></i> Kiểm tra lại';
         });
 }
 

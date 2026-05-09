@@ -74,7 +74,7 @@
                                                 <td>
                                                     <?php if ($deviceCount > 0) : ?>
                                                         <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#deviceModal<?= $device->id_keys ?>">
-                                                            <i class="bi bi-phone"></i> View (<?= $deviceCount ?>)
+                                                            <i class="ti ti-device-mobile"></i> View (<?= $deviceCount ?>)
                                                         </button>
                                                     <?php else : ?>
                                                         <span class="text-muted">No devices</span>
@@ -108,11 +108,11 @@
                                                 <td><?= esc($device->registrator) ?></td>
                                                 <td>
                                                     <a href="<?= site_url('keys/' . $device->id_keys) ?>" class="btn btn-sm btn-primary" title="Edit">
-                                                        <i class="bi bi-pencil"></i>
+                                                        <i class="ti ti-edit"></i>
                                                     </a>
                                                     <?php if ($deviceCount > 0) : ?>
                                                         <button class="btn btn-sm btn-danger" onclick="resetDevices('<?= $device->user_key ?>')" title="Reset Devices">
-                                                            <i class="bi bi-bootstrap-reboot"></i>
+                                                            <i class="ti ti-refresh"></i>
                                                         </button>
                                                     <?php endif; ?>
                                                 </td>
@@ -123,7 +123,7 @@
                             </div>
                         <?php else : ?>
                             <div class="alert alert-light-info">
-                                <i class="bi bi-info-circle"></i> No devices registered yet.
+                                <i class="ti ti-info-circle"></i> No devices registered yet.
                             </div>
                         <?php endif; ?>
                     </div>

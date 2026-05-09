@@ -39,13 +39,13 @@
                     <h5 class="card-title mb-0">Keys Registered</h5>
                     <div class="d-flex flex-wrap gap-2">
                         <button class="btn btn-sm btn-secondary" id="blur-out" data-bs-toggle="tooltip" title="Eye Protect">
-                            <i class="bi bi-eye-slash"></i>
+                            <i class="ti ti-eye-off"></i>
                         </button>
                         <a href="<?= site_url('keys/generate') ?>" class="btn btn-sm btn-primary">
-                            <i class="bi bi-plus-circle"></i> Generate
+                            <i class="ti ti-plus"></i> Generate
                         </a>
                         <a href="<?= site_url('keys/deleteExp') ?>" class="btn btn-sm btn-danger">
-                            <i class="bi bi-trash"></i> Delete Expired
+                            <i class="ti ti-trash"></i> Delete Expired
                         </a>
                     </div>
                 </div>
@@ -135,9 +135,10 @@ $(document).ready(function() {
             {
                 data: null,
                 render: function(data, type, row, meta) {
-                    var btnReset = `<button class="btn btn-sm btn-danger" onclick="resetUserKey('${row.user_key}')" title="Reset key"><i class="bi bi-bootstrap-reboot"></i></button>`;
-                    var btnEdits = `<a href="<?= site_url('keys') ?>/${row.id}" class="btn btn-sm btn-primary" title="Edit key"><i class="bi bi-pencil"></i></a>`;
-                    return `${btnReset} ${btnEdits}`;
+                    var btnReset = `<button class="btn btn-sm btn-danger" onclick="resetUserKey('${row.user_key}')" title="Reset key"><i class="ti ti-refresh"></i></button>`;
+                    var btnEdits = `<a href="<?= site_url('keys') ?>/${row.id}" class="btn btn-sm btn-primary" title="Edit key"><i class="ti ti-edit"></i></a>`;
+                    var btnDevice = `<a href="<?= site_url('keys/devices') ?>?key=${row.user_key}" class="btn btn-sm btn-info" title="View devices"><i class="ti ti-device-mobile"></i></a>`;
+                    return `${btnDevice} ${btnReset} ${btnEdits}`;
                 }
             }
         ]
@@ -146,10 +147,10 @@ $(document).ready(function() {
     $("#blur-out").click(function() {
         if ($(".keyBlur").hasClass("key-sensi")) {
             $(".keyBlur").removeClass("key-sensi");
-            $("#blur-out").html(`<i class="bi bi-eye"></i>`);
+            $("#blur-out").html(`<i class="ti ti-eye"></i>`);
         } else {
             $(".keyBlur").addClass("key-sensi");
-            $("#blur-out").html(`<i class="bi bi-eye-slash"></i>`);
+            $("#blur-out").html(`<i class="ti ti-eye-off"></i>`);
         }
     });
 });
