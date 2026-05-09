@@ -91,7 +91,7 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 // Public GetKey page - user gets unique key + link
 $routes->get('getkey', 'Getkey::index');
 $routes->post('getkey/generate', 'Getkey::generate');
-$routes->get('getkey/verify', 'Getkey::verify');
+$routes->get('getkey/create-key', 'Getkey::createKeyPage');
 $routes->get('key/(:any)', 'Getkey::show/$1');
 
 $routes->match(['get', 'post'], 'connect', 'Connect::index');

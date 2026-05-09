@@ -13,7 +13,6 @@ class Getkey extends BaseController
 {
     /**
      * Public page: /getkey
-     * User clicks "Get Link" - system auto generates key + unique link
      */
     public function index()
     {
@@ -34,7 +33,7 @@ class Getkey extends BaseController
 
     /**
      * POST: /getkey/generate
-     * Generate YeuMoney link and show to user (don't create key yet)
+     * Generate YeuMoney link or create key directly
      */
     public function generate()
     {
@@ -45,27 +44,19 @@ class Getkey extends BaseController
             return redirect()->back()->with('msgDanger', 'GetKey service is currently unavailable');
         }
 
-        // Generate temporary code for this session
-        $tempCode = bin2hex(random_bytes(16));
-        session()->set('getkey_temp_code', $tempCode);
-        session()->set('getkey_timestamp', time());
-
-        // If YeuMoney token exists, create YeuMoney link
+        // If YeuMoney token exists, create shortened link
         if ($config->youmoney_token) {
-            // Create YeuMoney link that callbacks to /getkey/verify
-            $callbackUrl = base_url('getkey/verify?code=' . $tempCode);
+            $callbackUrl = base_url('getkey/create-key');
             $shortUrl = $this->shortenViaYeuMoney($config->youmoney_token, $callbackUrl);
 
             if (!$shortUrl) {
                 return redirect()->back()->with('msgDanger', 'Failed to generate link. Please try again.');
             }
 
-            // Show link to user (don't create key yet)
             $data = [
                 'title' => 'Your Link',
                 'config' => $config,
                 'yeumoneyUrl' => $shortUrl,
-                'tempCode' => $tempCode,
             ];
 
             return view('GetkeyPage/link', $data);
@@ -76,25 +67,11 @@ class Getkey extends BaseController
     }
 
     /**
-     * GET: /getkey/verify?code=xxx
-     * Callback from YeuMoney - verify and create key
+     * GET: /getkey/create-key
+     * Callback from YeuMoney or direct access - create key now
      */
-    public function verify()
+    public function createKeyPage()
     {
-        $code = $this->request->getGet('code');
-        $sessionCode = session()->get('getkey_temp_code');
-        $timestamp = session()->get('getkey_timestamp');
-
-        // Verify code and check expiry (10 minutes)
-        if (!$code || !$sessionCode || $code !== $sessionCode || (time() - $timestamp) > 600) {
-            return redirect()->to('getkey')->with('msgDanger', 'Invalid or expired verification');
-        }
-
-        // Clear session
-        session()->remove('getkey_temp_code');
-        session()->remove('getkey_timestamp');
-
-        // Create key
         return $this->createKey();
     }
 
@@ -107,7 +84,7 @@ class Getkey extends BaseController
         $config = $configModel->getActiveConfig();
 
         if (!$config || $config->status != 1) {
-            return redirect()->back()->with('msgDanger', 'GetKey service is currently unavailable');
+            return redirect()->to('getkey')->with('msgDanger', 'GetKey service is currently unavailable');
         }
 
         // Get admin account
@@ -115,7 +92,7 @@ class Getkey extends BaseController
         $adminUser = $userModel->where('username', $config->admin_account)->first();
 
         if (!$adminUser) {
-            return redirect()->back()->with('msgDanger', 'Admin account not found');
+            return redirect()->to('getkey')->with('msgDanger', 'Admin account not found');
         }
 
         // Calculate price (free if price_per_hour = 0)
@@ -124,7 +101,7 @@ class Getkey extends BaseController
         // Check balance (skip if free)
         $adminBalance = is_object($adminUser) ? ($adminUser->saldo ?? 0) : ($adminUser['saldo'] ?? 0);
         if ($totalPrice > 0 && $adminBalance < $totalPrice) {
-            return redirect()->back()->with('msgDanger', 'Service temporarily unavailable (insufficient balance)');
+            return redirect()->to('getkey')->with('msgDanger', 'Service temporarily unavailable (insufficient balance)');
         }
 
         // Get package info
@@ -132,7 +109,7 @@ class Getkey extends BaseController
         $package = $packageModel->find($config->package_id);
 
         if (!$package) {
-            return redirect()->back()->with('msgDanger', 'Package not found');
+            return redirect()->to('getkey')->with('msgDanger', 'Package not found');
         }
 
         $pkgCode = is_object($package) ? ($package->package_id ?? '') : ($package['package_id'] ?? '');
@@ -157,7 +134,7 @@ class Getkey extends BaseController
         $keyId = $keysModel->insert($keyData, true);
 
         if (!$keyId) {
-            return redirect()->back()->with('msgDanger', 'Failed to create key');
+            return redirect()->to('getkey')->with('msgDanger', 'Failed to create key');
         }
 
         // Generate unique code for link
@@ -205,9 +182,9 @@ class Getkey extends BaseController
             'info' => $historyInfo
         ]);
 
-        // Show success page with link
+        // Show success page with key
         $data = [
-            'title' => 'Link Generated',
+            'title' => 'Key Created',
             'keyCode' => $keyCode,
             'fullUrl' => $fullUrl,
             'shortUrl' => $shortUrl,
