@@ -50,9 +50,9 @@
                                             <td><h4 class="text-success"><?= number_format($invoice->amount, 0, ',', '.') ?>₫</h4></td>
                                         </tr>
                                         <tr>
-                                            <td><strong>Nhà cung cấp:</strong></td>
+                                            <td><strong>Ngân hàng:</strong></td>
                                             <td>
-                                                <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MBBank_logo.svg"
+                                                <img src="https://api.vietqr.io/img/CNX/MBBank.png"
                                                      alt="MBBank" style="height: 30px;">
                                                 <strong>MBBank</strong>
                                             </td>
@@ -63,7 +63,7 @@
                                         </tr>
                                         <tr>
                                             <td><strong>Chủ tài khoản:</strong></td>
-                                            <td><strong>NGUYEN VAN A</strong></td>
+                                            <td><strong>TRẦN VĂN HOÀNG</strong></td>
                                         </tr>
                                         <tr>
                                             <td><strong>Nội dung CK:</strong></td>
@@ -85,7 +85,7 @@
                                 <div class="col-md-6 text-center">
                                     <h6>Quét mã QR để thanh toán</h6>
                                     <div class="mb-3">
-                                        <img src="https://img.vietqr.io/image/MB-0868641019-compact2.png?amount=<?= $invoice->amount ?>&addInfo=<?= urlencode($invoice->invoice_code) ?>&accountName=NGUYEN%20VAN%20A"
+                                        <img src="https://img.vietqr.io/image/MB-0868641019-compact2.png?amount=<?= $invoice->amount ?>&addInfo=<?= urlencode($invoice->invoice_code) ?>&accountName=TRAN%20VAN%20HOANG"
                                              alt="QR Code"
                                              class="img-fluid border rounded"
                                              style="max-width: 300px;">
@@ -172,10 +172,15 @@ function checkPayment() {
 }
 
 // Countdown timer
-const expiredAtStr = '<?= $invoice->expired_at ?>';
-const expiredAt = expiredAtStr ? new Date(expiredAtStr).getTime() : 0;
+<?php
+$expiredTimestamp = 0;
+if (isset($invoice->expired_at) && $invoice->expired_at) {
+    $expiredTimestamp = strtotime($invoice->expired_at) * 1000;
+}
+?>
+const expiredAt = <?= $expiredTimestamp ?>;
 
-if (expiredAt > 0 && !isNaN(expiredAt)) {
+if (expiredAt > 0) {
     function updateCountdown() {
         const now = new Date().getTime();
         const distance = expiredAt - now;
