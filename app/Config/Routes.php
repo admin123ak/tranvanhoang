@@ -78,12 +78,9 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 	$routes->match(['get', 'post'], 'packages/edit/(:num)', 'Package::edit/$1');
 	$routes->get('packages/delete/(:num)', 'Package::delete/$1');
 
-	// GetKey Links Management (Admin only)
-	$routes->match(['get', 'post'], 'getkey-links', 'GetkeyLinks::index');
-	$routes->post('getkey-links/create', 'GetkeyLinks::create');
-	$routes->get('getkey-links/delete/(:num)', 'GetkeyLinks::delete/$1');
-	$routes->get('getkey-links/toggle/(:num)', 'GetkeyLinks::toggle/$1');
-	$routes->get('getkey-links/reshorten/(:num)', 'GetkeyLinks::reshorten/$1');
+	// GetKey Config Management (Admin only)
+	$routes->match(['get', 'post'], 'getkey-config', 'GetkeyConfig::index');
+	$routes->post('getkey-config/save', 'GetkeyConfig::save');
 
 	/* --------------------------- Admin API Grouping -------------------------- */
 	$routes->group('api', function ($routes) {
@@ -91,9 +88,10 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 	});
 });
 
-// Public GetKey page - user visits link, completes step, gets key
-$routes->get('get/(:any)', 'GetKey::index/$1');
-$routes->post('getkey/create/(:any)', 'GetKey::createKey/$1');
+// Public GetKey page - user gets unique key + link
+$routes->get('getkey', 'GetKey::index');
+$routes->post('getkey/generate', 'GetKey::generate');
+$routes->get('key/(:any)', 'GetKey::show/$1');
 
 $routes->match(['get', 'post'], 'connect', 'Connect::index');
 /*

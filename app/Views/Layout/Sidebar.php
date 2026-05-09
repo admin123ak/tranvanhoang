@@ -57,19 +57,19 @@
         </li>
 
         <li>
-            <a class="nav-link <?= (strpos(uri_string(), 'admin/getkey-links') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/getkey-links') ?>">
+            <a class="nav-link <?= (strpos(uri_string(), 'admin/getkey-config') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/getkey-config') ?>">
                 <i class="ti ti-link"></i>
-                <span class="nav-text">GetKey Links</span>
+                <span class="nav-text">GetKey Config</span>
             </a>
         </li>
 
         <li class="has-sub">
-            <a class="nav-link <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'getkey-links') === false) ? 'active' : '' ?>" href="javascript:void(0)">
+            <a class="nav-link <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'getkey-config') === false) ? 'active' : '' ?>" href="javascript:void(0)">
                 <i class="ti ti-shield-lock"></i>
                 <span class="nav-text">Admin</span>
                 <i class="ti ti-chevron-down ms-auto submenu-arrow"></i>
             </a>
-            <ul class="submenu <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'getkey-links') === false) ? 'active show' : '' ?>">
+            <ul class="submenu <?= (strpos(uri_string(), 'admin') !== false && strpos(uri_string(), 'packages') === false && strpos(uri_string(), 'getkey-config') === false) ? 'active show' : '' ?>">
                 <li>
                     <a class="nav-link <?= (uri_string() == 'admin/manage-users') ? 'active' : '' ?>" href="<?= site_url('admin/manage-users') ?>">
                         <span class="nav-text">Manage Users</span>
