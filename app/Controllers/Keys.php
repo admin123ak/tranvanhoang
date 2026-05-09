@@ -414,12 +414,34 @@ public function deleteUnused(){
           ];
 
           $validation = Services::validation();
-          $reduceCheck = ($user->saldo - $getPrice);
-          // dd($reduceCheck);
-          if ($reduceCheck < 0) {
-              $validation->setError('duration', 'Insufficient balance');
-              return redirect()->back()->withInput()->with('msgWarning', 'Please top up to your beloved admin.');
+
+          // Admin (level=1) always allowed, no plan check needed
+          // For other users: check if they have active plan
+          $hasPlan = false;
+          $planStats = null;
+          if ($user->level != 1) {
+              $userPlanModel = new \App\Models\UserPlanModel();
+              $activePlan = $userPlanModel->getUserPlan($user->id_users);
+              if ($activePlan) {
+                  $hasPlan = true;
+                  $planStats = $userPlanModel->getPlanStats($user->id_users);
+              }
+          }
+
+          if (!$hasPlan) {
+              // No plan - deduct saldo as usual
+              $reduceCheck = ($user->saldo - $getPrice);
+              if ($reduceCheck < 0) {
+                  $validation->setError('duration', 'Insufficient balance');
+                  return redirect()->back()->withInput()->with('msgWarning', 'Please top up to your beloved admin.');
+              }
           } else {
+              // Has plan - check key quota
+              if ($planStats && $planStats['keys_left'] <= 0) {
+                  return redirect()->back()->withInput()->with('msgWarning', 'Het key quota. Vui long mua goi moi.');
+              }
+              $reduceCheck = $user->saldo; // Don't deduct
+          }
               if (!$this->validate($form_rules)) {
                   return redirect()->back()->withInput()->with('msgDanger', 'Failed! Please check the error');
               } else {
@@ -467,10 +489,19 @@ public function deleteUnused(){
                       'registrator' => $user->username,
                   ];
 
-                 // * reseller reduce saldo
                   $idKeys = $this->model->insert($data_response);
 
-                  $this->userModel->update(session('userid'), ['saldo' => $reduceCheck]);
+                  if (!$hasPlan) {
+                      // No plan - deduct saldo
+                      $this->userModel->update(session('userid'), ['saldo' => $reduceCheck]);
+                  } else {
+                      // Has plan - increment key usage
+                      $userPlanModel = new \App\Models\UserPlanModel();
+                      $activePlan = $userPlanModel->getUserPlan($user->id_users);
+                      if ($activePlan) {
+                          $userPlanModel->incrementKeysUsed($activePlan->id);
+                      }
+                  }
 
                   $history = new HistoryModel();
                   $history->insert([

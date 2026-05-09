@@ -21,6 +21,13 @@
             </a>
         </li>
 
+        <li>
+            <a class="nav-link <?= (uri_string() == 'plans') ? 'active' : '' ?>" href="<?= site_url('plans') ?>">
+                <i class="ti ti-crown"></i>
+                <span class="nav-text">Goi thanh vien</span>
+            </a>
+        </li>
+
         <li class="has-sub">
             <a class="nav-link <?= (strpos(uri_string(), 'keys') !== false) ? 'active' : '' ?>" href="javascript:void(0)">
                 <i class="ti ti-key"></i>
@@ -81,6 +88,13 @@
             <a class="nav-link <?= (strpos(uri_string(), 'admin/key-pricing') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/key-pricing') ?>">
                 <i class="ti ti-currency-dollar"></i>
                 <span class="nav-text">Key Pricing</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="nav-link <?= (uri_string() == 'admin/plans' || strpos(uri_string(), 'admin/plans') !== false) ? 'active' : '' ?>" href="<?= site_url('admin/plans') ?>">
+                <i class="ti ti-crown"></i>
+                <span class="nav-text">Quan ly Plans</span>
             </a>
         </li>
 

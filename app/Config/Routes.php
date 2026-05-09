@@ -55,6 +55,11 @@ $routes->get('recharge/check/(:any)', 'Recharge::checkPayment/$1');
 $routes->get('recharge/check-invoices', 'Recharge::checkInvoices');
 $routes->get('recharge/auto-check', 'Recharge::autoCheck');
 
+// Plan routes
+$routes->get('plans', 'Plan::index');
+$routes->post('plans/purchase', 'Plan::purchase');
+$routes->get('plans/my-plan', 'Plan::myPlan');
+
 $routes->group('keys', function ($routes) {
 	$routes->match(['get', 'post'], '/', 'Keys::index');
 	$routes->match(['get', 'post'], 'generate', 'Keys::generate');
@@ -94,6 +99,12 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 	$routes->post('key-pricing/create', 'KeyPricing::create');
 	$routes->post('key-pricing/edit/(:num)', 'KeyPricing::edit/$1');
 	$routes->get('key-pricing/delete/(:num)', 'KeyPricing::delete/$1');
+
+	// Plan Management (Admin only)
+	$routes->get('plans', 'AdminPlans::index');
+	$routes->post('plans/create', 'AdminPlans::create');
+	$routes->post('plans/edit/(:num)', 'AdminPlans::edit/$1');
+	$routes->get('plans/delete/(:num)', 'AdminPlans::delete/$1');
 
 	/* --------------------------- Admin API Grouping -------------------------- */
 	$routes->group('api', function ($routes) {

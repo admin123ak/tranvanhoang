@@ -247,6 +247,45 @@ CREATE TABLE IF NOT EXISTS `key_pricing` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- ============================================
+-- Table: plans (subscription catalog)
+-- ============================================
+CREATE TABLE IF NOT EXISTS `plans` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `price_per_month` bigint NOT NULL DEFAULT 0,
+  `max_packages` int NOT NULL DEFAULT 0,
+  `max_keys` int NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+  `description` text,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT IGNORE INTO `plans` (`id`, `name`, `price_per_month`, `max_packages`, `max_keys`, `status`, `description`) VALUES
+(1, 'Basic', 100000, 1, 20, 1, 'Gói cơ bản - 1 package, 20 keys'),
+(2, 'Pro', 500000, 3, 50, 1, 'Gói chuyên nghiệp - 3 packages, 50 keys'),
+(3, 'Advanced', 1000000, 5, 100, 1, 'Gói nâng cao - 5 packages, 100 keys');
+
+-- ============================================
+-- Table: user_plans (user subscriptions)
+-- ============================================
+CREATE TABLE IF NOT EXISTS `user_plans` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `plan_id` int NOT NULL,
+  `packages_used` int NOT NULL DEFAULT 0,
+  `keys_used` int NOT NULL DEFAULT 0,
+  `purchased_at` datetime DEFAULT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_expires_at` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
