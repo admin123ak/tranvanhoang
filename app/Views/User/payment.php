@@ -59,7 +59,7 @@
                                         </tr>
                                         <tr>
                                             <td><strong>Số tài khoản:</strong></td>
-                                            <td><code style="font-size: 1.2em;">0987654321</code></td>
+                                            <td><code style="font-size: 1.2em;">0868641019</code></td>
                                         </tr>
                                         <tr>
                                             <td><strong>Chủ tài khoản:</strong></td>
@@ -85,7 +85,7 @@
                                 <div class="col-md-6 text-center">
                                     <h6>Quét mã QR để thanh toán</h6>
                                     <div class="mb-3">
-                                        <img src="https://img.vietqr.io/image/MB-0987654321-compact2.png?amount=<?= $invoice->amount ?>&addInfo=<?= urlencode($invoice->invoice_code) ?>&accountName=NGUYEN%20VAN%20A"
+                                        <img src="https://img.vietqr.io/image/MB-0868641019-compact2.png?amount=<?= $invoice->amount ?>&addInfo=<?= urlencode($invoice->invoice_code) ?>&accountName=NGUYEN%20VAN%20A"
                                              alt="QR Code"
                                              class="img-fluid border rounded"
                                              style="max-width: 300px;">

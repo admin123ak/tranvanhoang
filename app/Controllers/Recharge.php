@@ -180,7 +180,7 @@ class Recharge extends BaseController
         }
 
         // Call MBBank API to check
-        $apiKey = getenv('MBBANK_API_KEY');
+        $apiKey = 'MB_FREE_021FA4D804026B08';
 
         if (!$apiKey) {
             return $this->response->setJSON(['success' => false, 'message' => 'API not configured']);
@@ -274,7 +274,7 @@ class Recharge extends BaseController
      */
     public function autoCheck()
     {
-        $apiKey = getenv('MBBANK_API_KEY');
+        $apiKey = 'MB_FREE_021FA4D804026B08';
 
         if (!$apiKey) {
             log_message('error', 'MBBank API key not configured');
