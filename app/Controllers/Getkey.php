@@ -46,6 +46,12 @@ class Getkey extends BaseController
 
         // Check IP limit: 1 key per 24 hours
         $userIp = $this->request->getIPAddress();
+
+        // Check VPN/Proxy
+        if ($this->isVpnOrProxy()) {
+            return redirect()->back()->with('msgDanger', 'Không hỗ trợ VPN/Proxy. Vui lòng tắt và thử lại.');
+        }
+
         $generatedKeyModel = new GeneratedKeyModel();
         $recentKey = $generatedKeyModel
             ->where('ip_address', $userIp)
@@ -84,6 +90,10 @@ class Getkey extends BaseController
      */
     public function createKeyPage()
     {
+        // Check VPN/Proxy
+        if ($this->isVpnOrProxy()) {
+            return redirect()->to('getkey')->with('msgDanger', 'Không hỗ trợ VPN/Proxy. Vui lòng tắt và thử lại.');
+        }
         return $this->createKey();
     }
 
@@ -295,5 +305,38 @@ class Getkey extends BaseController
         }
 
         return null;
+    }
+
+    /**
+     * Detect VPN or Proxy usage
+     */
+    private function isVpnOrProxy()
+    {
+        $headers = $this->request->headers();
+
+        // Check common proxy headers
+        $proxyHeaders = [
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_VIA',
+            'HTTP_X_FORWARDED',
+            'HTTP_FORWARDED_FOR',
+            'HTTP_FORWARDED',
+            'HTTP_PROXY_CONNECTION',
+            'HTTP_X_REAL_IP',
+        ];
+
+        foreach ($proxyHeaders as $header) {
+            if ($this->request->getServer($header)) {
+                return true;
+            }
+        }
+
+        // Check for multiple IPs in X-Forwarded-For (VPN indicator)
+        $xff = $this->request->getServer('HTTP_X_FORWARDED_FOR');
+        if ($xff && strpos($xff, ',') !== false) {
+            return true;
+        }
+
+        return false;
     }
 }
