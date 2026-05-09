@@ -34,9 +34,67 @@ class GetKey extends BaseController
 
     /**
      * POST: /getkey/generate
-     * Auto create key + unique link for user
+     * Generate YeuMoney link first (if configured), or create key directly
      */
     public function generate()
+    {
+        $configModel = new GetkeyConfigModel();
+        $config = $configModel->getActiveConfig();
+
+        if (!$config || $config->status != 1) {
+            return redirect()->back()->with('msgDanger', 'GetKey service is currently unavailable');
+        }
+
+        // If YeuMoney token exists, redirect to YeuMoney first
+        if ($config->youmoney_token) {
+            // Generate temporary code for this session
+            $tempCode = bin2hex(random_bytes(16));
+            session()->set('getkey_temp_code', $tempCode);
+            session()->set('getkey_timestamp', time());
+
+            // Create YeuMoney link that callbacks to /getkey/verify
+            $callbackUrl = base_url('getkey/verify?code=' . $tempCode);
+            $shortUrl = $this->shortenViaYeuMoney($config->youmoney_token, $callbackUrl);
+
+            if (!$shortUrl) {
+                return redirect()->back()->with('msgDanger', 'Failed to generate link. Please try again.');
+            }
+
+            // Redirect to YeuMoney link
+            return redirect()->to($shortUrl);
+        }
+
+        // No YeuMoney - create key directly
+        return $this->createKey();
+    }
+
+    /**
+     * GET: /getkey/verify?code=xxx
+     * Callback from YeuMoney - verify and create key
+     */
+    public function verify()
+    {
+        $code = $this->request->getGet('code');
+        $sessionCode = session()->get('getkey_temp_code');
+        $timestamp = session()->get('getkey_timestamp');
+
+        // Verify code and check expiry (5 minutes)
+        if (!$code || !$sessionCode || $code !== $sessionCode || (time() - $timestamp) > 300) {
+            return redirect()->to('getkey')->with('msgDanger', 'Invalid or expired verification');
+        }
+
+        // Clear session
+        session()->remove('getkey_temp_code');
+        session()->remove('getkey_timestamp');
+
+        // Create key
+        return $this->createKey();
+    }
+
+    /**
+     * Create key and show result
+     */
+    private function createKey()
     {
         $configModel = new GetkeyConfigModel();
         $config = $configModel->getActiveConfig();
