@@ -4,12 +4,13 @@
 -- Import 1 file nay la chay du het
 -- ============================================
 
--- Xóa bảng cũ nếu có
 DROP TABLE IF EXISTS `generated_keys`;
 DROP TABLE IF EXISTS `getkey_config`;
 DROP TABLE IF EXISTS `getkey_links`;
 DROP TABLE IF EXISTS `api_tokens`;
 DROP TABLE IF EXISTS `api_config`;
+DROP TABLE IF EXISTS `bank_accounts`;
+DROP TABLE IF EXISTS `key_pricing`;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -77,8 +78,7 @@ CREATE TABLE IF NOT EXISTS `modname` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `modname` (`id`, `modname`) VALUES
-(1, 'NOCASHRANDI');
+INSERT INTO `modname` (`id`, `modname`) VALUES (1, 'NOCASHRANDI');
 
 -- ============================================
 -- Table: onoff
@@ -90,8 +90,7 @@ CREATE TABLE IF NOT EXISTS `onoff` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `onoff` (`id`, `status`, `myinput`) VALUES
-(11, 'on', 'NOCASHRANDI');
+INSERT INTO `onoff` (`id`, `status`, `myinput`) VALUES (11, 'on', 'NOCASHRANDI');
 
 -- ============================================
 -- Table: referral_code
@@ -118,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `saldo` int DEFAULT NULL,
   `status` tinyint(1) DEFAULT '1',
   `uplink` varchar(66) DEFAULT NULL,
-  `password` varchar(155) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id_users`),
@@ -135,57 +134,51 @@ CREATE TABLE IF NOT EXISTS `_ftext` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `_ftext` (`id`, `_status`, `_ftext`) VALUES
-(1, 'on', 'NOCASHRANDI');
+INSERT INTO `_ftext` (`id`, `_status`, `_ftext`) VALUES (1, 'on', 'NOCASHRANDI');
 
 -- ============================================
--- ADMIN ACCOUNT
--- Username: admin123
--- Password: admin123
+-- ADMIN ACCOUNT (admin123 / admin123)
 -- ============================================
 INSERT INTO `users` (`fullname`, `username`, `level`, `saldo`, `status`, `uplink`, `password`, `created_at`, `updated_at`) VALUES
 ('Admin', 'admin123', 1, 99999, 1, NULL, CONCAT('$', '2b$', '08$', 'i7C3yDDouWoURQVhoZ3OauU87C3Gg3sjkqgsUqiVyjGkJuBJ8RbrS'), NOW(), NOW());
 
 -- ============================================
--- Table: getkey_config (GetKey System Config)
--- Admin cấu hình 1 lần: admin account, package, giá, giờ, devices
+-- Table: getkey_config
 -- ============================================
 CREATE TABLE IF NOT EXISTS `getkey_config` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `admin_account` varchar(255) NOT NULL COMMENT 'Admin username dùng để tạo key',
-  `package_id` int NOT NULL COMMENT 'Package ID liên kết với bảng packages',
-  `price_per_hour` decimal(10,2) DEFAULT 0.00 COMMENT 'Giá mỗi giờ (VND) - 0 = free',
-  `max_hours` int DEFAULT 720 COMMENT 'Số giờ tối đa mỗi key',
-  `max_devices` int DEFAULT 1 COMMENT 'Số thiết bị tối đa mỗi key',
-  `youmoney_token` varchar(255) DEFAULT NULL COMMENT 'API Token YouMoney (tùy chọn)',
-  `status` tinyint(1) DEFAULT 1 COMMENT '1=active, 0=inactive',
+  `admin_account` varchar(255) NOT NULL,
+  `package_id` int NOT NULL,
+  `price_per_hour` decimal(10,2) DEFAULT 0.00,
+  `max_hours` int DEFAULT 720,
+  `max_devices` int DEFAULT 1,
+  `youmoney_token` varchar(255) DEFAULT NULL,
+  `status` tinyint(1) DEFAULT 1,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_package` (`package_id`),
   KEY `idx_status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================
--- Table: generated_keys (Generated Keys + Links)
--- Lưu key + link đã tạo cho từng người
+-- Table: generated_keys
 -- ============================================
 CREATE TABLE IF NOT EXISTS `generated_keys` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `key_code` varchar(64) NOT NULL UNIQUE COMMENT 'Mã code duy nhất cho link (8 ký tự)',
-  `short_url` varchar(500) DEFAULT NULL COMMENT 'YeuMoney shortened URL',
-  `user_key` varchar(32) NOT NULL COMMENT 'Key thực tế (admin123_XXXXX)',
-  `ip_address` varchar(45) DEFAULT NULL COMMENT 'IP người tạo',
-  `user_agent` text DEFAULT NULL COMMENT 'User agent',
+  `key_code` varchar(64) NOT NULL UNIQUE,
+  `short_url` varchar(500) DEFAULT NULL,
+  `user_key` varchar(32) NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_key_code` (`key_code`),
   KEY `idx_user_key` (`user_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================
--- Table: transactions (Recharge System)
+-- Table: transactions
 -- ============================================
 CREATE TABLE IF NOT EXISTS `transactions` (
   `id_transaction` int(11) NOT NULL AUTO_INCREMENT,
@@ -204,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================
--- Table: invoices (Recharge System)
+-- Table: invoices
 -- ============================================
 CREATE TABLE IF NOT EXISTS `invoices` (
   `id_invoice` int(11) NOT NULL AUTO_INCREMENT,
@@ -223,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `invoices` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================
--- Table: bank_accounts (Bank Account Management)
+-- Table: bank_accounts
 -- ============================================
 CREATE TABLE IF NOT EXISTS `bank_accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -239,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `bank_accounts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================
--- Table: key_pricing (Key Pricing Management)
+-- Table: key_pricing
 -- ============================================
 CREATE TABLE IF NOT EXISTS `key_pricing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
