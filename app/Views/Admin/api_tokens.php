@@ -51,7 +51,7 @@
                             <label for="name" class="form-label">Token Name</label>
                             <input type="text" name="name" id="name" class="form-control"
                                    placeholder="e.g., Mobile App API" value="<?= old('name') ?>" required>
-                            <?php if ($validation->hasError('name')) : ?>
+                            <?php if (isset($validation) && $validation->hasError('name')) : ?>
                                 <div class="text-danger small mt-1"><?= $validation->getError('name') ?></div>
                             <?php endif; ?>
                         </div>
@@ -60,11 +60,19 @@
                             <label for="admin_account" class="form-label">Admin Account</label>
                             <select name="admin_account" id="admin_account" class="form-select" required>
                                 <option value="">-- Select Admin Account --</option>
-                                <?php foreach ($adminUsers as $admin) : ?>
-                                    <option value="<?= $admin->username ?>" <?= old('admin_account') == $admin->username ? 'selected' : '' ?>>
-                                        <?= $admin->username ?> (Balance: <?= number_format($admin->saldo, 0) ?>)
-                                    </option>
-                                <?php endforeach; ?>
+                                <?php if (is_array($adminUsers) && count($adminUsers) > 0) : ?>
+                                    <?php foreach ($adminUsers as $admin) : ?>
+                                        <?php
+                                            $adminUsername = is_object($admin) ? ($admin->username ?? '') : ($admin['username'] ?? '');
+                                            $adminSaldo = is_object($admin) ? ($admin->saldo ?? 0) : ($admin['saldo'] ?? 0);
+                                        ?>
+                                        <option value="<?= esc($adminUsername) ?>" <?= old('admin_account') == $adminUsername ? 'selected' : '' ?>>
+                                            <?= esc($adminUsername) ?> (Balance: <?= number_format($adminSaldo, 0) ?>)
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <option value="" disabled>No admin accounts found</option>
+                                <?php endif; ?>
                             </select>
                             <?php if ($validation->hasError('admin_account')) : ?>
                                 <div class="text-danger small mt-1"><?= $validation->getError('admin_account') ?></div>
