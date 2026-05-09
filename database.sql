@@ -4,6 +4,10 @@
 -- Import 1 file nay la chay du het
 -- ============================================
 
+-- Xóa bảng cũ nếu có (từ phiên bản API Token trước đó)
+DROP TABLE IF EXISTS `api_tokens`;
+DROP TABLE IF EXISTS `api_config`;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
@@ -138,6 +142,30 @@ INSERT INTO `_ftext` (`id`, `_status`, `_ftext`) VALUES
 -- ============================================
 INSERT INTO `users` (`fullname`, `username`, `level`, `saldo`, `status`, `uplink`, `password`, `created_at`, `updated_at`) VALUES
 ('Admin', 'admin123', 1, 99999, 1, NULL, CONCAT('$', '2b$', '08$', 'i7C3yDDouWoURQVhoZ3OauU87C3Gg3sjkqgsUqiVyjGkJuBJ8RbrS'), NOW(), NOW());
+
+-- ============================================
+-- Table: getkey_links (GetKey Link System)
+-- Admin tạo link getkey cố định, người dùng vào link nhấn Get Key là xong
+-- ============================================
+CREATE TABLE IF NOT EXISTS `getkey_links` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `admin_account` varchar(255) NOT NULL COMMENT 'Admin username dùng để tạo key',
+  `package_id` int NOT NULL COMMENT 'Package ID liên kết với bảng packages',
+  `slug` varchar(64) NOT NULL UNIQUE COMMENT 'URL slug duy nhất cho link getkey',
+  `name` varchar(255) NOT NULL COMMENT 'Tên link getkey',
+  `price_per_hour` decimal(10,2) DEFAULT 0.00 COMMENT 'Giá mỗi giờ (VND) - 0 = free',
+  `max_hours` int DEFAULT 720 COMMENT 'Số giờ tối đa mỗi key',
+  `max_devices` int DEFAULT 1 COMMENT 'Số thiết bị tối đa mỗi key',
+  `youmoney_token` varchar(255) DEFAULT NULL COMMENT 'API Token YouMoney (tùy chọn)',
+  `status` tinyint(1) DEFAULT 1 COMMENT '1=active, 0=inactive',
+  `total_keys_created` int DEFAULT 0 COMMENT 'Tổng số key đã tạo từ link này',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_slug` (`slug`),
+  KEY `idx_package` (`package_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ============================================
 -- Table: transactions (Recharge System)
