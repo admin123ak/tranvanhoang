@@ -1,14 +1,15 @@
 <?= $this->extend('Layout/Auth') ?>
 
 <?= $this->section('content') ?>
-<div class="row h-100">
-    <div class="col-lg-5 col-12">
-        <div id="auth-left">
-            <div class="auth-logo">
-                <a href="<?= site_url() ?>"><img src="<?= base_url('assets/static/images/logo/logo.svg') ?>" alt="Logo"></a>
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="card" style="max-width:420px; width:100%;">
+        <div class="card-body p-5">
+            <div class="text-center mb-3">
+                <a href="<?= site_url() ?>" class="mb-4 d-inline-block">
+                    <img src="<?= base_url('assets/images/logo.svg') ?>" alt="Logo">
+                </a>
+                <h1 class="card-title mb-5 h5">Sign in to your account</h1>
             </div>
-            <h1 class="auth-title">Log in.</h1>
-            <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
 
             <?php if (session()->getFlashdata('msgDanger')) : ?>
                 <div class="alert alert-danger alert-dismissible show fade">
@@ -24,41 +25,37 @@
                 </div>
             <?php endif; ?>
 
-            <?= form_open() ?>
-                <div class="form-group position-relative has-icon-left mb-4">
-                    <input type="text" class="form-control form-control-xl" name="username" placeholder="Username" required minlength="4" value="<?= old('username') ?>">
-                    <div class="form-control-icon">
-                        <i class="bi bi-person"></i>
-                    </div>
+            <?= form_open('', ['class' => 'needs-validation mt-3']) ?>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input id="username" type="text" class="form-control" name="username" placeholder="Enter your username" required minlength="4" value="<?= old('username') ?>" autofocus>
                     <?php if ($validation->hasError('username')) : ?>
                         <div class="text-danger small mt-1"><?= $validation->getError('username') ?></div>
                     <?php endif; ?>
                 </div>
-                <div class="form-group position-relative has-icon-left mb-4">
-                    <input type="password" class="form-control form-control-xl" name="password" placeholder="Password" required minlength="6">
-                    <div class="form-control-icon">
-                        <i class="bi bi-shield-lock"></i>
-                    </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input id="password" type="password" class="form-control" name="password" placeholder="Password" required minlength="6">
                     <?php if ($validation->hasError('password')) : ?>
                         <div class="text-danger small mt-1"><?= $validation->getError('password') ?></div>
                     <?php endif; ?>
                 </div>
-                <div class="form-check form-check-lg d-flex align-items-end">
-                    <input class="form-check-input me-2" type="checkbox" name="stay_log" value="yes" id="flexCheckDefault">
-                    <label class="form-check-label text-gray-600" for="flexCheckDefault">
-                        Keep me logged in
-                    </label>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input id="remember" class="form-check-input" type="checkbox" name="stay_log" value="yes">
+                        <label class="form-check-label small" for="remember">Remember me</label>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
+
+                <button class="btn btn-primary w-100" type="submit">Sign in</button>
             <?= form_close() ?>
 
-            <div class="text-center mt-5 text-lg fs-4">
-                <p class="text-gray-600">Don't have an account? <a href="<?= site_url('register') ?>" class="font-bold">Sign up</a>.</p>
+            <div class="text-center mt-3 small text-muted">
+                Don't have an account? <a href="<?= site_url('register') ?>" class="link-primary">Sign up</a>
             </div>
         </div>
-    </div>
-    <div class="col-lg-7 d-none d-lg-block">
-        <div id="auth-right"></div>
     </div>
 </div>
 <?= $this->endSection() ?>

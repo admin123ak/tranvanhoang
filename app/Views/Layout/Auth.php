@@ -2,19 +2,20 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
     <title><?= isset($title) ? $title : 'Auth' ?> - <?= BASE_NAME ?></title>
-    <link rel="stylesheet" href="<?= base_url('assets/compiled/css/app.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/compiled/css/app-dark.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/compiled/css/auth.css') ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= base_url('assets/images/apple-touch-icon.png') ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/images/favicon-32x32.png') ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= base_url('assets/images/favicon-16x16.png') ?>">
+    <link rel="manifest" href="<?= base_url('assets/site.webmanifest') ?>">
+
+    <script type="module" crossorigin src="<?= base_url('assets/js/main.js') ?>"></script>
+    <link rel="stylesheet" crossorigin href="<?= base_url('assets/css/main.css') ?>">
 </head>
 
 <body>
-    <script src="<?= base_url('assets/static/js/initTheme.js') ?>"></script>
-    <div id="auth">
-        <?= $this->renderSection('content') ?>
-    </div>
+    <?= $this->renderSection('content') ?>
 </body>
 
 </html>
