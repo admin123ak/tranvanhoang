@@ -129,8 +129,17 @@ class Getkey extends BaseController
             return redirect()->to('getkey')->with('msgDanger', 'Admin account not found');
         }
 
-        // Calculate price (free if price_per_hour = 0)
-        $totalPrice = $config->max_hours * $config->price_per_hour;
+        // Get active pricing from key_pricing table
+        $db = \Config\Database::connect();
+        $pricingBuilder = $db->table('key_pricing');
+        $pricing = $pricingBuilder->where('status', 1)->orderBy('duration_hours', 'ASC')->first();
+
+        if (!$pricing) {
+            return redirect()->to('getkey')->with('msgDanger', 'No pricing configured');
+        }
+
+        // Calculate price (free if price = 0)
+        $totalPrice = $pricing['price'];
 
         // Check balance (skip if free)
         $adminBalance = is_object($adminUser) ? ($adminUser->saldo ?? 0) : ($adminUser['saldo'] ?? 0);
@@ -158,7 +167,7 @@ class Getkey extends BaseController
             'game' => $pkgCode,
             'package_id' => $config->package_id,
             'user_key' => $userKey,
-            'duration' => $config->max_hours,
+            'duration' => $pricing['duration_hours'],
             'max_devices' => $config->max_devices,
             'devices' => null,
             'status' => 1,
@@ -205,7 +214,7 @@ class Getkey extends BaseController
         $historyInfo = implode('|', [
             $pkgName,
             $userKey,
-            $config->max_hours,
+            $pricing['duration_hours'],
             $config->max_devices,
             ''
         ]);

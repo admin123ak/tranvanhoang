@@ -51,15 +51,15 @@
                                         </tr>
                                         <tr>
                                             <td><strong>Ngân hàng:</strong></td>
-                                            <td><strong>MBBank</strong></td>
+                                            <td><strong><?= isset($bankAccount) && $bankAccount ? esc($bankAccount->bank_name) : 'MBBank' ?></strong></td>
                                         </tr>
                                         <tr>
                                             <td><strong>Số tài khoản:</strong></td>
-                                            <td><code style="font-size: 1.2em;">0868641019</code></td>
+                                            <td><code style="font-size: 1.2em;"><?= isset($bankAccount) && $bankAccount ? esc($bankAccount->account_number) : '0868641019' ?></code></td>
                                         </tr>
                                         <tr>
                                             <td><strong>Chủ tài khoản:</strong></td>
-                                            <td><strong>TRẦN VĂN HOÀNG</strong></td>
+                                            <td><strong><?= isset($bankAccount) && $bankAccount ? esc($bankAccount->account_name) : 'TRẦN VĂN HOÀNG' ?></strong></td>
                                         </tr>
                                         <tr>
                                             <td><strong>Nội dung CK:</strong></td>
@@ -81,14 +81,14 @@
                                 <div class="col-md-6 text-center">
                                     <h6>Quét mã QR để thanh toán</h6>
                                     <div class="mb-3">
-                                        <img src="https://api.vietqr.io/image/MB-0868641019-compact.jpg?amount=<?= $invoice->amount ?>&addInfo=<?= urlencode($invoice->invoice_code) ?>&accountName=TRAN%20VAN%20HOANG"
+                                        <img src="https://api.vietqr.io/image/<?= isset($bankAccount) && $bankAccount ? urlencode(str_replace(' ', '', $bankAccount->bank_name) . '-' . $bankAccount->account_number . '-compact.jpg') : urlencode('MB-0868641019-compact.jpg') ?>?amount=<?= $invoice->amount ?>&addInfo=<?= urlencode($invoice->invoice_code) ?>&accountName=<?= isset($bankAccount) && $bankAccount ? urlencode(str_replace(' ', '%20', $bankAccount->account_name)) : urlencode('TRAN%20VAN%20HOANG') ?>"
                                              alt="QR Code"
                                              class="img-fluid border rounded"
                                              style="max-width: 300px;"
                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                         <div style="display:none; padding: 40px; background: #f8f9fa; border-radius: 8px; margin: 0 auto; max-width: 300px;">
                                             <i class="ti ti-qrcode fs-1 text-muted"></i>
-                                            <p class="text-muted mt-2">Mã QR MBBank</p>
+                                            <p class="text-muted mt-2">Mã QR <?= isset($bankAccount) && $bankAccount ? esc($bankAccount->bank_name) : 'MBBank' ?></p>
                                         </div>
                                     </div>
                                     <p class="text-muted">

@@ -134,10 +134,16 @@ class Recharge extends BaseController
             }
         }
 
+        // Get active bank account
+        $db = \Config\Database::connect();
+        $bankBuilder = $db->table('bank_accounts');
+        $bankAccount = $bankBuilder->where('status', 1)->orderBy('id', 'DESC')->get()->getRow();
+
         $data = [
             'title' => 'Payment',
             'user' => $this->user,
             'invoice' => (object) $invoice,
+            'bankAccount' => $bankAccount,
         ];
 
         return view('User/payment', $data);
@@ -190,12 +196,16 @@ class Recharge extends BaseController
             }
         }
 
-        // Call MBBank API to check
-        $apiKey = 'MB_FREE_021FA4D804026B08';
+        // Get active bank account from database
+        $db = \Config\Database::connect();
+        $bankBuilder = $db->table('bank_accounts');
+        $bankAccount = $bankBuilder->where('status', 1)->orderBy('id', 'DESC')->get()->getRow();
 
-        if (!$apiKey) {
-            return $this->response->setJSON(['success' => false, 'message' => 'API not configured']);
+        if (!$bankAccount || !$bankAccount->api_token) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Bank API not configured']);
         }
+
+        $apiKey = $bankAccount->api_token;
 
         try {
             $client = Services::curlrequest();
@@ -325,12 +335,17 @@ class Recharge extends BaseController
      */
     public function autoCheck()
     {
-        $apiKey = 'MB_FREE_021FA4D804026B08';
+        // Get active bank account from database
+        $db = \Config\Database::connect();
+        $bankBuilder = $db->table('bank_accounts');
+        $bankAccount = $bankBuilder->where('status', 1)->orderBy('id', 'DESC')->get()->getRow();
 
-        if (!$apiKey) {
-            log_message('error', 'MBBank API key not configured');
+        if (!$bankAccount || !$bankAccount->api_token) {
+            log_message('error', 'Bank API not configured');
             return $this->response->setJSON(['success' => false, 'message' => 'API key not configured']);
         }
+
+        $apiKey = $bankAccount->api_token;
 
         try {
             $client = Services::curlrequest();
