@@ -81,7 +81,27 @@
                     </ul>
 
                     <?php if ($currentPlan) : ?>
-                        <button class="btn btn-secondary w-100" disabled>Đang có gói <?= esc($currentPlan['plan_name']) ?></button>
+                        <?php if ($plan->price_per_month > $currentPlan['plan_price']) : ?>
+                            <form action="<?= site_url('plans/purchase') ?>" method="POST" class="purchase-form" data-plan-id="<?= esc($plan->id) ?>">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="plan_id" value="<?= esc($plan->id) ?>">
+                                <input type="hidden" name="duration_days" value="30" class="duration-input">
+
+                                <select class="form-select duration-select mb-3" data-base-price="<?= esc($plan->price_per_month) ?>">
+                                    <option value="30">30 ngày — <?= number_format($plan->price_per_month, 0, ',', '.') ?>₫</option>
+                                    <option value="90">90 ngày — <?= number_format($plan->price_per_month * 3, 0, ',', '.') ?>₫</option>
+                                    <option value="365">365 ngày — <?= number_format($plan->price_per_month * 12, 0, ',', '.') ?>₫</option>
+                                </select>
+
+                                <button type="submit" class="btn btn-success w-100" onclick="return confirm('Nâng cấp lên gói <?= esc($plan->name) ?>?')">
+                                    <i class="ti ti-arrow-up"></i> Nâng cấp
+                                </button>
+                            </form>
+                        <?php elseif ($plan->id == $currentPlan['plan_id']) : ?>
+                            <button class="btn btn-secondary w-100" disabled>Đang sử dụng</button>
+                        <?php else : ?>
+                            <button class="btn btn-secondary w-100" disabled>Không thể hạ cấp</button>
+                        <?php endif; ?>
                     <?php else : ?>
                         <form action="<?= site_url('plans/purchase') ?>" method="POST" class="purchase-form" data-plan-id="<?= esc($plan->id) ?>">
                             <?= csrf_field() ?>
