@@ -415,11 +415,10 @@ public function deleteUnused(){
 
           $validation = Services::validation();
 
-          // Admin (level=1) always allowed, no plan check needed
-          // For other users: check if they have active plan
-          $hasPlan = false;
+          // Check plan for non-admin users
+          $hasPlan = ($user->level == 1);
           $planStats = null;
-          if ($user->level != 1) {
+          if (!$hasPlan) {
               $userPlanModel = new \App\Models\UserPlanModel();
               $activePlan = $userPlanModel->getUserPlan($user->id_users);
               if ($activePlan) {
@@ -428,34 +427,30 @@ public function deleteUnused(){
               }
           }
 
-          if (!$hasPlan) {
-              // No plan - deduct saldo as usual
+          if ($hasPlan) {
+              if ($planStats && $planStats['keys_left'] <= 0) {
+                  return redirect()->back()->withInput()->with('msgWarning', 'Het key quota. Vui long mua goi moi.');
+              }
+          } else {
               $reduceCheck = ($user->saldo - $getPrice);
               if ($reduceCheck < 0) {
                   $validation->setError('duration', 'Insufficient balance');
                   return redirect()->back()->withInput()->with('msgWarning', 'Please top up to your beloved admin.');
               }
-          } else {
-              // Has plan - check key quota
-              if ($planStats && $planStats['keys_left'] <= 0) {
-                  return redirect()->back()->withInput()->with('msgWarning', 'Het key quota. Vui long mua goi moi.');
-              }
-              $reduceCheck = $user->saldo; // Don't deduct
           }
-              if (!$this->validate($form_rules)) {
-                  return redirect()->back()->withInput()->with('msgDanger', 'Failed! Please check the error');
-              } else {
-                
+
+          if (!$this->validate($form_rules)) {
+              return redirect()->back()->withInput()->with('msgDanger', 'Failed! Please check the error');
+          } else {
+
                  //================================================//
-                
-           
-            
-    
+
+
                 //for($i = 1; $i < $loopcount; $i++) {
-                
+
               //}
-            
-            
+
+
                     $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
                     $randomPart = '';
                     for ($i = 0; $i < 6; $i++) {
@@ -491,16 +486,14 @@ public function deleteUnused(){
 
                   $idKeys = $this->model->insert($data_response);
 
-                  if (!$hasPlan) {
-                      // No plan - deduct saldo
-                      $this->userModel->update(session('userid'), ['saldo' => $reduceCheck]);
-                  } else {
-                      // Has plan - increment key usage
+                  if ($hasPlan) {
                       $userPlanModel = new \App\Models\UserPlanModel();
                       $activePlan = $userPlanModel->getUserPlan($user->id_users);
                       if ($activePlan) {
                           $userPlanModel->incrementKeysUsed($activePlan->id);
                       }
+                  } else {
+                      $this->userModel->update(session('userid'), ['saldo' => ($user->saldo - $getPrice)]);
                   }
 
                   $history = new HistoryModel();
@@ -518,9 +511,8 @@ public function deleteUnused(){
 
 
                   return redirect()->back()->with('msgSuccess', $msg);
-                
+
               }
-          }
      }
- 
+
 }
