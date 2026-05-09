@@ -112,34 +112,39 @@
 </aside>
 
 <style>
-/* Sidebar submenu styles */
+/* Sidebar submenu styles - override InApp defaults */
 .sidebar .has-sub {
     position: relative;
 }
 
 .sidebar .submenu {
-    display: none;
-    padding-left: 1.5rem;
-    list-style: none;
+    display: none !important;
+    padding-left: 1.5rem !important;
+    list-style: none !important;
+    margin: 0 !important;
 }
 
-.sidebar .submenu.active.show {
-    display: block;
+.sidebar .submenu.open {
+    display: block !important;
 }
 
 .sidebar .submenu .nav-link {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    color: #6c757d;
+    padding: 6px 10px !important;
+    font-size: 0.8rem !important;
+    color: #737373 !important;
+    margin: 1px 12px !important;
 }
 
 .sidebar .submenu .nav-link:hover,
 .sidebar .submenu .nav-link.active {
-    color: #0d6efd;
+    color: #e66239 !important;
+    background-color: transparent !important;
 }
 
 .sidebar .submenu-arrow {
     transition: transform 0.3s;
+    font-size: 14px !important;
+    margin-left: auto !important;
 }
 
 .sidebar .has-sub.active .submenu-arrow {
@@ -162,29 +167,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (sub !== parent) {
                     const otherSubmenu = sub.querySelector('.submenu');
                     if (otherSubmenu) {
-                        otherSubmenu.classList.remove('active', 'show');
+                        otherSubmenu.classList.remove('open');
                     }
-                    sub.querySelector('.submenu-arrow')?.classList.remove('rotate-arrow');
+                    sub.classList.remove('active');
                 }
             });
 
             // Toggle current submenu
             if (submenu) {
-                submenu.classList.toggle('active');
-                submenu.classList.toggle('show');
+                submenu.classList.toggle('open');
             }
-
-            // Toggle arrow rotation
-            const arrow = parent.querySelector('.submenu-arrow');
-            if (arrow) {
-                arrow.style.transform = submenu?.classList.contains('show') ? 'rotate(180deg)' : '';
-            }
+            parent.classList.toggle('active');
         });
     });
 
-    // Auto-open active parent
-    const activeSubmenu = document.querySelector('.submenu.active.show');
+    // Auto-open active submenu on page load
+    const activeSubmenu = document.querySelector('.submenu.active');
     if (activeSubmenu) {
+        activeSubmenu.classList.add('open');
         const parent = activeSubmenu.closest('.has-sub');
         if (parent) {
             parent.classList.add('active');
