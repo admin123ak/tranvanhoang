@@ -41,6 +41,7 @@ class UserPlanModel extends Model
         }
 
         return [
+            'plan_id' => $plan->plan_id,
             'plan_name' => $plan->plan_name,
             'plan_price' => $plan->price_per_month,
             'max_packages' => $plan->max_packages,
