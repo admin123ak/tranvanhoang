@@ -111,14 +111,15 @@ class Plan extends BaseController
             $db->transComplete();
 
             if ($db->transStatus() === false) {
-                return redirect()->back()->with('msgDanger', 'Co loi xay ra khi mua goi');
+                log_message('error', 'Transaction failed for plan purchase');
+                return redirect()->back()->with('msgDanger', 'Transaction that bai - kiem tra lai database');
             }
 
             return redirect()->to('plans')->with('msgSuccess', 'Da mua goi ' . $plan->name . ' (' . $durationDays . ' ngay) thanh cong!');
         } catch (\Exception $e) {
             $db->transRollback();
             log_message('error', 'Plan purchase failed: ' . $e->getMessage());
-            return redirect()->back()->with('msgDanger', 'Co loi xay ra khi mua goi');
+            return redirect()->back()->with('msgDanger', 'Loi: ' . $e->getMessage());
         }
     }
 
