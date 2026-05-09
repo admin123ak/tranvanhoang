@@ -102,7 +102,7 @@
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-sm btn-warning" onclick="editAccount(<?= htmlspecialchars(json_encode($acc), ENT_QUOTES, 'UTF-8') ?>)">
+                                                    <button class="btn btn-sm btn-warning" onclick="editAccount(<?= esc($acc->id) ?>, '<?= esc(str_replace("'", "\\'", $acc->bank_name)) ?>', '<?= esc(str_replace("'", "\\'", $acc->account_number)) ?>', '<?= esc(str_replace("'", "\\'", $acc->account_name)) ?>', '<?= esc(str_replace("'", "\\'", $acc->api_token ?? '')) ?>', <?= esc($acc->status) ?>)">
                                                         <i class="ti ti-edit"></i>
                                                     </button>
                                                     <a href="<?= site_url('admin/bank-accounts/delete/' . $acc->id) ?>"
@@ -169,15 +169,16 @@
 </div>
 
 <script>
-function editAccount(account) {
-    document.getElementById('edit_bank_name').value = account.bank_name;
-    document.getElementById('edit_account_number').value = account.account_number;
-    document.getElementById('edit_account_name').value = account.account_name;
-    document.getElementById('edit_api_token').value = account.api_token || '';
-    document.getElementById('edit_status').value = account.status;
-    document.getElementById('editForm').action = '<?= site_url('admin/bank-accounts/edit/') ?>' + account.id;
+function editAccount(id, bankName, accountNumber, accountName, apiToken, status) {
+    document.getElementById('edit_bank_name').value = bankName;
+    document.getElementById('edit_account_number').value = accountNumber;
+    document.getElementById('edit_account_name').value = accountName;
+    document.getElementById('edit_api_token').value = apiToken || '';
+    document.getElementById('edit_status').value = status;
+    document.getElementById('editForm').action = '<?= site_url('admin/bank-accounts/edit/') ?>' + id;
 
-    var modal = new bootstrap.Modal(document.getElementById('editModal'));
+    var modalEl = document.getElementById('editModal');
+    var modal = new bootstrap.Modal(modalEl);
     modal.show();
 }
 </script>

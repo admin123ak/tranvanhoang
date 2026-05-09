@@ -20,28 +20,55 @@ class Keys extends BaseController
         $this->packageModel = new PackageModel();
         $this->time = new \CodeIgniter\I18n\Time;
 
-        $this->duration = [
-            2 => '2 Hours &mdash; 10.000₫/Device',
-            5 => '5 Hours &mdash; 25.000₫/Device',
-            24 => '1 Days &mdash; 75.000₫/Device',
-            72 => '3 Days &mdash; 150.000₫/Device',
-            168 => '7 Days &mdash; 300.000₫/Device',
-            336 => '14 Days &mdash; 600.000₫/Device',
-            720 => '30 Days &mdash; 1.000.000₫/Device',
-            1440 => '60 Days &mdash; 1.800.000₫/Device',
+        // Load duration and price from key_pricing table
+        $this->duration = [];
+        $this->price = [];
+        $db = \Config\Database::connect();
+        try {
+            // Ensure table exists
+            $db->query("CREATE TABLE IF NOT EXISTS `key_pricing` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `duration_hours` int(11) NOT NULL,
+                `price` bigint(20) NOT NULL DEFAULT '0',
+                `description` varchar(255) DEFAULT NULL,
+                `status` tinyint(1) NOT NULL DEFAULT '1',
+                `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (`id`),
+                UNIQUE KEY `duration_hours` (`duration_hours`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
-        ];
+            // Insert defaults if empty
+            $checkExists = $db->query("SELECT COUNT(*) as cnt FROM key_pricing")->getRow();
+            if ($checkExists && $checkExists->cnt == 0) {
+                $db->query("INSERT INTO `key_pricing` (`duration_hours`, `price`, `description`, `status`) VALUES
+                    (24, 10000, '1 ngày', 1),
+                    (168, 50000, '7 ngày', 1),
+                    (720, 150000, '30 ngày', 1)");
+            }
 
-        $this->price = [
-            2 => 10000,
-            5 => 25000,
-            24 => 75000,
-            72 => 150000,
-            168 => 300000,
-            336 => 600000,
-            720 => 1000000,
-            1440 => 1800000,
-        ];
+            $rows = $db->query("SELECT * FROM key_pricing WHERE status = 1 ORDER BY duration_hours ASC")->getResult();
+            foreach ($rows as $row) {
+                $h = (int)$row->duration_hours;
+                $p = (int)$row->price;
+                $desc = $row->description ?: $h . ' giờ';
+                $this->duration[$h] = $desc . ' — ' . number_format($p, 0, ',', '.') . '₫';
+                $this->price[$h] = $p;
+            }
+        } catch (\Exception $e) {
+            log_message('error', 'Duration load failed: ' . $e->getMessage());
+            // Fallback
+            $this->duration = [
+                24 => '1 ngày — 10.000₫',
+                168 => '7 ngày — 50.000₫',
+                720 => '30 ngày — 150.000₫',
+            ];
+            $this->price = [
+                24 => 10000,
+                168 => 50000,
+                720 => 150000,
+            ];
+        }
     }
 
     public function index()
