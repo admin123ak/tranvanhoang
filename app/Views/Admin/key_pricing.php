@@ -6,100 +6,131 @@
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>Quản lý giá key</h3>
-                <p class="text-subtitle text-muted">Thiết lập giá theo thời gian sử dụng</p>
+                <p class="text-subtitle text-muted">Danh sách duration đang được sử dụng trong hệ thống</p>
             </div>
         </div>
     </div>
 
     <section class="section">
         <div class="row">
-            <div class="col-12">
+            <!-- Existing Key Durations from keys_code -->
+            <div class="col-12 col-lg-6">
                 <div class="card">
-                    <div class="card-header">
-                        <h4>Thêm giá key</h4>
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="ti ti-key me-2"></i>Duration đang được sử dụng</h5>
                     </div>
                     <div class="card-body">
-                        <form action="<?= site_url('admin/key-pricing/create') ?>" method="POST">
-                            <?= csrf_field() ?>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="duration_hours">Thời gian (giờ) <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="duration_hours" name="duration_hours"
-                                               placeholder="VD: 24, 168, 720..." min="1" required>
-                                        <small class="text-muted">24h = 1 ngày, 168h = 7 ngày, 720h = 30 ngày</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="price">Giá (VND) <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="price" name="price"
-                                               placeholder="VD: 10000, 50000..." min="0" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="description">Mô tả</label>
-                                        <input type="text" class="form-control" id="description" name="description"
-                                               placeholder="VD: 1 ngày, 1 tuần...">
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="ti ti-plus"></i> Thêm giá
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Danh sách giá key</h4>
-                    </div>
-                    <div class="card-body">
-                        <?php if (empty($pricings)): ?>
-                            <p class="text-muted">Chưa có giá nào</p>
-                        <?php else: ?>
+                        <?php if (empty($keyDurations)) : ?>
+                            <p class="text-muted">Chưa có key nào được tạo.</p>
+                        <?php else : ?>
                             <div class="table-responsive">
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Thời gian</th>
-                                            <th>Giá</th>
-                                            <th>Mô tả</th>
+                                            <th>Duration (giờ)</th>
+                                            <th>Số key đã tạo</th>
+                                            <th>Lần cuối tạo</th>
                                             <th>Trạng thái</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($pricings as $pricing): ?>
+                                        <?php foreach ($keyDurations as $kd) : ?>
+                                            <?php
+                                                // Check if this duration already has pricing
+                                                $hasPricing = false;
+                                                if (!empty($pricings)) {
+                                                    foreach ($pricings as $p) {
+                                                        if ($p->duration_hours == $kd->duration) {
+                                                            $hasPricing = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            ?>
                                             <tr>
-                                                <td><?= esc($pricing->id) ?></td>
-                                                <td><strong><?= esc($pricing->duration_hours) ?> giờ</strong></td>
-                                                <td><span class="badge bg-success"><?= number_format($pricing->price, 0, ',', '.') ?>₫</span></td>
-                                                <td><?= esc($pricing->description ?? '—') ?></td>
+                                                <td><strong><?= esc($kd->duration) ?>h</strong></td>
+                                                <td><span class="badge bg-secondary"><?= esc($kd->total_keys) ?></span></td>
+                                                <td><small><?= esc($kd->last_used) ?></small></td>
                                                 <td>
-                                                    <?php if ($pricing->status == 1): ?>
-                                                        <span class="badge bg-success">Hoạt động</span>
-                                                    <?php else: ?>
-                                                        <span class="badge bg-secondary">Tắt</span>
+                                                    <?php if ($hasPricing) : ?>
+                                                        <span class="badge bg-success">Đã có giá</span>
+                                                    <?php else : ?>
+                                                        <span class="badge bg-warning">Chưa có giá</span>
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-sm btn-warning" onclick="editPricing(<?= htmlspecialchars(json_encode($pricing), ENT_QUOTES, 'UTF-8') ?>)">
-                                                        <i class="ti ti-edit"></i>
-                                                    </button>
-                                                    <a href="<?= site_url('admin/key-pricing/delete/' . $pricing->id) ?>"
-                                                       class="btn btn-sm btn-danger"
-                                                       onclick="return confirm('Xóa giá này?')">
-                                                        <i class="ti ti-trash"></i>
-                                                    </a>
+                                                    <?php if (!$hasPricing) : ?>
+                                                        <button class="btn btn-sm btn-primary" onclick="quickAdd(<?= esc($kd->duration) ?>)">
+                                                            <i class="ti ti-plus"></i> Thêm giá
+                                                        </button>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Management -->
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="ti ti-currency-dollar me-2"></i>Bảng giá key</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="<?= site_url('admin/key-pricing/create') ?>" method="POST">
+                            <?= csrf_field() ?>
+                            <div class="row g-2 mb-3">
+                                <div class="col-4">
+                                    <input type="number" class="form-control" name="duration_hours"
+                                           placeholder="Giờ (VD: 24)" min="1" required>
+                                </div>
+                                <div class="col-4">
+                                    <input type="number" class="form-control" name="price"
+                                           placeholder="Giá (VND)" min="0" required>
+                                </div>
+                                <div class="col-4">
+                                    <input type="text" class="form-control" name="description"
+                                           placeholder="Mô tả (VD: 1 ngày)">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="ti ti-plus"></i> Thêm giá
+                            </button>
+                        </form>
+
+                        <hr>
+
+                        <?php if (empty($pricings)) : ?>
+                            <p class="text-muted text-center">Chưa có bảng giá nào. Hãy thêm từ danh sách bên trái.</p>
+                        <?php else : ?>
+                            <div class="list-group">
+                                <?php foreach ($pricings as $p) : ?>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong><?= esc($p->duration_hours) ?>h</strong>
+                                            <span class="badge bg-success ms-2"><?= number_format($p->price, 0, ',', '.') ?>₫</span>
+                                            <?php if ($p->description) : ?>
+                                                <small class="text-muted ms-2">- <?= esc($p->description) ?></small>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-sm btn-warning" onclick="editPricing(<?= htmlspecialchars(json_encode($p), ENT_QUOTES, 'UTF-8') ?>)">
+                                                <i class="ti ti-edit"></i>
+                                            </button>
+                                            <a href="<?= site_url('admin/key-pricing/delete/' . $p->id) ?>"
+                                               class="btn btn-sm btn-danger"
+                                               onclick="return confirm('Xóa giá này?')">
+                                                <i class="ti ti-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -120,20 +151,20 @@
             <form id="editForm" method="POST">
                 <?= csrf_field() ?>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Thời gian (giờ) <span class="text-danger">*</span></label>
+                    <div class="form-group mb-2">
+                        <label>Thời gian (giờ)</label>
                         <input type="number" class="form-control" name="duration_hours" id="edit_duration_hours" min="1" required>
                     </div>
-                    <div class="form-group">
-                        <label>Giá (VND) <span class="text-danger">*</span></label>
+                    <div class="form-group mb-2">
+                        <label>Giá (VND)</label>
                         <input type="number" class="form-control" name="price" id="edit_price" min="0" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <label>Mô tả</label>
                         <input type="text" class="form-control" name="description" id="edit_description">
                     </div>
                     <div class="form-group">
-                        <label>Trạng thái <span class="text-danger">*</span></label>
+                        <label>Trạng thái</label>
                         <select class="form-control" name="status" id="edit_status" required>
                             <option value="1">Hoạt động</option>
                             <option value="0">Tắt</option>
@@ -156,9 +187,13 @@ function editPricing(pricing) {
     document.getElementById('edit_description').value = pricing.description || '';
     document.getElementById('edit_status').value = pricing.status;
     document.getElementById('editForm').action = '<?= site_url('admin/key-pricing/edit/') ?>' + pricing.id;
-
     var modal = new bootstrap.Modal(document.getElementById('editModal'));
     modal.show();
+}
+
+function quickAdd(durationHours) {
+    document.querySelector('input[name="duration_hours"]').value = durationHours;
+    document.querySelector('input[name="price"]').focus();
 }
 </script>
 
