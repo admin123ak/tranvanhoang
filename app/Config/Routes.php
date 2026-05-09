@@ -78,11 +78,20 @@ $routes->group('admin', ['filter' => 'admin'], function ($routes) {
 	$routes->match(['get', 'post'], 'packages/edit/(:num)', 'Package::edit/$1');
 	$routes->get('packages/delete/(:num)', 'Package::delete/$1');
 
+	// API Tokens Management
+	$routes->match(['get', 'post'], 'api-tokens', 'ApiTokens::index');
+	$routes->get('api-tokens/delete/(:num)', 'ApiTokens::delete/$1');
+	$routes->get('api-tokens/toggle/(:num)', 'ApiTokens::toggle/$1');
+
 	/* --------------------------- Admin API Grouping -------------------------- */
 	$routes->group('api', function ($routes) {
 		$routes->match(['get', 'post'], 'users', 'User::api_get_users');
 	});
 });
+
+// Public API endpoints for auto key generation
+$routes->post('api/generate-key', 'ApiKey::generateKey');
+$routes->get('api/check-balance', 'ApiKey::checkBalance');
 
 $routes->match(['get', 'post'], 'connect', 'Connect::index');
 /*
