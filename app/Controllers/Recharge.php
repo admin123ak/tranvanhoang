@@ -67,6 +67,17 @@ class Recharge extends BaseController
             return redirect()->back()->withInput()->with('msgDanger', 'Invalid amount. Minimum 10.000₫');
         }
 
+        // Check for existing pending invoice to prevent duplicates
+        $pendingInvoice = $this->invoiceModel
+            ->where('user_id', $this->user->id_users)
+            ->where('status', 'pending')
+            ->where('expired_at >', date('Y-m-d H:i:s'))
+            ->first();
+
+        if ($pendingInvoice) {
+            return redirect()->to('recharge/payment/' . $pendingInvoice->invoice_code);
+        }
+
         // Generate invoice
         $invoiceCode = $this->invoiceModel->generateInvoiceCode();
         $expiredAt = date('Y-m-d H:i:s', strtotime('+30 minutes'));

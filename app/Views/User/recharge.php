@@ -24,7 +24,7 @@
                             <h2 class="mb-0"><?= isset($user->saldo) ? number_format($user->saldo, 0, ',', '.') : '0' ?>₫</h2>
                         </div>
 
-                        <form action="<?= site_url('recharge/create') ?>" method="POST">
+                        <form action="<?= site_url('recharge/create') ?>" method="POST" id="createInvoiceForm">
                             <?= csrf_field() ?>
                             <div class="form-group">
                                 <label for="amount">Số tiền cần nạp (VND)</label>
@@ -33,7 +33,7 @@
                                        min="10000" step="1000" required>
                                 <small class="text-muted">Tối thiểu: 10.000₫</small>
                             </div>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
                                 <i class="ti ti-receipt"></i> Tạo hóa đơn
                             </button>
                         </form>
@@ -149,4 +149,18 @@
         </div>
     </section>
 </div>
+
+<script>
+// Prevent double form submission
+document.getElementById('createInvoiceForm').addEventListener('submit', function(e) {
+    var btn = document.getElementById('submitBtn');
+    if (btn.disabled) {
+        e.preventDefault();
+        return;
+    }
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang xử lý...';
+});
+</script>
+
 <?= $this->endSection() ?>

@@ -174,25 +174,22 @@ function checkPayment() {
 // Countdown timer
 const expiredAtStr = '<?= $invoice->expired_at ?>';
 const expiredAt = expiredAtStr ? new Date(expiredAtStr).getTime() : 0;
-let hasReloaded = false;
 
 if (expiredAt > 0 && !isNaN(expiredAt)) {
     function updateCountdown() {
         const now = new Date().getTime();
         const distance = expiredAt - now;
 
-        if (distance < 0 && !hasReloaded) {
-            hasReloaded = true;
+        if (distance < 0) {
             document.getElementById('countdown').innerHTML = 'Đã hết hạn';
-            setTimeout(() => location.reload(), 2000);
+            document.getElementById('checkPaymentBtn').disabled = true;
+            document.getElementById('checkPaymentBtn').innerHTML = '<i class="ti ti-clock-x"></i> Đã hết hạn';
             return;
         }
 
-        if (distance > 0) {
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            document.getElementById('countdown').innerHTML = minutes + ' phút ' + seconds + ' giây';
-        }
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        document.getElementById('countdown').innerHTML = minutes + ' phút ' + seconds + ' giây';
     }
 
     updateCountdown();
