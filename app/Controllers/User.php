@@ -26,11 +26,44 @@ class User extends BaseController
     public function index()
     {
         $historyModel = new HistoryModel();
+        $keysModel = new \App\Models\KeysModel();
+
+        // Get keys statistics
+        $builder = $keysModel->builder();
+        if ($this->user->level != 1) {
+            $builder->where('registrator', $this->user->username);
+        }
+
+        // Total active keys
+        $totalKeys = $builder->where('status', 1)->countAllResults(false);
+
+        // Total devices
+        $keysWithDevices = $builder->where('devices IS NOT NULL', null, false)
+            ->where('devices !=', '')
+            ->get()->getResultObject();
+        $totalDevices = 0;
+        foreach ($keysWithDevices as $key) {
+            if ($key->devices) {
+                $devices = explode(',', reduce_multiples($key->devices, ",", true));
+                $totalDevices += count($devices);
+            }
+        }
+
+        // Total expired keys
+        $totalExpired = $keysModel->builder()
+            ->where('registrator', $this->user->level == 1 ? null : $this->user->username)
+            ->where('expired_date <', date('Y-m-d H:i:s'))
+            ->where('expired_date IS NOT NULL', null, false)
+            ->countAllResults();
+
         $data = [
             'title' => 'Dashboard',
             'user' => $this->user,
             'time' => $this->time,
             'history' => $historyModel->getAll(),
+            'totalKeys' => $totalKeys,
+            'totalDevices' => $totalDevices,
+            'totalExpired' => $totalExpired,
         ];
         return view('User/dashboard', $data);
     }
