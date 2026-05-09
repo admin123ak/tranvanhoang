@@ -70,7 +70,7 @@
                             <div class="col-6">
                                 <div class="info-box">
                                     <small class="text-muted d-block">Thời hạn</small>
-                                    <strong><?= $config->max_hours ?> giờ</strong>
+                                    <strong><?= isset($pricing) ? esc($pricing->duration_hours) : esc($config->max_hours) ?> giờ</strong>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -82,8 +82,9 @@
                             <div class="col-6">
                                 <div class="info-box">
                                     <small class="text-muted d-block">Giá</small>
-                                    <?php if ($config->price_per_hour > 0) : ?>
-                                        <strong><?= number_format($config->price_per_hour, 0) ?> VND/h</strong>
+                                    <?php $price = isset($pricing) ? $pricing->price : ($config->price_per_hour * $config->max_hours); ?>
+                                    <?php if ($price > 0) : ?>
+                                        <strong><?= number_format($price, 0, ',', '.') ?>₫</strong>
                                     <?php else : ?>
                                         <span class="badge bg-success">FREE</span>
                                     <?php endif; ?>

@@ -23,9 +23,19 @@ class Getkey extends BaseController
             return view('GetkeyPage/unavailable', ['title' => 'GetKey Unavailable']);
         }
 
+        // Get active pricing options
+        $db = \Config\Database::connect();
+        $pricingBuilder = $db->table('key_pricing');
+        try {
+            $pricings = $pricingBuilder->where('status', 1)->orderBy('duration_hours', 'ASC')->get()->getResult();
+        } catch (\Exception $e) {
+            $pricings = [];
+        }
+
         $data = [
             'title' => 'Get Key',
             'config' => $config,
+            'pricings' => $pricings,
         ];
 
         return view('GetkeyPage/index', $data);
@@ -62,6 +72,27 @@ class Getkey extends BaseController
             return redirect()->back()->with('msgDanger', 'Bạn đã nhận key rồi. Vui lòng quay lại sau 24 giờ.');
         }
 
+        // Validate selected pricing
+        $pricingId = $this->request->getPost('pricing_id');
+        if (!$pricingId) {
+            return redirect()->back()->with('msgDanger', 'Vui lòng chọn thời hạn sử dụng');
+        }
+
+        $db = \Config\Database::connect();
+        $pricingBuilder = $db->table('key_pricing');
+        try {
+            $pricing = $pricingBuilder->where('id', $pricingId)->where('status', 1)->get()->getRow();
+        } catch (\Exception $e) {
+            return redirect()->back()->with('msgDanger', 'Không thể kết nối database');
+        }
+
+        if (!$pricing) {
+            return redirect()->back()->with('msgDanger', 'Gói thời hạn không tồn tại');
+        }
+
+        // Store selected pricing in session for createKey
+        session()->set('selected_pricing_id', (int)$pricingId);
+
         // If YeuMoney token exists, create shortened link
         if ($config->youmoney_token) {
             $callbackUrl = base_url('getkey/create-key');
@@ -74,6 +105,7 @@ class Getkey extends BaseController
             $data = [
                 'title' => 'Your Link',
                 'config' => $config,
+                'pricing' => $pricing,
                 'yeumoneyUrl' => $shortUrl,
             ];
 
@@ -121,6 +153,27 @@ class Getkey extends BaseController
             return redirect()->to('getkey')->with('msgDanger', 'Bạn đã nhận key rồi. Vui lòng quay lại sau 24 giờ.');
         }
 
+        // Get selected pricing from session or POST
+        $pricingId = session()->get('selected_pricing_id') ?: $this->request->getPost('pricing_id');
+        if (!$pricingId) {
+            return redirect()->to('getkey')->with('msgDanger', 'Vui lòng chọn thời hạn sử dụng');
+        }
+
+        $db = \Config\Database::connect();
+        $pricingBuilder = $db->table('key_pricing');
+        try {
+            $pricing = $pricingBuilder->where('id', $pricingId)->where('status', 1)->get()->getRow();
+        } catch (\Exception $e) {
+            return redirect()->to('getkey')->with('msgDanger', 'Database error');
+        }
+
+        if (!$pricing) {
+            return redirect()->to('getkey')->with('msgDanger', 'Gói thời hạn không tồn tại');
+        }
+
+        // Calculate price (free if price = 0)
+        $totalPrice = $pricing->price;
+
         // Get admin account
         $userModel = new UserModel();
         $adminUser = $userModel->where('username', $config->admin_account)->first();
@@ -128,18 +181,6 @@ class Getkey extends BaseController
         if (!$adminUser) {
             return redirect()->to('getkey')->with('msgDanger', 'Admin account not found');
         }
-
-        // Get active pricing from key_pricing table
-        $db = \Config\Database::connect();
-        $pricingBuilder = $db->table('key_pricing');
-        $pricing = $pricingBuilder->where('status', 1)->orderBy('duration_hours', 'ASC')->first();
-
-        if (!$pricing) {
-            return redirect()->to('getkey')->with('msgDanger', 'No pricing configured');
-        }
-
-        // Calculate price (free if price = 0)
-        $totalPrice = $pricing['price'];
 
         // Check balance (skip if free)
         $adminBalance = is_object($adminUser) ? ($adminUser->saldo ?? 0) : ($adminUser['saldo'] ?? 0);
@@ -167,7 +208,7 @@ class Getkey extends BaseController
             'game' => $pkgCode,
             'package_id' => $config->package_id,
             'user_key' => $userKey,
-            'duration' => $pricing['duration_hours'],
+            'duration' => $pricing->duration_hours,
             'max_devices' => $config->max_devices,
             'devices' => null,
             'status' => 1,
@@ -214,7 +255,7 @@ class Getkey extends BaseController
         $historyInfo = implode('|', [
             $pkgName,
             $userKey,
-            $pricing['duration_hours'],
+            $pricing->duration_hours,
             $config->max_devices,
             ''
         ]);

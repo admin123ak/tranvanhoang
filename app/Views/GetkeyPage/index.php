@@ -32,29 +32,13 @@
                         <p class="text-muted small mb-3"><?= esc($config->pkg_code ?? '') ?></p>
 
                         <div class="row g-2 mb-3">
-                            <div class="col-6">
-                                <div class="stat-box">
-                                    <span class="d-block fw-bold text-primary"><?= $config->max_hours ?>h</span>
-                                    <small class="text-muted">Thời hạn</small>
-                                </div>
-                            </div>
-                            <div class="col-6">
+                            <div class="col-12">
                                 <div class="stat-box">
                                     <span class="d-block fw-bold text-success"><?= $config->max_devices ?></span>
-                                    <small class="text-muted">Thiết bị</small>
+                                    <small class="text-muted">Thiết bị tối đa</small>
                                 </div>
                             </div>
                         </div>
-
-                        <?php if ($config->price_per_hour > 0) : ?>
-                            <div class="alert alert-light-info mb-0">
-                                <strong>Giá:</strong> <?= number_format($config->price_per_hour, 0) ?> VND/giờ
-                            </div>
-                        <?php else : ?>
-                            <div class="alert alert-light-success mb-0">
-                                <i class="ti ti-gift me-1"></i> <strong>MIỄN PHÍ</strong>
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -66,7 +50,28 @@
 
                         <form action="<?= site_url('getkey/generate') ?>" method="POST">
                             <?= csrf_field() ?>
-                            <button type="submit" class="btn btn-getkey btn-lg">
+
+                            <!-- Duration Selection -->
+                            <?php if (!empty($pricings)) : ?>
+                                <div class="form-group mb-4 text-start">
+                                    <label for="pricing_id"><strong>Chọn thời hạn:</strong></label>
+                                    <select class="form-select form-select-lg" id="pricing_id" name="pricing_id" required>
+                                        <option value="">-- Chọn gói --</option>
+                                        <?php foreach ($pricings as $p) : ?>
+                                            <option value="<?= esc($p->id) ?>" data-price="<?= esc($p->price) ?>">
+                                                <?= esc($p->duration_hours) ?> giờ (<?= esc($p->description ?: $p->duration_hours . 'h') ?>)
+                                                — <?= number_format($p->price, 0, ',', '.') ?>₫
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            <?php else : ?>
+                                <div class="alert alert-warning mb-4">
+                                    <i class="ti ti-alert-triangle"></i> Chưa có gói thời hạn nào. Vui lòng liên hệ admin.
+                                </div>
+                            <?php endif; ?>
+
+                            <button type="submit" class="btn btn-getkey btn-lg" id="generateBtn" <?= empty($pricings) ? 'disabled' : '' ?>>
                                 <i class="ti ti-bolt me-1"></i> Lấy Link Ngay
                             </button>
                         </form>
