@@ -51,11 +51,7 @@
                                         </tr>
                                         <tr>
                                             <td><strong>Ngân hàng:</strong></td>
-                                            <td>
-                                                <img src="https://api.vietqr.io/img/CNX/MBBank.png"
-                                                     alt="MBBank" style="height: 30px;">
-                                                <strong>MBBank</strong>
-                                            </td>
+                                            <td><strong>MBBank</strong></td>
                                         </tr>
                                         <tr>
                                             <td><strong>Số tài khoản:</strong></td>
