@@ -34,7 +34,7 @@ class GetKey extends BaseController
 
     /**
      * POST: /getkey/generate
-     * Generate YeuMoney link first (if configured), or create key directly
+     * Generate YeuMoney link and show to user (don't create key yet)
      */
     public function generate()
     {
@@ -45,13 +45,13 @@ class GetKey extends BaseController
             return redirect()->back()->with('msgDanger', 'GetKey service is currently unavailable');
         }
 
-        // If YeuMoney token exists, redirect to YeuMoney first
-        if ($config->youmoney_token) {
-            // Generate temporary code for this session
-            $tempCode = bin2hex(random_bytes(16));
-            session()->set('getkey_temp_code', $tempCode);
-            session()->set('getkey_timestamp', time());
+        // Generate temporary code for this session
+        $tempCode = bin2hex(random_bytes(16));
+        session()->set('getkey_temp_code', $tempCode);
+        session()->set('getkey_timestamp', time());
 
+        // If YeuMoney token exists, create YeuMoney link
+        if ($config->youmoney_token) {
             // Create YeuMoney link that callbacks to /getkey/verify
             $callbackUrl = base_url('getkey/verify?code=' . $tempCode);
             $shortUrl = $this->shortenViaYeuMoney($config->youmoney_token, $callbackUrl);
@@ -60,8 +60,15 @@ class GetKey extends BaseController
                 return redirect()->back()->with('msgDanger', 'Failed to generate link. Please try again.');
             }
 
-            // Redirect to YeuMoney link
-            return redirect()->to($shortUrl);
+            // Show link to user (don't create key yet)
+            $data = [
+                'title' => 'Your Link',
+                'config' => $config,
+                'yeumoneyUrl' => $shortUrl,
+                'tempCode' => $tempCode,
+            ];
+
+            return view('GetKey/link', $data);
         }
 
         // No YeuMoney - create key directly
@@ -78,8 +85,8 @@ class GetKey extends BaseController
         $sessionCode = session()->get('getkey_temp_code');
         $timestamp = session()->get('getkey_timestamp');
 
-        // Verify code and check expiry (5 minutes)
-        if (!$code || !$sessionCode || $code !== $sessionCode || (time() - $timestamp) > 300) {
+        // Verify code and check expiry (10 minutes)
+        if (!$code || !$sessionCode || $code !== $sessionCode || (time() - $timestamp) > 600) {
             return redirect()->to('getkey')->with('msgDanger', 'Invalid or expired verification');
         }
 
