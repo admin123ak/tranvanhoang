@@ -7,7 +7,7 @@ use App\Models\PlanModel;
 use App\Models\UserPlanModel;
 use App\Models\HistoryModel;
 
-class Plan extends BaseController
+class MemberPlan extends BaseController
 {
     protected $userModel;
     protected $user;

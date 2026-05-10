@@ -56,10 +56,10 @@ $routes->get('recharge/check-invoices', 'Recharge::checkInvoices');
 $routes->get('recharge/auto-check', 'Recharge::autoCheck');
 
 // Plan routes
-$routes->get('plans', 'Plan::index');
-$routes->post('plans/purchase', 'Plan::purchase');
-$routes->post('plans/renew', 'Plan::renew');
-$routes->get('plans/my-plan', 'Plan::myPlan');
+$routes->get('plans', 'MemberPlan::index');
+$routes->post('plans/purchase', 'MemberPlan::purchase');
+$routes->post('plans/renew', 'MemberPlan::renew');
+$routes->get('plans/my-plan', 'MemberPlan::myPlan');
 
 // User Package routes
 $routes->get('user/packages', 'UserPackage::index');
