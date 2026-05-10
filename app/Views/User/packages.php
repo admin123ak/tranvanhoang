@@ -32,40 +32,6 @@
         </div>
     <?php endif; ?>
 
-    <?php if (!$isAdmin && $planStats) : ?>
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card border-info">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="ti ti-crown me-2"></i> <?= esc($planStats['plan_name']) ?></h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="text-center">
-                                    <h4><?= (int)($planStats['max_packages'] ?? 0) ?>/<?= (int)($planStats['max_packages'] ?? 0) ?></h4>
-                                    <p class="text-muted mb-0">Package quota</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="text-center">
-                                    <h4><?= (int)($planStats['max_keys'] ?? 0) ?>/<?= (int)($planStats['max_keys'] ?? 0) ?></h4>
-                                    <p class="text-muted mb-0">Key quota</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="text-center">
-                                    <h4><?= date('d/m/Y', strtotime($planStats['expires_at'] ?? date('Y-m-d'))) ?></h4>
-                                    <p class="text-muted mb-0">Het han</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-
     <div class="row mb-3">
         <div class="col-12">
             <?php if ($canCreate): ?>
@@ -80,6 +46,35 @@
         </div>
     </div>
 
+    <!-- Plan Status Card for non-admin -->
+    <?php if (!$isAdmin && $planStats && !empty($planStats['plan_name'])): ?>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="ti ti-crown me-2"></i> <?= esc($planStats['plan_name']) ?></h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <h4><?= (int)($planStats['max_packages'] ?? 0) ?>/<?= (int)($planStats['max_packages'] ?? 0) ?></h4>
+                            <p class="text-muted mb-0">Package quota</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h4><?= (int)($planStats['max_keys'] ?? 0) ?>/<?= (int)($planStats['max_keys'] ?? 0) ?></h4>
+                            <p class="text-muted mb-0">Key quota</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h4><?= date('d/m/Y', strtotime($planStats['expires_at'] ?? date('Y-m-d'))) ?></h4>
+                            <p class="text-muted mb-0">Het han</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -87,6 +82,9 @@
                     <h4>Danh sach package</h4>
                 </div>
                 <div class="card-body">
+                    <div class="alert alert-info mb-3">
+                        <small><i class="ti ti-info-circle"></i> Package thuộc gói của bạn. Tạo package tại trang <a href="<?= site_url('keys/generate') ?>">Tạo Keys</a> để sử dụng.</small>
+                    </div>
                     <?php if (empty($packages)): ?>
                         <p class="text-muted text-center">Chua co package nao</p>
                     <?php else: ?>
@@ -104,7 +102,7 @@
                                 <tbody>
                                     <?php foreach ($packages as $pkg): ?>
                                         <tr>
-                                            <td><?= esc($pkg->id) ?></td>
+                                            <td><?= esc($pkg->id_package ?? $pkg->id ?? '') ?></td>
                                             <td><strong><?= esc($pkg->package_name) ?></strong></td>
                                             <td><code><?= esc($pkg->package_id) ?></code></td>
                                             <td><?= esc($pkg->description ?? '-') ?></td>
