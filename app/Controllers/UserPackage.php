@@ -37,7 +37,7 @@ class UserPackage extends BaseController
             'packages' => $packages,
             'isAdmin' => $isAdmin,
             'planStats' => $planStats,
-            'canCreate' => $isAdmin || ($planStats !== null && $planStats['packages_left'] > 0),
+            'canCreate' => $isAdmin || ($planStats !== null),
         ];
 
         return view('User/packages', $data);
@@ -51,8 +51,8 @@ class UserPackage extends BaseController
         if (!$isAdmin) {
             $userPlanModel = new UserPlanModel();
             $planStats = $userPlanModel->getPlanStats($user->id_users);
-            if (!$planStats || $planStats['packages_left'] <= 0) {
-                return redirect()->to('plans')->with('msgDanger', 'Ban khong con quota de tao package. Vui long mua goi moi.');
+            if (!$planStats) {
+                return redirect()->to('plans')->with('msgDanger', 'Ban khong co goi. Vui long mua goi de tao package.');
             }
         }
 
@@ -73,8 +73,8 @@ class UserPackage extends BaseController
         if (!$isAdmin) {
             $userPlanModel = new UserPlanModel();
             $planStats = $userPlanModel->getPlanStats($user->id_users);
-            if (!$planStats || $planStats['packages_left'] <= 0) {
-                return redirect()->to('plans')->with('msgDanger', 'Ban khong con quota de tao package.');
+            if (!$planStats) {
+                return redirect()->to('plans')->with('msgDanger', 'Ban khong co goi de tao package.');
             }
         }
 
@@ -111,15 +111,6 @@ class UserPackage extends BaseController
 
         $id = $packageModel->insert($data);
         if ($id) {
-            // Increment package usage if not admin
-            if (!$isAdmin) {
-                $userPlanModel = new UserPlanModel();
-                $planStats = $userPlanModel->getPlanStats($user->id_users);
-                $activePlan = $userPlanModel->getUserPlan($user->id_users);
-                if ($activePlan) {
-                    $userPlanModel->incrementPackagesUsed($activePlan->id);
-                }
-            }
             return redirect()->to('user/packages')->with('msgSuccess', 'Package tao thanh cong!');
         }
 

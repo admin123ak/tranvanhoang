@@ -43,19 +43,19 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="text-center">
-                                    <h4><?= $planStats['packages_left'] ?>/<?= $planStats['max_packages'] ?></h4>
-                                    <p class="text-muted mb-0">Package con lai</p>
+                                    <h4><?= (int)($planStats['max_packages'] ?? 0) ?>/<?= (int)($planStats['max_packages'] ?? 0) ?></h4>
+                                    <p class="text-muted mb-0">Package quota</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="text-center">
-                                    <h4><?= $planStats['keys_left'] ?>/<?= $planStats['max_keys'] ?></h4>
-                                    <p class="text-muted mb-0">Key con lai</p>
+                                    <h4><?= (int)($planStats['max_keys'] ?? 0) ?>/<?= (int)($planStats['max_keys'] ?? 0) ?></h4>
+                                    <p class="text-muted mb-0">Key quota</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="text-center">
-                                    <h4><?= date('d/m/Y', strtotime($planStats['expires_at'])) ?></h4>
+                                    <h4><?= date('d/m/Y', strtotime($planStats['expires_at'] ?? date('Y-m-d'))) ?></h4>
                                     <p class="text-muted mb-0">Het han</p>
                                 </div>
                             </div>
