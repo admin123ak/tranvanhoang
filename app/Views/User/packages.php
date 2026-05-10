@@ -104,7 +104,7 @@
                                 <tbody>
                                     <?php foreach ($packages as $pkg): ?>
                                         <tr>
-                                            <td><?= esc($pkg->id_package ?? '') ?></td>
+                                            <td><?= esc($pkg->id) ?></td>
                                             <td><strong><?= esc($pkg->package_name) ?></strong></td>
                                             <td><code><?= esc($pkg->package_id) ?></code></td>
                                             <td><?= esc($pkg->description ?? '-') ?></td>
