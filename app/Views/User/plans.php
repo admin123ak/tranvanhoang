@@ -41,12 +41,12 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-md-3">
-                            <h4><?= (int)($currentPlan['packages_left'] ?? 0) ?>/<?= (int)($currentPlan['max_packages'] ?? 0) ?></h4>
-                            <p class="text-muted mb-0">Package còn lại</p>
+                            <h4><?= (int)($currentPlan['max_packages'] ?? 0) ?>/<?= (int)($currentPlan['max_packages'] ?? 0) ?></h4>
+                            <p class="text-muted mb-0">Package quota</p>
                         </div>
                         <div class="col-md-3">
-                            <h4><?= (int)($currentPlan['keys_left'] ?? 0) ?>/<?= (int)($currentPlan['max_keys'] ?? 0) ?></h4>
-                            <p class="text-muted mb-0">Key còn lại</p>
+                            <h4><?= (int)($currentPlan['max_keys'] ?? 0) ?>/<?= (int)($currentPlan['max_keys'] ?? 0) ?></h4>
+                            <p class="text-muted mb-0">Key quota</p>
                         </div>
                         <div class="col-md-3">
                             <h4><?= date('d/m/Y', strtotime($currentPlan['expires_at'] ?? date('Y-m-d'))) ?></h4>
