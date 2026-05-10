@@ -26,7 +26,14 @@ class Plan extends BaseController
         $currentPlan = null;
         if ($this->user->level != 1) {
             $userPlanModel = new UserPlanModel();
+            $rawPlan = $userPlanModel->getUserPlan($this->user->id_users);
+
+            // Debug: log what we get from DB
+            log_message('error', 'DEBUG Plan index - user_id: ' . $this->user->id_users . ', rawPlan: ' . json_encode($rawPlan));
+
             $currentPlan = $userPlanModel->getPlanStats($this->user->id_users);
+
+            log_message('error', 'DEBUG Plan index - currentPlan: ' . json_encode($currentPlan));
         }
 
         $data = [

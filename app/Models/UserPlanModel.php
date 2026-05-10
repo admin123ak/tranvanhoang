@@ -40,17 +40,23 @@ class UserPlanModel extends Model
             return null;
         }
 
+        // Fallback to default values if columns are missing
+        $maxPackages = $plan->max_packages ?? 0;
+        $maxKeys = $plan->max_keys ?? 0;
+        $packagesUsed = $plan->packages_used ?? 0;
+        $keysUsed = $plan->keys_used ?? 0;
+
         return [
-            'plan_id' => $plan->plan_id,
-            'plan_name' => $plan->plan_name,
-            'plan_price' => $plan->price_per_month,
-            'max_packages' => $plan->max_packages,
-            'packages_used' => $plan->packages_used,
-            'packages_left' => $plan->max_packages - $plan->packages_used,
-            'max_keys' => $plan->max_keys,
-            'keys_used' => $plan->keys_used,
-            'keys_left' => $plan->max_keys - $plan->keys_used,
-            'expires_at' => $plan->expires_at,
+            'plan_id' => $plan->plan_id ?? 0,
+            'plan_name' => $plan->plan_name ?? 'Unknown',
+            'plan_price' => $plan->price_per_month ?? 0,
+            'max_packages' => $maxPackages,
+            'packages_used' => $packagesUsed,
+            'packages_left' => $maxPackages - $packagesUsed,
+            'max_keys' => $maxKeys,
+            'keys_used' => $keysUsed,
+            'keys_left' => $maxKeys - $keysUsed,
+            'expires_at' => $plan->expires_at ?? date('Y-m-d H:i:s'),
         ];
     }
 

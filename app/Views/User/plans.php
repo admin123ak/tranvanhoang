@@ -31,7 +31,7 @@
     <?php endif; ?>
 
     <!-- Current Plan Status -->
-    <?php if ($currentPlan) : ?>
+    <?php if ($currentPlan && !empty($currentPlan['plan_name'])) : ?>
     <div class="row mb-4">
         <div class="col-12">
             <div class="card border-success">
@@ -41,15 +41,15 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-md-3">
-                            <h4><?= $currentPlan['packages_left'] ?>/<?= $currentPlan['max_packages'] ?></h4>
+                            <h4><?= (int)($currentPlan['packages_left'] ?? 0) ?>/<?= (int)($currentPlan['max_packages'] ?? 0) ?></h4>
                             <p class="text-muted mb-0">Package còn lại</p>
                         </div>
                         <div class="col-md-3">
-                            <h4><?= $currentPlan['keys_left'] ?>/<?= $currentPlan['max_keys'] ?></h4>
+                            <h4><?= (int)($currentPlan['keys_left'] ?? 0) ?>/<?= (int)($currentPlan['max_keys'] ?? 0) ?></h4>
                             <p class="text-muted mb-0">Key còn lại</p>
                         </div>
                         <div class="col-md-3">
-                            <h4><?= date('d/m/Y', strtotime($currentPlan['expires_at'])) ?></h4>
+                            <h4><?= date('d/m/Y', strtotime($currentPlan['expires_at'] ?? date('Y-m-d'))) ?></h4>
                             <p class="text-muted mb-0">Hết hạn</p>
                         </div>
                         <div class="col-md-3">
