@@ -15,7 +15,7 @@ class UserPlanModel extends Model
     public function getUserPlan($userId)
     {
         $builder = $this->db->table('user_plans up');
-        $builder->select('up.*, p.name as plan_name, p.price_per_month, p.max_packages, p.max_keys');
+        $builder->select('up.id, up.user_id, up.plan_id, up.packages_used, up.keys_used, up.purchased_at, up.expires_at, up.status, p.name as plan_name, p.price_per_month, p.max_packages, p.max_keys');
         $builder->join('plans p', 'p.id = up.plan_id', 'left');
         $builder->where('up.user_id', $userId);
         $builder->where('up.status', 1);
@@ -26,7 +26,7 @@ class UserPlanModel extends Model
     public function getUserPlanHistory($userId)
     {
         $builder = $this->db->table('user_plans up');
-        $builder->select('up.*, p.name as plan_name, p.price_per_month, p.max_packages, p.max_keys');
+        $builder->select('up.id, up.user_id, up.plan_id, up.packages_used, up.keys_used, up.purchased_at, up.expires_at, up.status, p.name as plan_name, p.price_per_month, p.max_packages, p.max_keys');
         $builder->join('plans p', 'p.id = up.plan_id', 'left');
         $builder->where('up.user_id', $userId);
         $builder->orderBy('up.created_at', 'DESC');
